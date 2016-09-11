@@ -1,0 +1,3 @@
+CLAVE_API = '123:123'
+CONSULTA = "sistema('curl -s https://api.telegram.org/bot' . CLAVE_API . '/')"
+escribir(CONSULTA)
