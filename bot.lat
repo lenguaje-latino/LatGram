@@ -1,22 +1,26 @@
 requiere("ajustes")
 
 funcion obtener_actualizacion(decode)
-cURL = "curl  -s 'https://api.telegram.org/bot" . api_key . "/getUpdates?offset=" . offset . "' | jq -r '" . decode . "'"
-c = sistema(cURL)
-retorno c
+  cURL = "curl  -s 'https://api.telegram.org/bot" . api_key . "/getUpdates?offset=" . offset . "' | jq -r '" . decode . "'"
+  c = sistema(cURL)
+  retorno c
 fin
 
-funcion enviar_mensaje(chatId, texto)
-texto = reemplazar(texto, " ", "%20")
-cURL = "curl  -s 'https://api.telegram.org/bot" . api_key . "/sendMessage?chat_id=" . chatId . "&text=" . texto . "' &>/dev/null"
-sistema(cURL)
+funcion enviar_mensaje(chatId, texto, estado)
+  texto = reemplazar(texto, " ", "%20")
+  si ( estado == verdadero )
+    cURL = "curl  -s 'https://api.telegram.org/bot" . api_key . "/sendMessage?chat_id=" . chatId . "&text=" . texto . "&parse_mode=markdown' &>/dev/null"
+  sino
+    cURL = "curl  -s 'https://api.telegram.org/bot" . api_key . "/sendMessage?chat_id=" . chatId . "&text=" . texto . "' &>/dev/null"
+  fin
+  sistema(cURL)
 fin
 
 
 mensaje = obtener_actualizacion('.result[0] .message .text')
 
 si (mensaje == '/comando')
-enviar_mensaje(189041244, "OK")
+  enviar_mensaje(189041244, "OK")
 sino
-enviar_mensaje(189041244, "el test va mal")
+  enviar_mensaje(189041244, "el test va mal")
 fin
