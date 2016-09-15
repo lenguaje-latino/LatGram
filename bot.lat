@@ -1,21 +1,23 @@
 incluir ('ajustes')
 
+URL = 'https://api.telegram.org/bot' . api_key
+
 funcion obtener_actualizacion(decode)
-  cURL = "curl  -s 'https://api.telegram.org/bot" . api_key . "/getUpdates?offset=" . offset . "&timeout=20' | jq -r '" . decode . "'"
+  cURL = "curl  -s '" . URL . "/getUpdates?offset=" . offset . "&timeout=20' | jq -r '" . decode . "'"
   c = sistema(cURL)
   escribir(c)
 fin
 
 funcion enviarMensaje(chatId, texto)
   texto = reemplazar(texto, " ", "%20")
-    cURL = "curl  -s 'https://api.telegram.org/bot" . api_key . "/sendMessage?chat_id=" . chatId . "&text=" . texto . "' &>/dev/null"
+    cURL = "curl  -s '" . URL . "/sendMessage?chat_id=" . chatId . "&text=" . texto . "' &>/dev/null"
   sistema(cURL)
 fin
 
 
 funcion enviarMensaje_markdown(chatId, texto)
   texto = reemplazar(texto, " ", "%20")
-    cURL = "curl  -s 'https://api.telegram.org/bot" . api_key . "/sendMessage?chat_id=" . chatId . "&text=" . texto . "&parse_mode=markdown' &>/dev/null"
+    cURL = "curl  -s '" . URL . "/sendMessage?chat_id=" . chatId . "&text=" . texto . "&parse_mode=markdown' &>/dev/null"
   sistema(cURL)
 fin
 
@@ -28,12 +30,12 @@ funcion enviarAccion(chatId, accion)
   accion = reemplazar(accion, "grabando_video", "record_video")
   accion = reemplazar(accion, "grabando_audio", "record_audio")
   accion = reemplazar(accion, "buscar_localizacion", "find_location")
-  cURL = "curl  -s 'https://api.telegram.org/bot" . api_key . "/sendChatAction?chat_id=" . chatId . "&action=" . accion . "' &>/dev/null"
+  cURL = "curl  -s '" . URL . "/sendChatAction?chat_id=" . chatId . "&action=" . accion . "' &>/dev/null"
   sistema(cURL)
 fin
 
 funcion enviarMensaje_html(chatId, texto)
   texto = reemplazar(texto, " ", "%20")
-    cURL = "curl  -s 'https://api.telegram.org/bot" . api_key . "/sendMessage?chat_id=" . chatId . "&text=" . texto . "&parse_mode=html' &>/dev/null"
+    cURL = "curl  -s '" . URL . "/sendMessage?chat_id=" . chatId . "&text=" . texto . "&parse_mode=html' &>/dev/null"
   sistema(cURL)
 fin
