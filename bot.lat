@@ -34,8 +34,21 @@ funcion enviarAccion(chatId, accion)
   sistema(cURL)
 fin
 
+
+funcion reenviarMensaje(chatId, userId, msgId)
+  cURL = "curl  -s '" . URL . "/forwardMessage?chat_id=" . chatId . "&from_chat_id=" . userId . "&message_id=" . msgId . "' &>/dev/null"
+  sistema(cURL)
+fin
+
+
 funcion enviarMensaje_html(chatId, texto)
   texto = reemplazar(texto, " ", "%20")
     cURL = "curl  -s '" . URL . "/sendMessage?chat_id=" . chatId . "&text=" . texto . "&parse_mode=html' &>/dev/null"
   sistema(cURL)
 fin
+
+
+# Ejemplos
+
+# reenviarMensaje(189041244, 189041244, 396)
+# enviarMensaje_html(189041244, "<i>subiendo_foto</i>")
