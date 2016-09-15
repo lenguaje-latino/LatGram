@@ -1,23 +1,22 @@
 incluir ('ajustes')
 
-URL = 'https://api.telegram.org/bot' . api_key
+URL = 'https://api.telegram.org/bot' . api_key . '/'
 
 funcion obtener_actualizacion(decode)
-  cURL = "curl  -s '" . URL . "/getUpdates?offset=" . offset . "&timeout=20' | jq -r '" . decode . "'"
+  cURL = "curl  -s '" . URL . "getUpdates?offset=" . offset . "&timeout=20' | jq -r '" . decode . "'"
   c = sistema(cURL)
   escribir(c)
 fin
 
 funcion enviarMensaje(chatId, texto)
   texto = reemplazar(texto, " ", "%20")
-    cURL = "curl  -s '" . URL . "/sendMessage?chat_id=" . chatId . "&text=" . texto . "' &>/dev/null"
+    cURL = "curl  -s '" . URL . "sendMessage?chat_id=" . chatId . "&text=" . texto . "' &>/dev/null"
   sistema(cURL)
 fin
 
-
 funcion enviarMensaje_markdown(chatId, texto)
   texto = reemplazar(texto, " ", "%20")
-    cURL = "curl  -s '" . URL . "/sendMessage?chat_id=" . chatId . "&text=" . texto . "&parse_mode=markdown' &>/dev/null"
+    cURL = "curl  -s '" . URL . "sendMessage?chat_id=" . chatId . "&text=" . texto . "&parse_mode=markdown' &>/dev/null"
   sistema(cURL)
 fin
 
@@ -30,20 +29,34 @@ funcion enviarAccion(chatId, accion)
   accion = reemplazar(accion, "grabando_video", "record_video")
   accion = reemplazar(accion, "grabando_audio", "record_audio")
   accion = reemplazar(accion, "buscar_localizacion", "find_location")
-  cURL = "curl  -s '" . URL . "/sendChatAction?chat_id=" . chatId . "&action=" . accion . "' &>/dev/null"
+  cURL = "curl  -s '" . URL . "sendChatAction?chat_id=" . chatId . "&action=" . accion . "' &>/dev/null"
   sistema(cURL)
 fin
 
 
 funcion reenviarMensaje(chatId, userId, msgId)
-  cURL = "curl  -s '" . URL . "/forwardMessage?chat_id=" . chatId . "&from_chat_id=" . userId . "&message_id=" . msgId . "' &>/dev/null"
+  cURL = "curl  -s '" . URL . "forwardMessage?chat_id=" . chatId . "&from_chat_id=" . userId . "&message_id=" . msgId . "' &>/dev/null"
   sistema(cURL)
 fin
 
+funcion abandonarChat(chatId)
+  cURL = "curl  -s '" . URL . "leaveChat?chat_id=" . chatId . "' &>/dev/null"
+  sistema(cURL)
+fin
+
+funcion expulsarUsuario(chatId, userId)
+  cURL = "curl  -s '" . URL . "kickChatMember?chat_id=" . chatId . "&user_id=" . userId . "' && curl  -s '" . URL . "unbanChatMember?chat_id=" . chatId . "&user_id=" . userId . "'" 
+  sistema(cURL)
+fin
+
+funcion banearUsuario(chatId, userId)
+  cURL = "curl  -s '" . URL . "kickChatMember?chat_id=" . chatId . "&user_id=" . userId . "'" 
+  sistema(cURL"&>/dev/null")
+fin
 
 funcion enviarMensaje_html(chatId, texto)
   texto = reemplazar(texto, " ", "%20")
-    cURL = "curl  -s '" . URL . "/sendMessage?chat_id=" . chatId . "&text=" . texto . "&parse_mode=html' &>/dev/null"
+    cURL = "curl  -s '" . URL . "sendMessage?chat_id=" . chatId . "&text=" . texto . "&parse_mode=html' &>/dev/null"
   sistema(cURL)
 fin
 
