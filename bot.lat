@@ -2,22 +2,33 @@ incluir ('ajustes')
 
 URL = 'https://api.telegram.org/bot' . api_key . '/'
 
+funcion obtener_offset()
+  cURL = "curl  -s '" . URL . "getUpdates' | jq -r '.result[0] .update_id +1'"
+ retorno ejecutar_pipe(cURL)
+fin
+
+funcion limpiar_actualizacion()
+offse = obtener_offset()
+  cURL = "curl  -s '" . URL . "getUpdates?offset=" . obtener_offset() . "'"
+  ejecutar_pipe(cURL)
+fin
+
 funcion obtener_actualizacion(decode)
-  cURL = "curl  -s '" . URL . "getUpdates?offset=" . offset . "&timeout=20' | jq -r '" . decode . "'"
-  c = sistema(cURL)
-  escribir(c)
+offse = obtener_offset()
+  cURL = "curl  -s '" . URL . "getUpdates?offset=" . offset . "' | jq -r '" . decode . "'"
+ retorno ejecutar_pipe(cURL)
 fin
 
 funcion enviarMensaje(chatId, texto)
   texto = reemplazar(texto, " ", "%20")
-    cURL = "curl  -s '" . URL . "sendMessage?chat_id=" . chatId . "&text=" . texto . "' &>/dev/null"
-  sistema(cURL)
+    cURL = "curl  -s '" . URL . "sendMessage?chat_id=" . chatId . "&text=" . texto . "'"
+  retorno ejecutar_pipe(cURL)
 fin
 
 funcion enviarMensaje_markdown(chatId, texto)
   texto = reemplazar(texto, " ", "%20")
-    cURL = "curl  -s '" . URL . "sendMessage?chat_id=" . chatId . "&text=" . texto . "&parse_mode=markdown' &>/dev/null"
-  sistema(cURL)
+    cURL = "curl  -s '" . URL . "sendMessage?chat_id=" . chatId . "&text=" . texto . "&parse_mode=markdown'"
+  retorno ejecutar_pipe(cURL)
 fin
 
 funcion enviarAccion(chatId, accion)
@@ -29,39 +40,49 @@ funcion enviarAccion(chatId, accion)
   accion = reemplazar(accion, "grabando_video", "record_video")
   accion = reemplazar(accion, "grabando_audio", "record_audio")
   accion = reemplazar(accion, "buscar_localizacion", "find_location")
-  cURL = "curl  -s '" . URL . "sendChatAction?chat_id=" . chatId . "&action=" . accion . "' &>/dev/null"
-  sistema(cURL)
+  cURL = "curl  -s '" . URL . "sendChatAction?chat_id=" . chatId . "&action=" . accion . "'"
+  retorno ejecutar_pipe(cURL)
 fin
 
 
 funcion reenviarMensaje(chatId, userId, msgId)
-  cURL = "curl  -s '" . URL . "forwardMessage?chat_id=" . chatId . "&from_chat_id=" . userId . "&message_id=" . msgId . "' &>/dev/null"
-  sistema(cURL)
+  cURL = "curl  -s '" . URL . "forwardMessage?chat_id=" . chatId . "&from_chat_id=" . userId . "&message_id=" . msgId . "'"
+  retorno ejecutar_pipe(cURL)
 fin
 
 funcion abandonarChat(chatId)
-  cURL = "curl  -s '" . URL . "leaveChat?chat_id=" . chatId . "' &>/dev/null"
-  sistema(cURL)
+  cURL = "curl  -s '" . URL . "leaveChat?chat_id=" . chatId . "'"
+  retorno ejecutar_pipe(cURL)
 fin
 
 funcion expulsarUsuario(chatId, userId)
   cURL = "curl  -s '" . URL . "kickChatMember?chat_id=" . chatId . "&user_id=" . userId . "' && curl  -s '" . URL . "unbanChatMember?chat_id=" . chatId . "&user_id=" . userId . "'" 
-  sistema(cURL)
+  retorno ejecutar_pipe(cURL)
 fin
 
 funcion banearUsuario(chatId, userId)
   cURL = "curl  -s '" . URL . "kickChatMember?chat_id=" . chatId . "&user_id=" . userId . "'" 
-  sistema(cURL"&>/dev/null")
+  retorno ejecutar_pipe(cURL)
+fin
+
+funcion desbanearUsuario(chatId, userId)
+  cURL = "curl  -s '" . URL . "unbanChatMember?chat_id=" . chatId . "&user_id=" . userId . "'" 
+  retorno ejecutar_pipe(cURL)
 fin
 
 funcion enviarMensaje_html(chatId, texto)
   texto = reemplazar(texto, " ", "%20")
-    cURL = "curl  -s '" . URL . "sendMessage?chat_id=" . chatId . "&text=" . texto . "&parse_mode=html' &>/dev/null"
-  sistema(cURL)
+    cURL = "curl  -s '" . URL . "sendMessage?chat_id=" . chatId . "&text=" . texto . "&parse_mode=html'"
+  retorno ejecutar_pipe(cURL)
 fin
 
+limpiar_actualizacion()
 
-# Ejemplos
+mensaje = obtener_actualizacion(".result[0] .message .text")
 
-# reenviarMensaje(189041244, 189041244, 396)
-# enviarMensaje_html(189041244, "<i>subiendo_foto</i>")
+# Ejemplo
+
+si mensaje == "/start\n"
+enviarMensaje_html(189041244, "<i>subiendo_foto</i>")
+escribir("OK")
+fin
