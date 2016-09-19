@@ -8,8 +8,8 @@ funcion obtener_offset()
 fin
 
 funcion limpiar_actualizacion()
-offse = obtener_offset()
-  cURL = "curl  -s '" . URL . "getUpdates?offset=" . obtener_offset() . "'"
+  offset = obtener_offset()
+  cURL = "curl  -s '" . URL . "getUpdates?offset=" . offset . "'"
   ejecutar_pipe(cURL)
 fin
 
@@ -83,6 +83,6 @@ mensaje = obtener_actualizacion(".result[0] .message .text")
 # Ejemplo
 
 si mensaje == "/start\n"
-enviarMensaje_html(189041244, "<i>subiendo_foto</i>")
+enviarMensaje_html(id, "<i>subiendo_foto</i>")
 escribir("OK")
 fin
