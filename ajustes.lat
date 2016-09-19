@@ -1,4 +1,4 @@
-#api.telegram.org/bot229849153:AAGH8mIvfGoTAMM5HWjrsONXDn2zjJ5opLg/getUpdates?offset=710556538
+
 #cambiar aqui la api_key y el id
-api_key = '229849153:AAGH8mIvfGoTAMM5HWjrsONXDn2zjJ5opLg'
-id = 269610735
+api_key = '187719141:AAE9zIEvPT6TKXS6uwCjCvZNcMLnU7IyHSA' 
+id = 189041244
