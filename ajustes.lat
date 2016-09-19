@@ -1,4 +1,2 @@
-
-#cambiar aqui la api_key y el id
-api_key = '187719141:AAE9zIEvPT6TKXS6uwCjCvZNcMLnU7IyHSA' 
-id = 189041244
+# Poner aqui la api_key
+api_key = ''
