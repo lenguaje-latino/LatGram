@@ -10,13 +10,13 @@ funcion obtener_offset()
 fin
 
 funcion limpiar_actualizacion()
-  offset = obtener_offset()   #aqui estaba el error
+  offset = obtener_offset()
   cURL = "curl  -s '" . URL . "getUpdates?offset=" . offset . "'"
   ejecutar_pipe(cURL)
 fin
 
 funcion obtener_actualizacion(decode)
-  offset = obtener_offset()
+  offset = obtener_offset() #aqui SI estaba el error
   cURL = "curl  -s '" . URL . "getUpdates?offset=" . offset . "' | jq -r '" . decode . "'"
   retorno ejecutar_pipe(cURL)
 fin
