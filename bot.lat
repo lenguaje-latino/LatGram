@@ -3,19 +3,26 @@ incluir ('ajustes')
 URL = 'https://api.telegram.org/bot' . api_key . '/'
 
 funcion obtener_offset()
-  cURL = "curl  -s '" . URL . "getUpdates' | jq -r '.result[0] .update_id +1'"
+  cURL = "curl  -s '" . URL . "getUpdates' | jq -r '.result[0] .update_id'"
   retorno ejecutar_pipe(cURL)
 fin
 
 funcion limpiar_actualizacion()
-		res = obtener_offset()
+	res = obtener_offset()
   offset = reemplazar(res, "\n", "")
+  #obtenemos el offset y si es distinto de null le sumamos uno para borrar el mensaje
+  si !offset->empieza_con("null")
+    si decimal(offset) > 0
+      offset = decimal(offset) + 1  #convertimos a decimal() ya que obtener_offset regresa una cadena
+    fin
+  fin
   cURL = "curl  -s '" . URL . "getUpdates?offset=" . offset . "'"
   ejecutar_pipe(cURL)
 fin
 
 funcion obtener_actualizacion(decode)
-  offset = 0
+  res = obtener_offset()
+  offset = reemplazar(res, "\n", "")
   cURL = "curl  -s '" . URL . "getUpdates?offset=" . offset . "' | jq -r '" . decode . "'"
   retorno ejecutar_pipe(cURL)
 fin
@@ -79,17 +86,14 @@ fin
 
 
 mientras verdadero
-mensaje = obtener_actualizacion(".result[0] .message .text")
-
-usuario = obtener_actualizacion(".result[0] .message .from.id")
-usuario = reemplazar(usuario, "\n", "")
-
-si ( mensaje == "/start\n" )
-	enviarMensaje_markdown(usuario, "¡Hey! Estás probando el nuevo bot escrito completamente en la programación Latino :D. Por el momento faltan cosas. Pero de poco a poco irá mejorando 😄👍")
-	escribir("OK")
-limpiar_actualizacion()
-fin
-
-
-
+  mensaje = obtener_actualizacion(".result[0] .message .text")
+  usuario = obtener_actualizacion(".result[0] .message .from.id")
+  #despues de leer la actualizacion limpiamos
+  limpiar_actualizacion()
+  usuario = reemplazar(usuario, "\n", "")  
+  si ( mensaje == "/start\n" )
+  	enviarMensaje_markdown(usuario, "¡Hey! Estás probando el nuevo bot escrito completamente en la programación Latino :D. Por el momento faltan cosas. Pero de poco a poco irá mejorando 😄👍")
+  	escribir("OK")
+    limpiar_actualizacion()
+  fin
 fin
