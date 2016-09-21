@@ -92,7 +92,11 @@ mientras verdadero
   
   #despues de leer la actualizacion limpiamos
   limpiar_actualizacion()
-  usuario = reemplazar(usuario, "\n", "")  
+  
+  usuario_id = reemplazar(usuario_id, "\n", "")
+	chat_id = reemplazar(chat_id, "\n", "")
+  
+  
   si ( mensaje == "/start\n" )
   	enviarMensaje_markdown(chat_id, "¡Hey! Estás probando el nuevo bot escrito completamente en la programación Latino :D. Por el momento faltan cosas. Pero de poco a poco irá mejorando 😄👍")
   	escribir("OK")
