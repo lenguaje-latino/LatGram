@@ -10,10 +10,10 @@ fin
 funcion limpiar_actualizacion()
 	res = obtener_offset()
   offset = reemplazar(res, "\n", "")
-  #obtenemos el offset y si es distinto de null le sumamos uno para borrar el mensaje
+  # obtenemos el offset y si es distinto de null le sumamos uno para borrar el mensaje
   si !offset->empieza_con("null")
     si decimal(offset) > 0
-      offset = decimal(offset) + 1  #convertimos a decimal() ya que obtener_offset regresa una cadena
+      offset = decimal(offset) + 1  # convertimos a decimal() ya que obtener_offset regresa una cadena
     fin
   fin
   cURL = "curl  -s '" . URL . "getUpdates?offset=" . offset . "'"
@@ -87,13 +87,14 @@ fin
 
 mientras verdadero
   mensaje = obtener_actualizacion(".result[0] .message .text")
-  usuario = obtener_actualizacion(".result[0] .message .from.id")
+  usuario_id = obtener_actualizacion(".result[0] .message .from .id")
+  chat_id = obtener_actualizacion(".result[0] .message .chat .id")
+  
   #despues de leer la actualizacion limpiamos
   limpiar_actualizacion()
   usuario = reemplazar(usuario, "\n", "")  
   si ( mensaje == "/start\n" )
-  	enviarMensaje_markdown(usuario, "¡Hey! Estás probando el nuevo bot escrito completamente en la programación Latino :D. Por el momento faltan cosas. Pero de poco a poco irá mejorando 😄👍")
+  	enviarMensaje_markdown(chat_id, "¡Hey! Estás probando el nuevo bot escrito completamente en la programación Latino :D. Por el momento faltan cosas. Pero de poco a poco irá mejorando 😄👍")
   	escribir("OK")
-    limpiar_actualizacion()
   fin
 fin
