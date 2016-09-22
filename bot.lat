@@ -96,6 +96,6 @@ mientras verdadero
   
   si ( mensaje == "/start\n" )
   	enviarMensaje_markdown(chat_id, "¡Hey! Estás probando el nuevo bot escrito completamente en la programación Latino :D. Por el momento faltan cosas. Pero de poco a poco irá mejorando 😄👍")
-  	escribir("OK")
+  	escribir(mensaje)
   fin
 fin
