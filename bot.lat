@@ -20,6 +20,7 @@ funcion limpiar_actualizacion()
   ejecutar_pipe(cURL)
 fin
 
+
 funcion obtener_actualizacion(decode)
   res = obtener_offset()
   offset = reemplazar(res, "\n", "")
