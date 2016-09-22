@@ -3,44 +3,32 @@ incluir ('urls')
 
 URL = 'https://api.telegram.org/bot' . api_key . '/'
 
-funcion obtener_offset()
-  cURL = "curl  -s '" . URL . "getUpdates' | jq -r '.result[0] .update_id'"
-  retorno ejecutar_pipe(cURL)
-fin
-
 funcion limpiar_actualizacion()
-	res = obtener_offset()
-	offset = reemplazar(res, "\n", "") # obtenemos el offset y si es distinto de null le sumamos uno para borrar el mensaje
+	res = consultar(URL . "getUpdates")
+	offset = json(res, ".result[0] .update_id")
 	si !offset->empieza_con("null")
     si decimal(offset) > 0
       offset = decimal(offset) + 1  # convertimos a decimal() ya que obtener_offset regresa una cadena
     fin
   fin
-  cURL = "curl  -s '" . URL . "getUpdates?offset=" . offset . "'"
-  ejecutar_pipe(cURL)
+  retorno consultar(URL . "getUpdates?offset=" . offset)
 fin
 
 
-funcion obtener_actualizacion(decode)
-  res = obtener_offset()
-  offset = reemplazar(res, "\n", "")
-  cURL = "curl  -s '" . URL . "getUpdates?offset=" . offset . "' | jq -r '" . decode . "'"
-  retorno ejecutar_pipe(cURL)
+funcion actualizaciones()
+  retorno consultar(URL . "getUpdates?offset=0")
 fin
 
 funcion enviarMensaje(chatId, texto)
-  cURL = "curl  -s '" . URL . "sendMessage?chat_id=" . chatId . "&text=" . codificar(texto) . "'"
-  retorno ejecutar_pipe(cURL)
+  retorno consultar(URL . "sendMessage?chat_id=" . chatId . "&text=" . codificar(texto))
 fin
 
 funcion enviarMensaje_markdown(chatId, texto)
-  cURL = "curl  -s '" . URL . "sendMessage?chat_id=" . chatId . "&text=" . codificar(texto) . "&parse_mode=markdown'"
-  retorno ejecutar_pipe(cURL)
+  retorno consultar(URL . "sendMessage?chat_id=" . chatId . "&text=" . codificar(texto) . "&parse_mode=markdown")
 fin
 
 funcion enviarMensaje_html(chatId, texto)
-  cURL = "curl  -s '" . URL . "sendMessage?chat_id=" . chatId . "&text=" . codificar(texto) . "&parse_mode=html'"
-  retorno ejecutar_pipe(cURL)
+  retorno consultar(URL . "sendMessage?chat_id=" . chatId . "&text=" . codificar(texto) . "&parse_mode=html")
 fin
 
 funcion enviarAccion(chatId, accion)
@@ -52,50 +40,42 @@ funcion enviarAccion(chatId, accion)
   accion = reemplazar(accion, "grabando_video", "record_video")
   accion = reemplazar(accion, "grabando_audio", "record_audio")
   accion = reemplazar(accion, "buscar_localizacion", "find_location")
-  cURL = "curl  -s '" . URL . "sendChatAction?chat_id=" . chatId . "&action=" . accion . "'"
-  retorno ejecutar_pipe(cURL)
+  retorno consultar(URL . "sendChatAction?chat_id=" . chatId . "&action=" . accion)
 fin
 
 
 funcion reenviarMensaje(chatId, userId, msgId)
-  cURL = "curl  -s '" . URL . "forwardMessage?chat_id=" . chatId . "&from_chat_id=" . userId . "&message_id=" . msgId . "'"
-  retorno ejecutar_pipe(cURL)
+  retorno consultar(URL . "forwardMessage?chat_id=" . chatId . "&from_chat_id=" . userId . "&message_id=" . msgId)
 fin
 
 funcion abandonarChat(chatId)
-  cURL = "curl  -s '" . URL . "leaveChat?chat_id=" . chatId . "'"
-  retorno ejecutar_pipe(cURL)
+  retorno consultar(URL . "leaveChat?chat_id=" . chatId)
 fin
 
 funcion expulsarUsuario(chatId, userId)
-  cURL = "curl  -s '" . URL . "kickChatMember?chat_id=" . chatId . "&user_id=" . userId . "' && curl  -s '" . URL . "unbanChatMember?chat_id=" . chatId . "&user_id=" . userId . "'"
-  retorno ejecutar_pipe(cURL)
+	consultar(URL . "kickChatMember?chat_id=" . chatId . "&user_id=" . userId)
+	consultar(URL . "unbanChatMember?chat_id=" . chatId . "&user_id=" . userId)
 fin
 
 funcion banearUsuario(chatId, userId)
-  cURL = "curl  -s '" . URL . "kickChatMember?chat_id=" . chatId . "&user_id=" . userId . "'"
-  retorno ejecutar_pipe(cURL)
+  retorno consultar(URL . "kickChatMember?chat_id=" . chatId . "&user_id=" . userId)
 fin
 
 funcion desbanearUsuario(chatId, userId)
-  cURL = "curl  -s '" . URL . "unbanChatMember?chat_id=" . chatId . "&user_id=" . userId . "'"
-  retorno ejecutar_pipe(cURL)
+  retorno consultar(URL . "unbanChatMember?chat_id=" . chatId . "&user_id=" . userId)
 fin
 
 mientras verdadero
-  mensaje = obtener_actualizacion(".result[0] .message .text")
-  usuario_id = obtener_actualizacion(".result[0] .message .from .id")
-  chat_id = obtener_actualizacion(".result[0] .message .chat .id")
+  res = actualizaciones()
+		texto = json(res, ".result[0] .message .text")
+  usuario_id = json(res, ".result[0] .message .from .id")
+  chat_id = json(res, ".result[0] .message .chat .id")
   
   #despues de leer la actualizacion limpiamos
   limpiar_actualizacion()
-  
-  usuario_id = reemplazar(usuario_id, "\n", "")
-	chat_id = reemplazar(chat_id, "\n", "")
-  
-  
-  si ( mensaje == "/start\n" )
+
+  si ( texto == "/start" )
   	enviarMensaje_markdown(chat_id, "¡Hey! Estás probando el nuevo bot escrito completamente en la programación Latino :D. Por el momento faltan cosas. Pero de poco a poco irá mejorando 😄👍")
-  	escribir(mensaje)
+  	escribir(texto)
   fin
-fin
+fin 
