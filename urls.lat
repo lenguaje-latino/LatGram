@@ -23,6 +23,7 @@ funcion codificar(a)
   a = reemplazar(a, "\$", "%24")
   a = reemplazar(a, "\!", "%21")
   a = reemplazar(a, "\*", "%2A")
+  a = reemplazar(a, "\\n", "%0D")
   final = a
   retorno final 
 fin
@@ -52,6 +53,7 @@ funcion descodificar(b)
   b = reemplazar(b, "\%24", "$")
   b = reemplazar(b, "\%21", "!")
   b = reemplazar(b, "\%2A", "*")
+  b = reemplazar(b, "\%0D", "\\n")
   final = b
   retorno final 
 fin
