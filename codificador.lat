@@ -1,5 +1,5 @@
 funcion codificar(a)
-  a = reemplazar(a, "%", "%25")
+  a = reemplazar(a, "\%", "%25")
   a = reemplazar(a, " ", "%20")
   a = reemplazar(a, "<", "%3C")
   a = reemplazar(a, ">", "%3E")
@@ -7,11 +7,11 @@ funcion codificar(a)
   a = reemplazar(a, "{", "%7B")
   a = reemplazar(a, "}", "%7D")
   a = reemplazar(a, "|", "%7C")
-  a = reemplazar(a, "\\", "%5C")
+  a = reemplazar(a, "\\", "%5C") # ERROR. Reemplaza por @. Reemplaza "\\" y no "\"
   a = reemplazar(a, "\^", "%5E")
   a = reemplazar(a, "~", "%7E")
-  a = reemplazar(a, "\[", "%5B")
-  a = reemplazar(a, "\]", "%5D")
+  a = reemplazar(a, "\[", "%5B") # ERROR. Se queda trabado.
+  a = reemplazar(a, "\]", "%5D") # ERROR. Se queda trabado.
   a = reemplazar(a, "`", "%60")
   a = reemplazar(a, ";", "%3B")
   a = reemplazar(a, "/", "%2F")
@@ -22,6 +22,7 @@ funcion codificar(a)
   a = reemplazar(a, "&", "%26")
   a = reemplazar(a, "\$", "%24")
   a = reemplazar(a, "\!", "%21")
-  final = reemplazar(a, "\*", "%2A")
+  a = reemplazar(a, "\*", "%2A")
+  final = a
   retorno final 
 fin
