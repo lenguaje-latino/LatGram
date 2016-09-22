@@ -10,8 +10,8 @@ fin
 
 funcion limpiar_actualizacion()
 	res = obtener_offset()
-  offset = reemplazar(res, "\n", "") # obtenemos el offset y si es distinto de null le sumamos uno para borrar el mensaje
-  si !offset->empieza_con("null")
+	offset = reemplazar(res, "\n", "") # obtenemos el offset y si es distinto de null le sumamos uno para borrar el mensaje
+	si !offset->empieza_con("null")
     si decimal(offset) > 0
       offset = decimal(offset) + 1  # convertimos a decimal() ya que obtener_offset regresa una cadena
     fin
