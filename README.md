@@ -1,3 +1,5 @@
+- Requiere Linux> paquete JQ ; paquete TMUX
+
 Seguir pasos en https://github.com/primitivorm/latino para la instalación de Latino
 
 Clonar este repositorio con `git clone https://github.com/jarriztg/telegram-bot-latino latinobot`
