@@ -1,4 +1,5 @@
 incluir ('ajustes')
+incluir ('codificador')
 
 URL = 'https://api.telegram.org/bot' . api_key . '/'
 
@@ -9,8 +10,7 @@ fin
 
 funcion limpiar_actualizacion()
 	res = obtener_offset()
-  offset = reemplazar(res, "\n", "")
-  # obtenemos el offset y si es distinto de null le sumamos uno para borrar el mensaje
+  offset = reemplazar(res, "\n", "") # obtenemos el offset y si es distinto de null le sumamos uno para borrar el mensaje
   si !offset->empieza_con("null")
     si decimal(offset) > 0
       offset = decimal(offset) + 1  # convertimos a decimal() ya que obtener_offset regresa una cadena
@@ -28,14 +28,17 @@ funcion obtener_actualizacion(decode)
 fin
 
 funcion enviarMensaje(chatId, texto)
-  texto = reemplazar(texto, " ", "%20")
-  cURL = "curl  -s '" . URL . "sendMessage?chat_id=" . chatId . "&text=" . texto . "'"
+  cURL = "curl  -s '" . URL . "sendMessage?chat_id=" . chatId . "&text=" . codificar(texto) . "'"
   retorno ejecutar_pipe(cURL)
 fin
 
 funcion enviarMensaje_markdown(chatId, texto)
-  texto = reemplazar(texto, " ", "%20")
-  cURL = "curl  -s '" . URL . "sendMessage?chat_id=" . chatId . "&text=" . texto . "&parse_mode=markdown'"
+  cURL = "curl  -s '" . URL . "sendMessage?chat_id=" . chatId . "&text=" . codificar(texto) . "&parse_mode=markdown'"
+  retorno ejecutar_pipe(cURL)
+fin
+
+funcion enviarMensaje_html(chatId, texto)
+  cURL = "curl  -s '" . URL . "sendMessage?chat_id=" . chatId . "&text=" . codificar(texto) . "&parse_mode=html'"
   retorno ejecutar_pipe(cURL)
 fin
 
@@ -77,13 +80,6 @@ funcion desbanearUsuario(chatId, userId)
   cURL = "curl  -s '" . URL . "unbanChatMember?chat_id=" . chatId . "&user_id=" . userId . "'"
   retorno ejecutar_pipe(cURL)
 fin
-
-funcion enviarMensaje_html(chatId, texto)
-  texto = reemplazar(texto, " ", "%20")
-  cURL = "curl  -s '" . URL . "sendMessage?chat_id=" . chatId . "&text=" . texto . "&parse_mode=html'"
-  retorno ejecutar_pipe(cURL)
-fin
-
 
 mientras verdadero
   mensaje = obtener_actualizacion(".result[0] .message .text")
