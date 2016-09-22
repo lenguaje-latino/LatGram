@@ -15,6 +15,5 @@ while true; do {
 }
 
 if [ "$1" == true ]; then limpiar_updates;fi
-if [ "$1" == "limpiar" ]; then sudo tmux new-session -s "session" -d '. '$0' true';tmux attach -t "session"
-fi
+if [ "$1" == "limpiar" ]; then sudo tmux new-session -s "session" -d '. '$0' true';tmux attach -t "session";fi
 if [ ! $1 ]; then latino bot.lat;fi

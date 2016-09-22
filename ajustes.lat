@@ -1,2 +1,2 @@
-# Poner aqui la api_key
-api_key = '229849153:AAGH8mIvfGoTAMM5HWjrsONXDn2zjJ5opLg'
+# Crear un archivo llamado "key" con la key de @BotFather
+api_key = leer_archivo("key")
