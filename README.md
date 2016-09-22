@@ -6,6 +6,6 @@ Moverse a la carpeta con `cd latinobot`
 
 Crear un archivo llamado `key` e insertar la apikey
 
-Limpiar actualizaciones `. *.sh limpiar`
+Limpiar actualizaciones `./lanzar.sh limpiar`
 
-Lanzar en bot con `. *.sh` ó `latino bot.lat`
+Lanzar en bot con `./lanzar.sh` ó `latino bot.lat`
