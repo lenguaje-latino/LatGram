@@ -1,5 +1,5 @@
 incluir ('ajustes')
-incluir ('codificador')
+incluir ('urls')
 
 URL = 'https://api.telegram.org/bot' . api_key . '/'
 
