@@ -71,10 +71,27 @@ mientras verdadero
 	#escribir(res)	#para test
 	texto = json(res, '.result[0] .message .text')
   usuario_id = json(res, ".result[0] .message .from .id")
+  usuario_nombre = json(res, ".result[0] .message .from .first_name")
   chat_id = json(res, ".result[0] .message .chat .id")
+  chat_titulo = json(res, ".result[0] .message .chat .title")
+  nuevo_usuario = json(res, ".result[0] .message .new_chat_member")
+  nuevo_usuario_id = json(res, ".result[0] .message .new_chat_member .id")
+  nuevo_usuario_nombre = json(res, ".result[0] .message .new_chat_member .first_name")
 
   si ( texto == "/start" )
-  	enviarMensaje(chat_id, "¡Hey! Estás probando el nuevo bot escrito completamente en la programación Latino :D. Por el momento faltan cosas. Pero de poco a poco irá mejorando 😄👍")
-  	escribir(texto)
+  	enviarMensaje(chat_id, "¡Hey! ".usuario_nombre." + Estás probando el nuevo bot escrito completamente en la programación Latino :D. Por el momento faltan cosas. Pero de poco a poco irá mejorando 😄👍")
   fin
+
+  si ( texto == "/id" )
+  	enviarMensaje(chat_id, "Id ".usuario_id." Chat ".chat_id)
+  fin
+
+  si ( nuevo_usuario != "" )
+  	enviarMensaje(chat_id, "Hola ".nuevo_usuario_nombre.", bienvenido a ".chat_titulo)
+  fin
+
+  si ( texto != "")
+  	escribir(texto." desde ".usuario_nombre)
+  fin
+
 fin

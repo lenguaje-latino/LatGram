@@ -1,5 +1,4 @@
 funcion codificar(a)
-  a = reemplazar(a, "\%", "%25")
   a = reemplazar(a, " ", "%20")
   a = reemplazar(a, "<", "%3C")
   a = reemplazar(a, ">", "%3E")
@@ -7,6 +6,7 @@ funcion codificar(a)
   a = reemplazar(a, "{", "%7B")
   a = reemplazar(a, "}", "%7D")
   a = reemplazar(a, "|", "%7C")
+  a = reemplazar(a, "+", "%2B")
   a = reemplazar(a, "\\n", "%0D")
   a = reemplazar(a, "\\", "%5C")
   a = reemplazar(a, "\^", "%5E")
@@ -24,6 +24,7 @@ funcion codificar(a)
   a = reemplazar(a, "\$", "%24")
   a = reemplazar(a, "\!", "%21")
   a = reemplazar(a, "\*", "%2A")
+  a = reemplazar(a, "\%", "%25")
   final = a
   retorno final
 fin
@@ -54,12 +55,12 @@ funcion descodificar(b)
   b = reemplazar(b, "\%21", "!")
   b = reemplazar(b, "\%2A", "*")
   b = reemplazar(b, "\%0D", "\\n")
+  b = reemplazar(b, "\%2B", "+")
   final = b
   retorno final
 fin
 
 funcion consultar(a)
-  #escribir(a)
 	retorno ejecutar_pipe("echo $(curl -s '" . a . "')")
 fin
 
