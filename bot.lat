@@ -3,20 +3,15 @@ incluir ('urls')
 
 URL = 'https://api.telegram.org/bot' . api_key . '/'
 
-funcion limpiar_actualizacion()
+funcion actualizaciones()
 	res = consultar(URL . "getUpdates")
 	offset = json(res, ".result[0] .update_id")
-	si !offset->empieza_con("null")
+	si ( offset != "" )
     si decimal(offset) > 0
       offset = decimal(offset) + 1  # convertimos a decimal() ya que obtener_offset regresa una cadena
     fin
   fin
   retorno consultar(URL . "getUpdates?offset=" . offset)
-fin
-
-
-funcion actualizaciones()
-  retorno consultar(URL . "getUpdates?offset=0")
 fin
 
 funcion enviarMensaje(chatId, texto)
@@ -67,15 +62,15 @@ fin
 
 mientras verdadero
   res = actualizaciones()
-		texto = json(res, ".result[0] .message .text")
-  usuario_id = json(res, ".result[0] .message .from .id")
-  chat_id = json(res, ".result[0] .message .chat .id")
+  	texto = json(res, '.result[0] .message .text')
+  	usuario_id = json(res, ".result[0] .message .from .id")
+  	chat_id = json(res, ".result[0] .message .chat .id")
   
   #despues de leer la actualizacion limpiamos
-  limpiar_actualizacion()
+ # limpiar_actualizacion()
 
   si ( texto == "/start" )
-  	enviarMensaje_markdown(chat_id, "¡Hey! Estás probando el nuevo bot escrito completamente en la programación Latino :D. Por el momento faltan cosas. Pero de poco a poco irá mejorando 😄👍")
+  	enviarMensaje(chat_id, "¡Hey! Estás probando el nuevo bot escrito completamente en la programación Latino :D. Por el momento faltan cosas. Pero de poco a poco irá mejorando 😄👍")
   	escribir(texto)
   fin
 fin 
