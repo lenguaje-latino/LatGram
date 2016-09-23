@@ -60,11 +60,13 @@ funcion desbanearUsuario(chatId, userId)
   retorno consultar(URL . "unbanChatMember?chat_id=" . chatId . "&user_id=" . userId)
 fin
 
+enviarMensaje_markdown(administrador, "*Bot iniciado*")
+
 mientras verdadero
   res = actualizaciones()
-  	texto = json(res, '.result[0] .message .text')
-  	usuario_id = json(res, ".result[0] .message .from .id")
-  	chat_id = json(res, ".result[0] .message .chat .id")
+	texto = json(res, '.result[0] .message .text')
+  usuario_id = json(res, ".result[0] .message .from .id")
+  chat_id = json(res, ".result[0] .message .chat .id")
   
   #despues de leer la actualizacion limpiamos
  # limpiar_actualizacion()
@@ -73,4 +75,4 @@ mientras verdadero
   	enviarMensaje(chat_id, "¡Hey! Estás probando el nuevo bot escrito completamente en la programación Latino :D. Por el momento faltan cosas. Pero de poco a poco irá mejorando 😄👍")
   	escribir(texto)
   fin
-fin 
+fin
