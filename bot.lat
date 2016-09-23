@@ -5,13 +5,17 @@ URL = 'https://api.telegram.org/bot' . api_key . '/'
 
 funcion actualizaciones()
 	res = consultar(URL . "getUpdates")
+	#escribir(res)	#para test
 	offset = json(res, ".result[0] .update_id")
 	si ( offset != "" )
-    si decimal(offset) > 0
-      offset = decimal(offset) + 1  # convertimos a decimal() ya que obtener_offset regresa una cadena
+		#ya no necesitas convertir a decimal lo hace ene automatico latino ;)
+    si offset > 0
+      offset = offset + 1
+			consultar(URL . "getUpdates?offset=" . offset)	#borro el ultimo mensaje
     fin
   fin
-  retorno consultar(URL . "getUpdates?offset=" . offset)
+	#regreso la consulta inicial
+  retorno res
 fin
 
 funcion enviarMensaje(chatId, texto)
@@ -64,12 +68,10 @@ enviarMensaje_markdown(administrador, "*Bot iniciado*")
 
 mientras verdadero
   res = actualizaciones()
+	#escribir(res)	#para test
 	texto = json(res, '.result[0] .message .text')
   usuario_id = json(res, ".result[0] .message .from .id")
   chat_id = json(res, ".result[0] .message .chat .id")
-  
-  #despues de leer la actualizacion limpiamos
- # limpiar_actualizacion()
 
   si ( texto == "/start" )
   	enviarMensaje(chat_id, "¡Hey! Estás probando el nuevo bot escrito completamente en la programación Latino :D. Por el momento faltan cosas. Pero de poco a poco irá mejorando 😄👍")

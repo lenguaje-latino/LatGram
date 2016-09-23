@@ -1,2 +1,2 @@
 administrador = 0
-api_key = ""
+api_key = leer_archivo("key") #el archivo debe de contener una sola linea

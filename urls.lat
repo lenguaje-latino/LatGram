@@ -12,7 +12,7 @@ funcion codificar(a)
   a = reemplazar(a, "\^", "%5E")
   a = reemplazar(a, "~", "%7E")
   a = reemplazar(a, "[", "%5B")
-  a = reemplazar(a, "]", "%5D") 
+  a = reemplazar(a, "]", "%5D")
   a = reemplazar(a, "`", "%60")
   a = reemplazar(a, ";", "%3B")
   a = reemplazar(a, "/", "%2F")
@@ -25,7 +25,7 @@ funcion codificar(a)
   a = reemplazar(a, "\!", "%21")
   a = reemplazar(a, "\*", "%2A")
   final = a
-  retorno final 
+  retorno final
 fin
 
 funcion descodificar(b)
@@ -37,10 +37,10 @@ funcion descodificar(b)
   b = reemplazar(b, "\%7B", "{")
   b = reemplazar(b, "\%7D", "}")
   b = reemplazar(b, "\%7C", "|")
-  b = reemplazar(b, "\%5C", "\\") 
+  b = reemplazar(b, "\%5C", "\\")
   b = reemplazar(b, "\%5E", "^")
   b = reemplazar(b, "\%7E", "~")
-  b = reemplazar(b, "\%5B", "[") 
+  b = reemplazar(b, "\%5B", "[")
   b = reemplazar(b, "\%5D", "]")
   b = reemplazar(b, "\%60", "`")
   b = reemplazar(b, "\%3B", ";")
@@ -55,10 +55,11 @@ funcion descodificar(b)
   b = reemplazar(b, "\%2A", "*")
   b = reemplazar(b, "\%0D", "\\n")
   final = b
-  retorno final 
+  retorno final
 fin
 
 funcion consultar(a)
+  #escribir(a)
 	retorno ejecutar_pipe("echo $(curl -s '" . a . "')")
 fin
 
