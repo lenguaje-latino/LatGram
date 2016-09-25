@@ -5,17 +5,15 @@ URL = 'https://api.telegram.org/bot' . api_key . '/'
 
 funcion actualizaciones()
 	res = consultar(URL . "getUpdates")
-	#escribir(res)	#para test
+	# escribir(res)	# retira el primer signo para testear
 	offset = json(res, ".result[0] .update_id")
 	si ( offset != "" )
-		#ya no necesitas convertir a decimal lo hace ene automatico latino ;)
     si offset > 0
       offset = offset + 1
 			consultar(URL . "getUpdates?offset=" . offset)	#borro el ultimo mensaje
     fin
   fin
-	#regreso la consulta inicial
-  retorno res
+  retorno res # regreso la consulta inicial
 fin
 
 funcion enviarMensaje(chatId, texto)
@@ -68,7 +66,7 @@ enviarMensaje_markdown(administrador, "*Bot iniciado*")
 
 mientras verdadero
   res = actualizaciones()
-	#escribir(res)	#para test
+	# escribir(res)	# para testear descomenta la linea
 	texto = json(res, '.result[0] .message .text')
   usuario_id = json(res, ".result[0] .message .from .id")
   usuario_nombre = json(res, ".result[0] .message .from .first_name")
@@ -79,11 +77,11 @@ mientras verdadero
   nuevo_usuario_nombre = json(res, ".result[0] .message .new_chat_member .first_name")
 
   si ( texto == "/start" )
-  	enviarMensaje(chat_id, "¡Hey! ".usuario_nombre." + Estás probando el nuevo bot escrito completamente en la programación Latino :D. Por el momento faltan cosas. Pero de poco a poco irá mejorando 😄👍")
+  	enviarMensaje_markdown(chat_id, "¡Hola *".usuario_nombre."*!\nEstás probando el nuevo bot escrito completamente en la programación Latino.\n Por el momento faltan cosas. Pero de poco a poco irá mejorando 😄👍")
   fin
 
   si ( texto == "/id" )
-  	enviarMensaje(chat_id, "Id ".usuario_id." Chat ".chat_id)
+  	enviarMensaje_markdown(chat_id, "*Id* ".usuario_id."\n*Chat Id* ".chat_id)
   fin
 
   si ( nuevo_usuario != "" )
