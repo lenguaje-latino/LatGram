@@ -14,12 +14,15 @@ funcion actualizaciones()
 			consultar(URL . "getUpdates?offset=" . offset)	#borro el ultimo mensaje
     fin
   fin
-	#regreso la consulta inicial
   retorno res
 fin
 
 funcion enviarMensaje(chatId, texto)
   retorno consultar(URL . "sendMessage?chat_id=" . chatId . "&text=" . codificar(texto))
+fin
+
+funcion enviarInline(chatId, texto, teclado)
+  retorno consultar(URL . "sendMessage?chat_id=" . chatId . "&text=" . codificar(texto) . "&reply_markup=" .codificar(teclado))
 fin
 
 funcion enviarMensaje_markdown(chatId, texto)
@@ -90,8 +93,17 @@ mientras verdadero
 			"usuario": json(res, ".result[0] .message .new_chat_member .username")
 			}
 
+
+ayuda = {"inline_keyboard":
+[[{"text":"Programación Latino","url":"https://github.com/primitivorm/latino"},
+{"text":"Repositorio del Bot","url":"https://github.com/jarriztg/telegram-bot-latino"}
+]]}
+ayuda = reemplazar(ayuda->cadena(), "'", "\"")
+
   si ( texto == "/start" )
-  	enviarMensaje(chat->id, "¡Hey! ".usuario->nombre."\n\nEstás probando el nuevo bot escrito completamente en la programación Latino :D. Por el momento faltan cosas. Pero de poco a poco irá mejorando 😄👍")
+  	enviarMensaje(chat->id, "")
+  	enviarInline(chat->id, "¡Hey! ".usuario->nombre."\n\nEstás probando el nuevo bot escrito completamente en la programación Latino :D. Por el momento faltan cosas. Pero de poco a poco irá mejorando 😄👍", ayuda)
+		imprimir(codificar(ayuda))
   fin
 	
   si ( texto == "/id" )
