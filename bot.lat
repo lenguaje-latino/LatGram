@@ -5,13 +5,11 @@ URL = 'https://api.telegram.org/bot' . api_key . '/'
 
 funcion actualizaciones()
 	res = consultar(URL . "getUpdates")
-	#escribir(res)	#para test
 	offset = json(res, ".result[0] .update_id")
 	si ( offset != "" )
-		#ya no necesitas convertir a decimal lo hace ene automatico latino ;)
     si offset > 0
       offset = offset + 1
-			consultar(URL . "getUpdates?offset=" . offset)	#borro el ultimo mensaje
+      consultar(URL . "getUpdates?offset=" . offset)
     fin
   fin
   retorno res
@@ -98,12 +96,9 @@ ayuda = {"inline_keyboard":
 [[{"text":"Programación Latino","url":"https://github.com/primitivorm/latino"},
 {"text":"Repositorio del Bot","url":"https://github.com/jarriztg/telegram-bot-latino"}
 ]]}
-ayuda = reemplazar(ayuda->cadena(), "'", "\"")
 
   si ( texto == "/start" )
-  	enviarMensaje(chat->id, "")
-  	enviarInline(chat->id, "¡Hey! ".usuario->nombre."\n\nEstás probando el nuevo bot escrito completamente en la programación Latino :D. Por el momento faltan cosas. Pero de poco a poco irá mejorando 😄👍", ayuda)
-		imprimir(codificar(ayuda))
+  	enviarInline(chat->id, "¡Hey! ".usuario->nombre."\n\nEstás probando el nuevo bot escrito completamente en la programación Latino :D. Por el momento faltan cosas. Pero de poco a poco irá mejorando 😄👍", ayuda->cadena())
   fin
 	
   si ( texto == "/id" )

@@ -25,7 +25,8 @@ funcion codificar(a)
   a = reemplazar(a, "\!", "%21")
   a = reemplazar(a, "\*", "%2A")
   a = reemplazar(a, "\%", "%25")
-  a = reemplazar(a, "\"", "%22")
+  a = reemplazar(a, '"', '%22')
+		a = reemplazar(a, ",", "%2C")
   final = a
   retorno final
 fin
@@ -57,15 +58,10 @@ funcion descodificar(b)
   b = reemplazar(b, "\%2A", "*")
   b = reemplazar(b, "\%0A", "\n")
   b = reemplazar(b, "\%2B", "+")
-  b = reemplazar(b, "\%22", "\"")
+  b = reemplazar(b, '\%22', '"')
+		b = reemplazar(b, "\%2C", ",")
   final = b
   retorno final
-fin
-
-funcion escape(a)
-	a = reemplazar(a, "\"", "\\"")
-	final = a
-	retorno final
 fin
 
 funcion consultar(a)
