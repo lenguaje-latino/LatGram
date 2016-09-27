@@ -5,15 +5,17 @@ URL = 'https://api.telegram.org/bot' . api_key . '/'
 
 funcion actualizaciones()
 	res = consultar(URL . "getUpdates")
-	# escribir(res)	# retira el primer signo para testear
+	#escribir(res)	#para test
 	offset = json(res, ".result[0] .update_id")
 	si ( offset != "" )
+		#ya no necesitas convertir a decimal lo hace ene automatico latino ;)
     si offset > 0
       offset = offset + 1
 			consultar(URL . "getUpdates?offset=" . offset)	#borro el ultimo mensaje
     fin
   fin
-  retorno res # regreso la consulta inicial
+	#regreso la consulta inicial
+  retorno res
 fin
 
 funcion enviarMensaje(chatId, texto)
@@ -65,31 +67,43 @@ fin
 enviarMensaje_markdown(administrador, "*Bot iniciado*")
 
 mientras verdadero
-  res = actualizaciones()
-	# escribir(res)	# para testear descomenta la linea
+	res = actualizaciones()
 	texto = json(res, '.result[0] .message .text')
-  usuario_id = json(res, ".result[0] .message .from .id")
-  usuario_nombre = json(res, ".result[0] .message .from .first_name")
-  chat_id = json(res, ".result[0] .message .chat .id")
-  chat_titulo = json(res, ".result[0] .message .chat .title")
-  nuevo_usuario = json(res, ".result[0] .message .new_chat_member")
-  nuevo_usuario_id = json(res, ".result[0] .message .new_chat_member .id")
-  nuevo_usuario_nombre = json(res, ".result[0] .message .new_chat_member .first_name")
+
+	usuario = {
+			"id": json(res, ".result[0] .message .from .id"),
+			"nombre": json(res, ".result[0] .message .from .first_name"),
+			"apellido": json(res, ".result[0] .message .from .last_name"),
+			"usuario": json(res, ".result[0] .message .from .username")
+			}
+
+	chat = {
+			"id": json(res, ".result[0] .message .chat .id"),
+			"titulo": json(res, ".result[0] .message .chat .title"),
+			"usuario": json(res, ".result[0] .message .chat .username")
+			}
+
+	nuevo_usuario = {
+			"id": json(res, ".result[0] .message .new_chat_member .id"),
+			"nombre": json(res, ".result[0] .message .new_chat_member .first_name"),
+			"apellido": json(res, ".result[0] .message .new_chat_member .last_name"),
+			"usuario": json(res, ".result[0] .message .new_chat_member .username")
+			}
 
   si ( texto == "/start" )
-  	enviarMensaje_markdown(chat_id, "¡Hola *".usuario_nombre."*!\nEstás probando el nuevo bot escrito completamente en la programación Latino.\n Por el momento faltan cosas. Pero de poco a poco irá mejorando 😄👍")
+  	enviarMensaje(chat->id, "¡Hey! ".usuario->nombre."\n\nEstás probando el nuevo bot escrito completamente en la programación Latino :D. Por el momento faltan cosas. Pero de poco a poco irá mejorando 😄👍")
   fin
-
+	
   si ( texto == "/id" )
-  	enviarMensaje_markdown(chat_id, "*Id* ".usuario_id."\n*Chat Id* ".chat_id)
+  	enviarMensaje(chat->id, "Id ".usuario->id."\nChat ".chat->id)
   fin
 
-  si ( nuevo_usuario != "" )
-  	enviarMensaje(chat_id, "Hola ".nuevo_usuario_nombre.", bienvenido a ".chat_titulo)
+  si ( nuevo_usuario->id )
+  	enviarMensaje(chat->id, "Hola ".nuevo_usuario->nombre.", bienvenido a ".chat->titulo)
   fin
 
   si ( texto != "")
-  	escribir(texto." desde ".usuario_nombre)
+  	escribir(texto." desde ".usuario->nombre)
   fin
 
 fin
