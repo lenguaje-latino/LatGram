@@ -69,7 +69,23 @@ enviarMensaje_markdown(administrador, "*Bot iniciado*")
 
 mientras verdadero
 	res = actualizaciones()
-	texto = json(res, '.result[0] .message .text')
+	
+	msg = {
+		"texto": json(res, '.result[0] .message .text'),
+		"id": json(res, '.result[0] .message .message_id'),
+		"fecha": json(res, '.result[0] .message .date'),
+		"fecha_reenvio": json(res, '.result[0] .message .forward_date'),
+		"fecha_editado": json(res, '.result[0] .message .edit_date'),
+		"fecha_editado": json(res, '.result[0] .message .edit_date'),
+		"capcion": json(res, '.result[0] .message .caption'),
+		"nuevo_titulo": json(res, '.result[0] .message .new_chat_title'),
+		"foto_eliminada": json(res, '.result[0] .message .delete_chat_photo'),
+		"grupo_chat_creado": json(res, '.result[0] .message .group_chat_created'),
+		"supergrupo_creado": json(res, '.result[0] .message .supergroup_chat_created'),
+		"canal_chat_creado": json(res, '.result[0] .message .channel_chat_created'),
+		"migrado_para_id": json(res, '.result[0] .message .migrate_to_chat_id'),
+		"migrado_desde_id": json(res, '.result[0] .message .migrate_from_chat_id')
+		}
 
 	usuario = {
 			"id": json(res, ".result[0] .message .from .id"),
@@ -97,11 +113,11 @@ ayuda = {"inline_keyboard":
 {"text":"Repositorio del Bot","url":"https://github.com/jarriztg/telegram-bot-latino"}
 ]]}
 
-  si ( texto == "/start" )
+  si ( msg->texto == "/start" )
   	enviarInline(chat->id, "¡Hey! ".usuario->nombre."\n\nEstás probando el nuevo bot escrito completamente en la programación Latino :D. Por el momento faltan cosas. Pero de poco a poco irá mejorando 😄👍", ayuda->cadena())
   fin
 	
-  si ( texto == "/id" )
+  si ( msg->texto == "/id" )
   	enviarMensaje(chat->id, "Id ".usuario->id."\nChat ".chat->id)
   fin
 
@@ -109,8 +125,8 @@ ayuda = {"inline_keyboard":
   	enviarMensaje(chat->id, "Hola ".nuevo_usuario->nombre.", bienvenido a ".chat->titulo)
   fin
 
-  si ( texto != "")
-  	escribir(texto." desde ".usuario->nombre)
+  si ( msg->texto != "")
+  	escribir(msg->texto." desde ".usuario->nombre)
   fin
 
 fin
