@@ -1,3 +1,5 @@
+#!/usr/bin/latino
+
 incluir ('ajustes')
 incluir ('urls')
 
