@@ -87,23 +87,23 @@ mientras verdadero
 		}
 
 	usuario = {
-			"id": res->result[0]->message->from->id,
-			"nombre": res->result[0]->message->from->first_name,
-			"apellido": res->result[0]->message->from->last_name,
-			"usuario": res->result[0]->message->from->username
+		"id": res->result[0]->message->from->id,
+		"nombre": res->result[0]->message->from->first_name,
+		"apellido": res->result[0]->message->from->last_name,
+		"usuario": res->result[0]->message->from->username
 			}
 
 	chat = {
-			"id": res->result[0]->message->chat->id,
-			"titulo": res->result[0]->message->chat->title,
-			"usuario": res->result[0]->message->chat->username
+		"id": res->result[0]->message->chat->id,
+		"titulo": res->result[0]->message->chat->title,
+		"usuario": res->result[0]->message->chat->username
 			}
 
 	nuevo_usuario = {
-			"id": res->result[0]->message->new_chat_member->id,
-			"nombre": res->result[0]->message->new_chat_member->first_name,
-			"apellido": res->result[0]->message->new_chat_member->last_name,
-			"usuario": res->result[0]->message->new_chat_member->username
+		"id": res->result[0]->message->new_chat_member->id,
+		"nombre": res->result[0]->message->new_chat_member->first_name,
+		"apellido": res->result[0]->message->new_chat_member->last_name,
+		"usuario": res->result[0]->message->new_chat_member->username
 			}
 
 
