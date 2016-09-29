@@ -1,5 +1,3 @@
-#!/usr/bin/latino
-
 incluir ('ajustes')
 incluir ('urls')
 
@@ -70,44 +68,43 @@ fin
 enviarMensaje_markdown(administrador, "*Bot iniciado*")
 
 mientras verdadero
-	res = actualizaciones()
+	res = leer_json(actualizaciones())
 	
 	msg = {
-		"texto": json(res, '.result[0] .message .text'),
-		"id": json(res, '.result[0] .message .message_id'),
-		"fecha": json(res, '.result[0] .message .date'),
-		"fecha_reenvio": json(res, '.result[0] .message .forward_date'),
-		"fecha_editado": json(res, '.result[0] .message .edit_date'),
-		"fecha_editado": json(res, '.result[0] .message .edit_date'),
-		"capcion": json(res, '.result[0] .message .caption'),
-		"nuevo_titulo": json(res, '.result[0] .message .new_chat_title'),
-		"foto_eliminada": json(res, '.result[0] .message .delete_chat_photo'),
-		"grupo_chat_creado": json(res, '.result[0] .message .group_chat_created'),
-		"supergrupo_creado": json(res, '.result[0] .message .supergroup_chat_created'),
-		"canal_chat_creado": json(res, '.result[0] .message .channel_chat_created'),
-		"migrado_para_id": json(res, '.result[0] .message .migrate_to_chat_id'),
-		"migrado_desde_id": json(res, '.result[0] .message .migrate_from_chat_id')
+		"texto": res->result[0]->message->text,
+		"id": res->result[0]->message->message_id,
+		"fecha": res->result[0]->message->date,
+		"fecha_reenvio": res->result[0]->message->forward_date,
+		"fecha_editado": res->result[0]->message->edit_date,
+		"capcion": res->result[0]->message->caption,
+		"nuevo_titulo": res->result[0]->message->new_chat_title,
+		"foto_eliminada": res->result[0]->message->delete_chat_photo,
+		"grupo_chat_creado": res->result[0]->message->group_chat_created,
+		"supergrupo_creado": res->result[0]->message->supergroup_chat_created,
+		"canal_chat_creado": res->result[0]->message->channel_chat_created,
+		"migrado_para_id": res->result[0]->message->migrate_to_chat_id,
+		"migrado_desde_id": res->result[0]->message->migrate_from_chat_id
 		}
 
 	usuario = {
-		"id": json(res, ".result[0] .message .from .id"),
-		"nombre": json(res, ".result[0] .message .from .first_name"),
-		"apellido": json(res, ".result[0] .message .from .last_name"),
-		"usuario": json(res, ".result[0] .message .from .username")
-		}
+			"id": res->result[0]->message->from->id,
+			"nombre": res->result[0]->message->from->first_name,
+			"apellido": res->result[0]->message->from->last_name,
+			"usuario": res->result[0]->message->from->username
+			}
 
 	chat = {
-		"id": json(res, ".result[0] .message .chat .id"),
-		"titulo": json(res, ".result[0] .message .chat .title"),
-		"usuario": json(res, ".result[0] .message .chat .username")
-		}
+			"id": res->result[0]->message->chat->id,
+			"titulo": res->result[0]->message->chat->title,
+			"usuario": res->result[0]->message->chat->username
+			}
 
 	nuevo_usuario = {
-		"id": json(res, ".result[0] .message .new_chat_member .id"),
-		"nombre": json(res, ".result[0] .message .new_chat_member .first_name"),
-		"apellido": json(res, ".result[0] .message .new_chat_member .last_name"),
-		"usuario": json(res, ".result[0] .message .new_chat_member .username")
-		}
+			"id": res->result[0]->message->new_chat_member->id,
+			"nombre": res->result[0]->message->new_chat_member->first_name,
+			"apellido": res->result[0]->message->new_chat_member->last_name,
+			"usuario": res->result[0]->message->new_chat_member->username
+			}
 
 
 ayuda = {"inline_keyboard":
