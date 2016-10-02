@@ -1,0 +1,15 @@
+si ( msg->texto == "/start" )
+	enviarInline(chat->id, "¡Hey! ".usuario->nombre."\n\nEstás probando el nuevo bot escrito completamente en la programación Latino :D. Por el momento faltan cosas. Pero de poco a poco irá mejorando 😄👍", ayuda->cadena())
+fin
+	
+si ( msg->texto == "/id" )
+	enviarMensaje(chat->id, "Id ".usuario->id."\nChat ".chat->id)
+fin
+
+si ( nuevo_usuario->id )
+	enviarMensaje(chat->id, "Hola ".nuevo_usuario->nombre.", bienvenido a ".chat->titulo)
+fin
+
+si ( msg->texto != "")
+	escribir(msg->texto." desde ".usuario->nombre)
+fin
