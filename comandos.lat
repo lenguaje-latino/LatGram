@@ -1,9 +1,12 @@
-si ( msg->texto == "/start" )
+elegir(msg->texto)
+
+ caso "/start":
 	enviarInline(chat->id, "¡Hey! ".usuario->nombre."\n\nEstás probando el nuevo bot escrito completamente en la programación Latino :D. Por el momento faltan cosas. Pero de poco a poco irá mejorando 😄👍", ayuda->cadena())
-fin
-	
-si ( msg->texto == "/id" )
+
+  
+ caso "/id":
 	enviarMensaje(chat->id, "Id ".usuario->id."\nChat ".chat->id)
+    
 fin
 
 si ( nuevo_usuario->id )
