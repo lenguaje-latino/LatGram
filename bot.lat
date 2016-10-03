@@ -4,15 +4,16 @@ incluir ('urls')
 URL = 'https://api.telegram.org/bot' . api_key . '/'
 
 funcion actualizaciones()
-		res = consultar(URL . "getUpdates")
-    offset = json(res, ".result[0] .update_id")
-    si ( offset != "" )
-    si offset > 0
-      offset = offset + 1
-      consultar(URL . "getUpdates?offset=" . offset)
-    fin
-  fin
-  retorno res
+	consulta = consultar(URL . "getUpdates")
+	offset = json_decodificar(consulta)
+	offset = offset->result[0]->update_id
+	si ( offset != "" )
+		si offset > 0
+			offset = offset + 1
+			consultar(URL . "getUpdates?offset=" . offset)
+		fin
+	fin
+  retorno consulta
 fin
 
 funcion enviarMensaje(chatId, texto)
@@ -68,7 +69,7 @@ fin
 enviarMensaje_markdown(administrador, "*Bot iniciado*")
 
 mientras verdadero
-	res = leer_json(actualizaciones())
+	res = json_decodificar(actualizaciones())
 	
 	msg = {
 		"texto": res->result[0]->message->text,

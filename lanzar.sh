@@ -18,6 +18,6 @@ while true; do {
 }
 
 if [ "$1" == true ]; then limpiar_updates;fi
-if [ "$1" == "limpiar" ]; then sudo tmux new-session -s "temp" -d '. '$0' true';tmux attach -t "session";fi
+if [ "$1" == "limpiar" ]; then sudo tmux new-session -s "temp" -d '. '$0' true';tmux attach -t "temp";fi
 if [ ! $1 ]; then sudo tmux new-session -s $Sesion -d 'latino bot.lat';tmux attach -t $Sesion;fi
 if [ "$1" == "matar" ]; then tmux kill-session -t $Sesion;fi
