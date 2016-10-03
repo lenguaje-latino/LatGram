@@ -4,9 +4,9 @@ incluir ('urls')
 URL = 'https://api.telegram.org/bot' . api_key . '/'
 
 funcion actualizaciones()
-	res = consultar(URL . "getUpdates")
-	offset = json(res, ".result[0] .update_id")
-	si ( offset != "" )
+		res = consultar(URL . "getUpdates")
+    offset = json(res, ".result[0] .update_id")
+    si ( offset != "" )
     si offset > 0
       offset = offset + 1
       consultar(URL . "getUpdates?offset=" . offset)
