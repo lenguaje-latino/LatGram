@@ -67,7 +67,3 @@ fin
 funcion consultar(a)
 	retorno ejecutar_pipe("echo $(curl -s '" . a . "')")
 fin
-
-funcion json(a, b)
-	retorno ejecutar_pipe("echo '" . a . "' | jq -r '" . b . " // empty'")
-fin
