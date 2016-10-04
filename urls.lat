@@ -63,7 +63,3 @@ funcion descodificar(b)
   final = b
   retorno final
 fin
-
-funcion consultar(a)
-	retorno ejecutar_pipe("echo $(curl -s '" . a . "')")
-fin

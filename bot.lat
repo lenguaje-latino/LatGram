@@ -4,32 +4,32 @@ incluir ('urls')
 URL = 'https://api.telegram.org/bot' . api_key . '/'
 
 funcion actualizaciones()
-	consulta = consultar(URL . "getUpdates")
+	consulta = peticion(URL . "getUpdates")
 	offset = json_decodificar(consulta)
 	offset = offset->result[0]->update_id
 	si ( offset != "" )
 		si offset > 0
 			offset = offset + 1
-			consultar(URL . "getUpdates?offset=" . offset)
+			peticion(URL . "getUpdates?offset=" . offset)
 		fin
 	fin
   retorno consulta
 fin
 
 funcion enviarMensaje(chatId, texto)
-  retorno consultar(URL . "sendMessage?chat_id=" . chatId . "&text=" . codificar(texto))
+  peticion(URL . "sendMessage?chat_id=" . chatId . "&text=" . codificar(texto))
 fin
 
 funcion enviarInline(chatId, texto, teclado)
-  retorno consultar(URL . "sendMessage?chat_id=" . chatId . "&text=" . codificar(texto) . "&reply_markup=" .codificar(teclado))
+  peticion(URL . "sendMessage?chat_id=" . chatId . "&text=" . codificar(texto) . "&reply_markup=" .codificar(teclado))
 fin
 
 funcion enviarMensaje_markdown(chatId, texto)
-  retorno consultar(URL . "sendMessage?chat_id=" . chatId . "&text=" . codificar(texto) . "&parse_mode=markdown")
+  peticion(URL . "sendMessage?chat_id=" . chatId . "&text=" . codificar(texto) . "&parse_mode=markdown")
 fin
 
 funcion enviarMensaje_html(chatId, texto)
-  retorno consultar(URL . "sendMessage?chat_id=" . chatId . "&text=" . codificar(texto) . "&parse_mode=html")
+  peticion(URL . "sendMessage?chat_id=" . chatId . "&text=" . codificar(texto) . "&parse_mode=html")
 fin
 
 funcion enviarAccion(chatId, accion)
@@ -41,29 +41,29 @@ funcion enviarAccion(chatId, accion)
   accion = reemplazar(accion, "grabando_video", "record_video")
   accion = reemplazar(accion, "grabando_audio", "record_audio")
   accion = reemplazar(accion, "buscar_localizacion", "find_location")
-  retorno consultar(URL . "sendChatAction?chat_id=" . chatId . "&action=" . accion)
+  peticion(URL . "sendChatAction?chat_id=" . chatId . "&action=" . accion)
 fin
 
 
 funcion reenviarMensaje(chatId, userId, msgId)
-  retorno consultar(URL . "forwardMessage?chat_id=" . chatId . "&from_chat_id=" . userId . "&message_id=" . msgId)
+  peticion(URL . "forwardMessage?chat_id=" . chatId . "&from_chat_id=" . userId . "&message_id=" . msgId)
 fin
 
 funcion abandonarChat(chatId)
-  retorno consultar(URL . "leaveChat?chat_id=" . chatId)
+  peticion(URL . "leaveChat?chat_id=" . chatId)
 fin
 
 funcion expulsarUsuario(chatId, userId)
-	consultar(URL . "kickChatMember?chat_id=" . chatId . "&user_id=" . userId)
-	consultar(URL . "unbanChatMember?chat_id=" . chatId . "&user_id=" . userId)
+	peticion(URL . "kickChatMember?chat_id=" . chatId . "&user_id=" . userId)
+	peticion(URL . "unbanChatMember?chat_id=" . chatId . "&user_id=" . userId)
 fin
 
 funcion banearUsuario(chatId, userId)
-  retorno consultar(URL . "kickChatMember?chat_id=" . chatId . "&user_id=" . userId)
+  peticion(URL . "kickChatMember?chat_id=" . chatId . "&user_id=" . userId)
 fin
 
 funcion desbanearUsuario(chatId, userId)
-  retorno consultar(URL . "unbanChatMember?chat_id=" . chatId . "&user_id=" . userId)
+  peticion(URL . "unbanChatMember?chat_id=" . chatId . "&user_id=" . userId)
 fin
 
 enviarMensaje_markdown(administrador, "*Bot iniciado*")
@@ -114,5 +114,4 @@ ayuda = {"inline_keyboard":
 ]]}
 
 ejecutar_archivo("comandos.lat")
-
 fin
