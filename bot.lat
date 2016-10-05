@@ -17,19 +17,27 @@ funcion actualizaciones()
 fin
 
 funcion enviarMensaje(chatId, texto)
-  peticion(URL . "sendMessage?chat_id=" . chatId . "&text=" . codificar(texto))
+  json = peticion(URL . "sendMessage?chat_id=" . chatId . "&text=" . codificar(texto))
+		estado = json_decodificar(json)
+		retorno estado->ok
 fin
 
 funcion enviarInline(chatId, texto, teclado)
-  peticion(URL . "sendMessage?chat_id=" . chatId . "&text=" . codificar(texto) . "&reply_markup=" .codificar(teclado))
+  json = peticion(URL . "sendMessage?chat_id=" . chatId . "&text=" . codificar(texto) . "&reply_markup=" .codificar(teclado))
+		estado = json_decodificar(json)
+		retorno estado->ok
 fin
 
 funcion enviarMensaje_markdown(chatId, texto)
-  peticion(URL . "sendMessage?chat_id=" . chatId . "&text=" . codificar(texto) . "&parse_mode=markdown")
+  json = peticion(URL . "sendMessage?chat_id=" . chatId . "&text=" . codificar(texto) . "&parse_mode=markdown")
+		estado = json_decodificar(json)
+		retorno estado->ok
 fin
 
 funcion enviarMensaje_html(chatId, texto)
-  peticion(URL . "sendMessage?chat_id=" . chatId . "&text=" . codificar(texto) . "&parse_mode=html")
+  json = peticion(URL . "sendMessage?chat_id=" . chatId . "&text=" . codificar(texto) . "&parse_mode=html")
+		estado = json_decodificar(json)
+		retorno estado->ok
 fin
 
 funcion enviarAccion(chatId, accion)
@@ -41,36 +49,52 @@ funcion enviarAccion(chatId, accion)
   accion = reemplazar(accion, "grabando_video", "record_video")
   accion = reemplazar(accion, "grabando_audio", "record_audio")
   accion = reemplazar(accion, "buscar_localizacion", "find_location")
-  peticion(URL . "sendChatAction?chat_id=" . chatId . "&action=" . accion)
+  json = peticion(URL . "sendChatAction?chat_id=" . chatId . "&action=" . accion)
+		estado = json_decodificar(json)
+		retorno estado->ok
 fin
 
 
 funcion reenviarMensaje(chatId, userId, msgId)
-  peticion(URL . "forwardMessage?chat_id=" . chatId . "&from_chat_id=" . userId . "&message_id=" . msgId)
+  json = peticion(URL . "forwardMessage?chat_id=" . chatId . "&from_chat_id=" . userId . "&message_id=" . msgId)
+		estado = json_decodificar(json)
+		retorno estado->ok
 fin
 
 funcion abandonarChat(chatId)
-  peticion(URL . "leaveChat?chat_id=" . chatId)
+  json = peticion(URL . "leaveChat?chat_id=" . chatId)
+		estado = json_decodificar(json)
+		retorno estado->ok
 fin
 
 funcion expulsarUsuario(chatId, userId)
-	peticion(URL . "kickChatMember?chat_id=" . chatId . "&user_id=" . userId)
+	json = peticion(URL . "kickChatMember?chat_id=" . chatId . "&user_id=" . userId)
 	peticion(URL . "unbanChatMember?chat_id=" . chatId . "&user_id=" . userId)
+		estado = json_decodificar(json)
+		retorno estado->ok
 fin
 
 funcion banearUsuario(chatId, userId)
-  peticion(URL . "kickChatMember?chat_id=" . chatId . "&user_id=" . userId)
+  json = peticion(URL . "kickChatMember?chat_id=" . chatId . "&user_id=" . userId)
+		estado = json_decodificar(json)
+		retorno estado->ok
 fin
 
 funcion desbanearUsuario(chatId, userId)
-  peticion(URL . "unbanChatMember?chat_id=" . chatId . "&user_id=" . userId)
+  json = peticion(URL . "unbanChatMember?chat_id=" . chatId . "&user_id=" . userId)
+		estado = json_decodificar(json)
+		retorno estado->ok
 fin
 
-enviarMensaje_markdown(administrador, "*Bot iniciado*")
+inicio = enviarMensaje_markdown(administrador, "*Bot iniciado*")
+si inicio
+	imprimir("Confirmación enviada a ".administrador)
+sino
+	imprimir("Error en confirmación")
+fin
 
 mientras verdadero
 	res = json_decodificar(actualizaciones())
-	
 	msg = {
 		"texto": res->result[0]->message->text,
 		"id": res->result[0]->message->message_id,
