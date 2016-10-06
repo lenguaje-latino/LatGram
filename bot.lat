@@ -18,7 +18,7 @@ fin
 
 incluir('metodos')
 
-inicio = enviarMensaje_markdown(administrador, "*Bot iniciado*")
+inicio = enviarMensaje(administrador, "*Bot iniciado*", true, false)
 si inicio
 	imprimir("Confirmación enviada a ".administrador)
 sino
