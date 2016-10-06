@@ -1,0 +1,78 @@
+funcion enviarMensaje(chatId, texto, formato, responder)
+	enlace = URL . "sendMessage?chat_id=" . chatId . "&text=" . codificar(texto)
+
+	#Por defecto al escribir true se enviará el mensaje en markdown,
+	#si quieres html hay que especificarlo con "html", false lo mandará sin formato.
+
+	#Hay que escribir la ID del mensaje al que se quiere responder o escribir false
+	#Ejemplo con y sin nada:
+	#enviarMensaje(000, "asd", true, 111) Envia respuesta al mensaje 111 con markdown
+	#enviarMensaje(000, "asd", false, false) Envia mensaje sin respuesta y sin markdown
+
+	elegir(formato) 		
+		caso true:
+			enlace = enlace . "&parse_mode=markdown"
+		caso "html":
+			enlace = enlace . "&parse_mode=html"
+	fin
+
+	si (responder != false)
+		enlace = enlace . "&reply_to_message_id=" . responder
+	fin
+
+  	json = peticion(enlace)
+		estado = json_decodificar(json)
+		retorno estado->ok
+fin
+
+funcion enviarInline(chatId, texto, teclado)
+  	json = peticion(URL . "sendMessage?chat_id=" . chatId . "&text=" . codificar(texto) . "&reply_markup=" .codificar(teclado))
+		estado = json_decodificar(json)
+		retorno estado->ok
+fin
+
+funcion enviarAccion(chatId, accion)
+	accion = reemplazar(accion, "escribiendo", "typing")
+	accion = reemplazar(accion, "subiendo_foto", "upload_photo")
+	accion = reemplazar(accion, "subiendo_video", "upload_video")
+	accion = reemplazar(accion, "subiendo_audio", "upload_audio")
+	accion = reemplazar(accion, "subiendo_documento", "upload_document")
+	accion = reemplazar(accion, "grabando_video", "record_video")
+	accion = reemplazar(accion, "grabando_audio", "record_audio")
+	accion = reemplazar(accion, "buscar_localizacion", "find_location")
+	json = peticion(URL . "sendChatAction?chat_id=" . chatId . "&action=" . accion)
+		estado = json_decodificar(json)
+		retorno estado->ok
+fin
+
+
+funcion reenviarMensaje(chatId, userId, msgId)
+  	json = peticion(URL . "forwardMessage?chat_id=" . chatId . "&from_chat_id=" . userId . "&message_id=" . msgId)
+		estado = json_decodificar(json)
+		retorno estado->ok
+fin
+
+funcion abandonarChat(chatId)
+  	json = peticion(URL . "leaveChat?chat_id=" . chatId)
+		estado = json_decodificar(json)
+		retorno estado->ok
+fin
+
+funcion expulsarUsuario(chatId, userId)
+	json = peticion(URL . "kickChatMember?chat_id=" . chatId . "&user_id=" . userId)
+	peticion(URL . "unbanChatMember?chat_id=" . chatId . "&user_id=" . userId)
+		estado = json_decodificar(json)
+		retorno estado->ok
+fin
+
+funcion banearUsuario(chatId, userId)
+  	json = peticion(URL . "kickChatMember?chat_id=" . chatId . "&user_id=" . userId)
+		estado = json_decodificar(json)
+		retorno estado->ok
+fin
+
+funcion desbanearUsuario(chatId, userId)
+  	json = peticion(URL . "unbanChatMember?chat_id=" . chatId . "&user_id=" . userId)
+		estado = json_decodificar(json)
+		retorno estado->ok
+fin
