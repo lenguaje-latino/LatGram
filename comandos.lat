@@ -5,12 +5,12 @@ elegir(msg->texto)
 
   
  caso "/id":
-	enviarMensaje(chat->id, "Id ".usuario->id."\nChat ".chat->id)
+	enviarMensaje(chat->id, "Id ".usuario->id."\nChat ".chat->id, falso, falso)
     
 fin
 
 si ( nuevo_usuario->id )
-	enviarMensaje(chat->id, "Hola ".nuevo_usuario->nombre.", bienvenido a ".chat->titulo)
+	enviarMensaje(chat->id, "Hola ".nuevo_usuario->nombre.", bienvenido a ".chat->titulo, falso, falso)
 fin
 
 si ( msg->texto != "")
