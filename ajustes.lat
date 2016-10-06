@@ -1,2 +1,2 @@
-administrador = 0
-api_key = "ESCRIBE TU api_key"
+administrador = 0 # tu id, puedes saberla iniciando el bot y escribir /id
+api_key = "TU_API_KEY_AQUI"

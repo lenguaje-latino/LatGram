@@ -9,7 +9,7 @@ funcion enviarMensaje(chatId, texto, formato, responder)
 	#enviarMensaje(000, "asd", verdadero, 111) Envia respuesta al mensaje 111 con markdown
 	#enviarMensaje(000, "asd", falso, falso) Envia mensaje sin respuesta y sin markdown
 
-	si(formato)
+	si(formato == verdadero)
 		enlace = enlace . "&parse_mode=markdown"
 	sino
 		si(formato == "html")

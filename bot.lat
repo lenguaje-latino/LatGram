@@ -2,6 +2,7 @@ incluir ('ajustes')
 incluir ('urls')
 
 URL = 'https://api.telegram.org/bot' . api_key . '/'
+html="html"
 
 funcion actualizaciones()
 	consulta = peticion(URL . "getUpdates")
@@ -18,7 +19,7 @@ fin
 
 incluir('metodos')
 
-inicio = enviarMensaje(administrador, "*Bot iniciado*", verdadero, falso)
+inicio = enviarMensaje(administrador, "<b>Bot iniciado</b>", html, falso)
 si inicio
 	imprimir("Confirmación enviada a " . administrador)
 sino
