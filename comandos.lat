@@ -1,7 +1,7 @@
 elegir(msg->texto)
 
  caso "/start":
-	enviarInline(chat->id, "¡Hey! ".usuario->nombre."\n\nEstás probando el nuevo bot escrito completamente en la programación Latino :D. Por el momento faltan cosas. Pero de poco a poco irá mejorando 😄👍", ayuda->cadena())
+	enviarMensaje(chat->id, "¡Hey! ".usuario->nombre."\n\nEstás probando el nuevo bot escrito completamente en la programación Latino :D. Por el momento faltan cosas. Pero de poco a poco irá mejorando 😄👍", falso, falso)
 
   
  caso "/id":
