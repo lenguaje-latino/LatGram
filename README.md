@@ -6,7 +6,7 @@ Clonar este repositorio con `git clone https://github.com/jarriztg/telegram-bot-
 
 Moverse a la carpeta con `cd latinobot`
 
-Crear un archivo llamado `key` e insertar la apikey
+Escribe tu apikey en el fichero ```key```
 
 Limpiar actualizaciones `./lanzar.sh limpiar`
 
