@@ -1,6 +1,6 @@
-- Requiere Linux> paquete JQ ; paquete TMUX
+- Requiere: Linux;Windows -> Instalador Latino(en windows; exe, [releases](https://github.com/primitivorm/latino)) 
 
-Seguir pasos en https://github.com/primitivorm/latino para la instalación de Latino
+-Linux -> Seguir pasos en https://github.com/primitivorm/latino para la instalación de Latino
 
 Clonar este repositorio con `git clone https://github.com/jarriztg/telegram-bot-latino latinobot`
 
