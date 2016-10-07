@@ -6,7 +6,10 @@ elegir(msg->texto)
   
  caso "/id":
 	enviarMensaje(chat->id, "*Id* ".usuario->id."\n*Chat Id* ".chat->id, verdadero, msg->id)
-    
+
+ caso "/foto":
+ 	enviarFoto(chat->id, "https://raw.githubusercontent.com/lenguaje-latino/latino-sublimetext-plugin/master/latino_sublime.png", "Sublime Text sintaxis Latino", falso, falso)
+
 fin
 
 si nuevo_usuario->id
