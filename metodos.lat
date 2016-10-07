@@ -1,14 +1,18 @@
+/*
+	Por defecto al escribir verdadero se enviará el mensaje en markdown,
+	si quieres html hay que especificarlo con "html", falso lo mandará sin formato.
+
+	Hay que escribir la ID del mensaje al que se quiere responder o escribir falso
+	Ejemplo con y sin nada:
+	
+	enviarMensaje(000, "asd", verdadero, 111) Envia respuesta al mensaje 111 con markdown
+	enviarMensaje(000, "asd", falso, falso) Envia mensaje sin respuesta y sin markdown
+*/
+
 funcion enviarMensaje(chatId, texto, formato, responder)
-	enlace = URL . "sendMessage?chat_id=" . chatId . "&text=" . codificar(texto)
-
-	#Por defecto al escribir verdadero se enviará el mensaje en markdown,
-	#si quieres html hay que especificarlo con "html", falso lo mandará sin formato.
-
-	#Hay que escribir la ID del mensaje al que se quiere responder o escribir falso
-	#Ejemplo con y sin nada:
-	#enviarMensaje(000, "asd", verdadero, 111) Envia respuesta al mensaje 111 con markdown
-	#enviarMensaje(000, "asd", falso, falso) Envia mensaje sin respuesta y sin markdown
-
+ enlace = URL . "sendMessage?chat_id=" . chatId . "&text=" . codificar(texto)
+ 
+ si formato
 	si(formato == verdadero)
 		enlace = enlace . "&parse_mode=markdown"
 	sino
@@ -16,7 +20,8 @@ funcion enviarMensaje(chatId, texto, formato, responder)
 			enlace = enlace . "&parse_mode=html"
 		fin
 	fin
-
+ fin
+ 
 	si (responder != falso)
 		enlace = enlace . "&reply_to_message_id=" . responder
 	fin
@@ -42,8 +47,8 @@ funcion enviarAccion(chatId, accion)
 	accion = reemplazar(accion, "grabando_audio", "record_audio")
 	accion = reemplazar(accion, "buscar_localizacion", "find_location")
 	json = peticion(URL . "sendChatAction?chat_id=" . chatId . "&action=" . accion)
-		estado = json_decodificar(json)
-		retorno estado->ok
+	estado = json_decodificar(json)
+retorno estado->ok
 fin
 
 
