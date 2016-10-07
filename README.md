@@ -1,6 +1,7 @@
-- Requiere: Linux;Windows -> Instalador Latino(en windows; exe, [releases](https://github.com/primitivorm/latino)) 
+- Windows; Requiere -> Instalador Latino(en windows; exe, [releases](https://github.com/primitivorm/latino/releases)) 
 
--Linux -> Seguir pasos en https://github.com/primitivorm/latino para la instalación de Latino
+- Linux; Requiere -> Seguir pasos en https://github.com/primitivorm/latino para la instalación de Latino ó descargar archivo deb en [releases](https://github.com/primitivorm/latino/releases)
+
 
 Clonar este repositorio con `git clone https://github.com/jarriztg/telegram-bot-latino latinobot`
 
