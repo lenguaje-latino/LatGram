@@ -1,2 +1,5 @@
-administrador = 0 # tu id, puedes saberla iniciando el bot y escribir /id
+administrador = 0 # Tu id, puedes saberla iniciando el bot y escribir /id
+
 api_key = "TU_API_KEY_AQUI"
+
+canal = "tucanal" # Aquí ingresa tu canal sin poner el @
