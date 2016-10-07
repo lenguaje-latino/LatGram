@@ -1,5 +1,8 @@
 URL = 'https://api.telegram.org/bot' . api_key . '/'
+aURL = 'https://api.telegram.org/file/bot' . api_key . '/'
 html="html"
+
+// Actualizaciones
 
 funcion actualizaciones()
 	consulta = peticion(URL . "getUpdates")
@@ -13,6 +16,9 @@ funcion actualizaciones()
 	fin
   retorno consulta
 fin
+
+// Mensajes
+
 
 funcion enviarMensaje(chatId, texto, formato, responder)
  enlace = URL . "sendMessage?chat_id=" . chatId . "&text=" . codificar(texto)
@@ -63,6 +69,9 @@ funcion reenviarMensaje(chatId, userId, msgId)
 	retorno estado->ok
 fin
 
+
+// Acciones de chat
+
 funcion abandonarChat(chatId)
   	json = peticion(URL . "leaveChat?chat_id=" . chatId)
 	estado = json_decodificar(json)
@@ -84,6 +93,144 @@ fin
 
 funcion desbanearUsuario(chatId, userId)
   	json = peticion(URL . "unbanChatMember?chat_id=" . chatId . "&user_id=" . userId)
-		estado = json_decodificar(json)
-		retorno estado->ok
+	estado = json_decodificar(json)
+	retorno estado->ok
+fin
+
+
+// Enviar x
+
+
+funcion obtenerArchivo(Id)
+datos = peticion(URL . "getFile?file_id=" . Id)
+status = json_decodificar(datos)
+si status->ok
+	peticion(aURL.status->result->file_path)
+fin
+retorno status->ok
+fin
+
+
+funcion enviarFoto(chatId, foto, capcion, notificar, msgId)
+enlace = URL . "sendPhoto?chat_id=".chatId."&photo=".codificar(foto)
+
+si capcion
+	enlace = enlace . "&caption=" . capcion
+fin
+
+si ( notificar == verdadero )
+	enlace = enlace . "&disable_notification=true"
+fin
+
+si msgId
+	enlace = enlace . "&reply_to_message_id=" . msgId
+fin
+
+ json = peticion(enlace)
+ estado = json_decodificar(json)
+ retorno estado->ok
+fin
+
+funcion enviarAudio(chatId, audio, capcion, notificar, msgId)
+enlace = URL . "sendAudio?chat_id=".chatId."&audio=".codificar(audio)
+
+si capcion
+	enlace = enlace . "&caption=" . capcion
+fin
+
+si ( notificar == verdadero )
+	enlace = enlace . "&disable_notification=true"
+fin
+
+si msgId
+	enlace = enlace . "&reply_to_message_id=" . msgId
+fin
+
+ json = peticion(enlace)
+ estado = json_decodificar(json)
+ retorno estado->ok
+fin
+
+
+funcion enviarArchivo(chatId, documento, capcion, notificar, msgId)
+enlace = URL . "sendDocument?chat_id=".chatId."&document=".codificar(documento)
+
+si capcion
+	enlace = enlace . "&caption=" . capcion
+fin
+
+si ( notificar == verdadero )
+	enlace = enlace . "&disable_notification=true"
+fin
+
+si msgId
+	enlace = enlace . "&reply_to_message_id=" . msgId
+fin
+
+ json = peticion(enlace)
+ estado = json_decodificar(json)
+ retorno estado->ok
+fin
+
+
+funcion enviarSticker(chatId, sticker, capcion, notificar, msgId)
+enlace = URL . "sendSticker?chat_id=".chatId."&sticker=".codificar(sticker)
+
+si capcion
+	enlace = enlace . "&caption=" . capcion
+fin
+
+si ( notificar == verdadero )
+	enlace = enlace . "&disable_notification=true"
+fin
+
+si msgId
+	enlace = enlace . "&reply_to_message_id=" . msgId
+fin
+
+ json = peticion(enlace)
+ estado = json_decodificar(json)
+ retorno estado->ok
+fin
+
+
+funcion enviarVideo(chatId, video, capcion, notificar, msgId)
+enlace = URL . "sendVideo?chat_id=".chatId."&video=".codificar(video)
+
+si capcion
+	enlace = enlace . "&caption=" . capcion
+fin
+
+si ( notificar == verdadero )
+	enlace = enlace . "&disable_notification=true"
+fin
+
+si msgId
+	enlace = enlace . "&reply_to_message_id=" . msgId
+fin
+
+ json = peticion(enlace)
+ estado = json_decodificar(json)
+ retorno estado->ok
+fin
+
+
+funcion enviarVoz(chatId, voz, capcion, notificar, msgId)
+enlace = URL . "sendVoice?chat_id=".chatId."&voice=".codificar(voz)
+
+si capcion
+	enlace = enlace . "&caption=" . capcion
+fin
+
+si ( notificar == verdadero )
+	enlace = enlace . "&disable_notification=true"
+fin
+
+si msgId
+	enlace = enlace . "&reply_to_message_id=" . msgId
+fin
+
+ json = peticion(enlace)
+ estado = json_decodificar(json)
+ retorno estado->ok
 fin
