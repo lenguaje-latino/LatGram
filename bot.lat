@@ -1,25 +1,9 @@
 incluir ('ajustes')
 incluir ('urls')
-
-URL = 'https://api.telegram.org/bot' . api_key . '/'
-html="html"
-
-funcion actualizaciones()
-	consulta = peticion(URL . "getUpdates")
-	offset = json_decodificar(consulta)
-	offset = offset->result[0]->update_id
-	si ( offset != "" )
-		si offset > 0
-			offset = offset + 1
-			peticion(URL . "getUpdates?offset=" . offset)
-		fin
-	fin
-  retorno consulta
-fin
-
-incluir('metodos')
+incluir ('metodos')
 
 inicio = enviarMensaje(administrador, "<b>Bot iniciado</b>", html, falso)
+
 si inicio
 	imprimir("Confirmación enviada a " . administrador)
 sino

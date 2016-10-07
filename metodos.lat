@@ -1,40 +1,45 @@
-/*
-	Por defecto al escribir verdadero se enviará el mensaje en markdown,
-	si quieres html hay que especificarlo con "html", falso lo mandará sin formato.
+URL = 'https://api.telegram.org/bot' . api_key . '/'
+html="html"
 
-	Hay que escribir la ID del mensaje al que se quiere responder o escribir falso
-	Ejemplo con y sin nada:
-	
-	enviarMensaje(000, "asd", verdadero, 111) Envia respuesta al mensaje 111 con markdown
-	enviarMensaje(000, "asd", falso, falso) Envia mensaje sin respuesta y sin markdown
-*/
+funcion actualizaciones()
+	consulta = peticion(URL . "getUpdates")
+	offset = json_decodificar(consulta)
+	offset = offset->result[0]->update_id
+	si ( offset != "" )
+		si offset > 0
+			offset = offset + 1
+			peticion(URL . "getUpdates?offset=" . offset)
+		fin
+	fin
+  retorno consulta
+fin
 
 funcion enviarMensaje(chatId, texto, formato, responder)
  enlace = URL . "sendMessage?chat_id=" . chatId . "&text=" . codificar(texto)
  
  si formato
-	si(formato == verdadero)
+	si ( formato == verdadero )
 		enlace = enlace . "&parse_mode=markdown"
 	sino
-		si(formato == "html")
+	si ( formato == html )
 			enlace = enlace . "&parse_mode=html"
-		fin
+	fin
 	fin
  fin
  
-	si (responder != falso)
-		enlace = enlace . "&reply_to_message_id=" . responder
-	fin
+si (responder != falso)
+	enlace = enlace . "&reply_to_message_id=" . responder
+fin
 
-  	json = peticion(enlace)
-		estado = json_decodificar(json)
-		retorno estado->ok
+ json = peticion(enlace)
+ estado = json_decodificar(json)
+ retorno estado->ok
 fin
 
 funcion enviarInline(chatId, texto, teclado)
   	json = peticion(URL . "sendMessage?chat_id=" . chatId . "&text=" . codificar(texto) . "&reply_markup=" .codificar(teclado))
-		estado = json_decodificar(json)
-		retorno estado->ok
+	estado = json_decodificar(json)
+	retorno estado->ok
 fin
 
 funcion enviarAccion(chatId, accion)
@@ -48,33 +53,33 @@ funcion enviarAccion(chatId, accion)
 	accion = reemplazar(accion, "buscar_localizacion", "find_location")
 	json = peticion(URL . "sendChatAction?chat_id=" . chatId . "&action=" . accion)
 	estado = json_decodificar(json)
-retorno estado->ok
+	retorno estado->ok
 fin
 
 
 funcion reenviarMensaje(chatId, userId, msgId)
   	json = peticion(URL . "forwardMessage?chat_id=" . chatId . "&from_chat_id=" . userId . "&message_id=" . msgId)
-		estado = json_decodificar(json)
-		retorno estado->ok
+	estado = json_decodificar(json)
+	retorno estado->ok
 fin
 
 funcion abandonarChat(chatId)
   	json = peticion(URL . "leaveChat?chat_id=" . chatId)
-		estado = json_decodificar(json)
-		retorno estado->ok
+	estado = json_decodificar(json)
+	retorno estado->ok
 fin
 
 funcion expulsarUsuario(chatId, userId)
 	json = peticion(URL . "kickChatMember?chat_id=" . chatId . "&user_id=" . userId)
 	peticion(URL . "unbanChatMember?chat_id=" . chatId . "&user_id=" . userId)
-		estado = json_decodificar(json)
-		retorno estado->ok
+	estado = json_decodificar(json)
+	retorno estado->ok
 fin
 
 funcion banearUsuario(chatId, userId)
   	json = peticion(URL . "kickChatMember?chat_id=" . chatId . "&user_id=" . userId)
-		estado = json_decodificar(json)
-		retorno estado->ok
+	estado = json_decodificar(json)
+	retorno estado->ok
 fin
 
 funcion desbanearUsuario(chatId, userId)
