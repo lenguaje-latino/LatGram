@@ -105,7 +105,7 @@ funcion obtenerArchivo(Id)
 datos = peticion(URL . "getFile?file_id=" . Id)
 status = json_decodificar(datos)
 si status->ok
-	peticion(aURL.status->result->file_path)
+	ejecutar_pipe('wget '.aURL.status->result->file_path)
 fin
 retorno status->ok
 fin
