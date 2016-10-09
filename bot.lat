@@ -1,6 +1,7 @@
 incluir ('ajustes')
 incluir ('urls')
 incluir ('metodos')
+incluir ('bot-utilidades')
 
 verificacion = verificar_apikey()
 si ! verificacion->ok
@@ -8,10 +9,9 @@ si ! verificacion->ok
 	retorno 0
 fin
 
-
 inicio = enviarMensaje(administrador, "<b>Bot iniciado</b>", html, falso)
 si inicio
-	imprimir("Confirmación enviada a " . administrador)
+	imprimir("Confirmación enviada a " . administrador . " Al bot @".bot->usuario)
 sino
 	imprimir("Error en confirmación")
 fin
@@ -53,7 +53,11 @@ mientras verdadero
 		"apellido": res->result[0]->message->new_chat_member->last_name,
 		"usuario": res->result[0]->message->new_chat_member->username
 			}
-
+	
+	inline = {
+		"id": res->result[0]->inline_query->id,
+		"consulta": res->result[0]->inline_query->query
+	}
 
 ayuda = {"inline_keyboard":
 [[{"text":"Programación Latino","url":"https://github.com/primitivorm/latino"},
