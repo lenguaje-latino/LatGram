@@ -56,8 +56,21 @@ fin
  retorno estado->ok
 fin
 
-funcion enviarInline(chatId, texto, teclado)
-  	json = peticion(URL . "sendMessage?chat_id=" . chatId . "&text=" . codificar(texto) . "&reply_markup=" .codificar(teclado))
+funcion enviarTeclado(chatId, texto, teclado, formato)
+  enlace = URL . "sendMessage?chat_id=" . chatId . "&text=" . codificar(texto) . "&reply_markup=" .codificar(teclado)
+	si formato
+	
+		si ( formato == verdadero )
+			enlace = enlace . "&parse_mode=markdown"
+		fin
+		
+		si ( formato == html )
+			enlace = enlace . "&parse_mode=html"
+		fin
+		
+	fin
+	
+	json = peticion(enlace)
 	estado = json_decodificar(json)
 	retorno estado->ok
 fin
