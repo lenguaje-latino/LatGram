@@ -280,7 +280,7 @@ si msgId
 	enlace = enlace . "&reply_to_message_id=" . msgId
 fin
 
- curl = ejecutar_pipe("curl -s '" . enlace . "' -F 'photo=@".foto."'")
+ curl = ejecutar_pipe("curl -sk '" . enlace . "' -F 'photo=@".foto."'")
  retorno curl
 fin
 
@@ -299,7 +299,7 @@ si msgId
 	enlace = enlace . "&reply_to_message_id=" . msgId
 fin
 
- curl = ejecutar_pipe("curl -s '" . enlace . "' -F 'audio=@".audio."'")
+ curl = ejecutar_pipe("curl -sk '" . enlace . "' -F 'audio=@".audio."'")
  retorno curl
 fin
 
@@ -319,7 +319,7 @@ si msgId
 	enlace = enlace . "&reply_to_message_id=" . msgId
 fin
 
- curl = ejecutar_pipe("curl -s '" . enlace . "' -F 'document=@".documento."'")
+ curl = ejecutar_pipe("curl -sk '" . enlace . "' -F 'document=@".documento."'")
  retorno curl
 fin
 
@@ -339,7 +339,7 @@ si msgId
 	enlace = enlace . "&reply_to_message_id=" . msgId
 fin
 
- curl = ejecutar_pipe("curl -s '" . enlace . "' -F 'sticker=@".sticker."'")
+ curl = ejecutar_pipe("curl -sk '" . enlace . "' -F 'sticker=@".sticker."'")
  retorno curl
 fin
 
@@ -359,7 +359,7 @@ si msgId
 	enlace = enlace . "&reply_to_message_id=" . msgId
 fin
 
- curl = ejecutar_pipe("curl -s '" . enlace . "' -F 'video=@".video."'")
+ curl = ejecutar_pipe("curl -sk '" . enlace . "' -F 'video=@".video."'")
  retorno curl
 fin
 
@@ -379,7 +379,7 @@ si msgId
 	enlace = enlace . "&reply_to_message_id=" . msgId
 fin
 
- curl = ejecutar_pipe("curl -s '" . enlace . "' -F 'voice=@".voz."'")
+ curl = ejecutar_pipe("curl -sk '" . enlace . "' -F 'voice=@".voz."'")
  retorno curl
 fin
 
