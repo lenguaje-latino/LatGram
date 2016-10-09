@@ -262,16 +262,25 @@ sino
 fin
 fin
 
-// consultas
+// consultas inline
+
 funcion enviarConsultaInline(IdConsulta, resultado)
 	json = peticion(URL . "answerInlineQuery?inline_query_id=".IdConsulta."&results=".resultado)
 	res = json_decodificar(json)
 	retorno res->ok
 fin
 
-funcion retornarConsultaInline(tipo, consultaId, titulo, texto, descripcion)
- elegir(tipo)
-  caso "articulo":
-	retorno '[{"type":"article","id":"'.consultaId.'","title":"'.titulo.'","message_text":"'.texto.'","description":"'.descripcion.'","parse_mode":"markdown"}]'
- fin
+
+funcion enviarTextoInline(consultaId, titulo, texto, descripcion, formato)
+  articulo = '[{"type":"article","id":"'.consultaId.'","title":"'.titulo.'","message_text":"'.texto.'"'
+  
+  si descripcion
+  	articulo = articulo.',"description":"'.descripcion.'"'
+  fin
+
+  si formato
+  	articulo = articulo.',"parse_mode":"markdown"'
+  fin
+
+  retorno articulo.'}]'
 fin
