@@ -418,3 +418,18 @@ funcion enviarTextoInline(consultaId, titulo, texto, descripcion, formato)
 
   retorno articulo.'}]'
 fin
+
+funcion enviarFotoInline(consultaId, foto, descripcion)
+  articulo = '[{"type":"photo","id":"'.consultaId.'","photo_url":"'.foto.'"'
+  
+  si foto
+  	articulo = articulo.',"thumb_url":"'.foto.'"'
+  fin
+
+  si descripcion
+  	articulo = articulo.',"description":"'.descripcion.'"'
+  fin
+
+  retorno articulo.'}]'
+
+fin
