@@ -242,3 +242,16 @@ fin
  estado = json_decodificar(json)
  retorno estado->ok
 fin
+
+// Utilidades del chat
+
+funcion obtenerCuentaMiembros(chatId)
+json = peticion(URL . "getChatMembersCount?chat_id=".chatId)
+res = json_decodificar(json)
+	si res->ok
+		retorno res->result
+	fin
+	si ! res->ok
+		retorno falso
+	fin
+fin
