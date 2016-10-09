@@ -10,6 +10,15 @@ elegir(msg->texto)
  caso "/foto":
  	enviarFoto(chat->id, "https://raw.githubusercontent.com/lenguaje-latino/latino-sublimetext-plugin/master/latino_sublime.png", "Sublime Text sintaxis Latino", falso, falso)
 
+ caso "#miembros":
+ 	miembros = obtenerCuentaMiembros(chat->id)
+ 	enviarMensaje(chat->id, "Miembros\n*".miembros."*", verdadero, msg->id)
+fin
+
+elegir(inline->consulta)
+  caso "latino":
+  	 latino = retornarConsultaInline("articulo", inline->id, "GitHub Latino", "[latino](https://github.com/primitivorm/latino)", "Aprende a programar con Latino")
+  	 enviarConsultaInline(inline->id, latino)
 fin
 
 si nuevo_usuario->id
