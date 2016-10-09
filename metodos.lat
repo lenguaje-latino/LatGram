@@ -263,6 +263,127 @@ fin
 fin
 
 
+// Enviar archivos desde el servidor
+
+funcion enviariFoto(chatId, foto, capcion, notificar, msgId)
+enlace = URL . "sendPhoto?chat_id=".chatId
+
+si capcion
+	enlace = enlace . "&caption=" . capcion
+fin
+
+si ( notificar == verdadero )
+	enlace = enlace . "&disable_notification=true"
+fin
+
+si msgId
+	enlace = enlace . "&reply_to_message_id=" . msgId
+fin
+
+ curl = ejecutar_pipe("curl -s '" . enlace . "' -F 'photo=@".foto."'")
+ retorno curl
+fin
+
+funcion enviariAudio(chatId, audio, capcion, notificar, msgId)
+enlace = URL . "sendAudio?chat_id=".chatId
+
+si capcion
+	enlace = enlace . "&caption=" . capcion
+fin
+
+si ( notificar == verdadero )
+	enlace = enlace . "&disable_notification=true"
+fin
+
+si msgId
+	enlace = enlace . "&reply_to_message_id=" . msgId
+fin
+
+ curl = ejecutar_pipe("curl -s '" . enlace . "' -F 'audio=@".audio."'")
+ retorno curl
+fin
+
+
+funcion enviariArchivo(chatId, documento, capcion, notificar, msgId)
+enlace = URL . "sendDocument?chat_id=".chatId
+
+si capcion
+	enlace = enlace . "&caption=" . capcion
+fin
+
+si ( notificar == verdadero )
+	enlace = enlace . "&disable_notification=true"
+fin
+
+si msgId
+	enlace = enlace . "&reply_to_message_id=" . msgId
+fin
+
+ curl = ejecutar_pipe("curl -s '" . enlace . "' -F 'document=@".documento."'")
+ retorno curl
+fin
+
+
+funcion enviariSticker(chatId, sticker, capcion, notificar, msgId)
+enlace = URL . "sendSticker?chat_id=".chatId
+
+si capcion
+	enlace = enlace . "&caption=" . capcion
+fin
+
+si ( notificar == verdadero )
+	enlace = enlace . "&disable_notification=true"
+fin
+
+si msgId
+	enlace = enlace . "&reply_to_message_id=" . msgId
+fin
+
+ curl = ejecutar_pipe("curl -s '" . enlace . "' -F 'sticker=@".sticker."'")
+ retorno curl
+fin
+
+
+funcion enviariVideo(chatId, video, capcion, notificar, msgId)
+enlace = URL . "sendVideo?chat_id=".chatId
+
+si capcion
+	enlace = enlace . "&caption=" . capcion
+fin
+
+si ( notificar == verdadero )
+	enlace = enlace . "&disable_notification=true"
+fin
+
+si msgId
+	enlace = enlace . "&reply_to_message_id=" . msgId
+fin
+
+ curl = ejecutar_pipe("curl -s '" . enlace . "' -F 'video=@".video."'")
+ retorno curl
+fin
+
+
+funcion enviariVoz(chatId, voz, capcion, notificar, msgId)
+enlace = URL . "sendVoice?chat_id=".chatId
+
+si capcion
+	enlace = enlace . "&caption=" . capcion
+fin
+
+si ( notificar == verdadero )
+	enlace = enlace . "&disable_notification=true"
+fin
+
+si msgId
+	enlace = enlace . "&reply_to_message_id=" . msgId
+fin
+
+ curl = ejecutar_pipe("curl -s '" . enlace . "' -F 'voice=@".voz."'")
+ retorno curl
+fin
+
+
 // Utilidades del chat
 
 funcion obtenerCuentaMiembros(chatId)
