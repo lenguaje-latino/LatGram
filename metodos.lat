@@ -17,6 +17,14 @@ funcion actualizaciones()
   retorno consulta
 fin
 
+// Verifica api_key si está correctamente escrita
+
+funcion verificar_apikey()
+	consulta = peticion(URL . "getUpdates")
+	res = json_decodificar(consulta)
+	retorno res
+fin
+
 // Mensajes
 
 
