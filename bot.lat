@@ -2,8 +2,14 @@ incluir ('ajustes')
 incluir ('urls')
 incluir ('metodos')
 
-inicio = enviarMensaje(administrador, "<b>Bot iniciado</b>", html, falso)
+verificacion = verificar_apikey()
+si ! verificacion->ok
+	imprimir("ERROR (".verificacion->error_code." - ".verificacion->description.") Verifica la apikey en ajustes.lat")
+	retorno 0
+fin
 
+
+inicio = enviarMensaje(administrador, "<b>Bot iniciado</b>", html, falso)
 si inicio
 	imprimir("Confirmación enviada a " . administrador)
 sino
