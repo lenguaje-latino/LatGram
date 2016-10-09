@@ -57,12 +57,7 @@ mientras verdadero
 	inline = {
 		"id": res->result[0]->inline_query->id,
 		"consulta": res->result[0]->inline_query->query
-	}
-
-ayuda = {"inline_keyboard":
-[[{"text":"Programación Latino","url":"https://github.com/primitivorm/latino"},
-{"text":"Repositorio del Bot","url":"https://github.com/jarriztg/telegram-bot-latino"}
-]]}
+			}
 
 ejecutar_archivo("comandos.lat")
 fin
