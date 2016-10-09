@@ -25,6 +25,14 @@ funcion verificar_apikey()
 	retorno res
 fin
 
+// bot
+
+funcion ObtenerBot()
+	consulta = peticion(URL . "getMe")
+	res = json_decodificar(consulta)
+	retorno res
+fin
+
 // Mensajes
 
 
