@@ -17,10 +17,16 @@ funcion actualizaciones()
   retorno consulta
 fin
 
-// Verifica api_key si está correctamente escrita
-
 funcion verificar_apikey()
 	consulta = peticion(URL . "getUpdates")
+	res = json_decodificar(consulta)
+	retorno res
+fin
+
+// bot
+
+funcion ObtenerBot()
+	consulta = peticion(URL . "getMe")
 	res = json_decodificar(consulta)
 	retorno res
 fin
@@ -241,4 +247,31 @@ fin
  json = peticion(enlace)
  estado = json_decodificar(json)
  retorno estado->ok
+fin
+
+
+// Utilidades del chat
+
+funcion obtenerCuentaMiembros(chatId)
+json = peticion(URL . "getChatMembersCount?chat_id=".chatId)
+res = json_decodificar(json)
+si res->ok
+	retorno res->result
+sino
+	retorno falso
+fin
+fin
+
+// consultas
+funcion enviarConsultaInline(IdConsulta, resultado)
+	json = peticion(URL . "answerInlineQuery?inline_query_id=".IdConsulta."&results=".resultado)
+	res = json_decodificar(json)
+	retorno res->ok
+fin
+
+funcion retornarConsultaInline(tipo, consultaId, titulo, texto, descripcion)
+ elegir(tipo)
+  caso "articulo":
+	retorno '[{"type":"article","id":"'.consultaId.'","title":"'.titulo.'","message_text":"'.texto.'","description":"'.descripcion.'","parse_mode":"markdown"}]'
+ fin
 fin
