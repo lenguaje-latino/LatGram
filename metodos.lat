@@ -46,8 +46,8 @@ funcion enviarMensaje(chatId, texto, formato, responder)
 	fin
 	fin
  fin
- 
-si (responder != falso)
+
+si responder 
 	enlace = enlace . "&reply_to_message_id=" . responder
 fin
 
@@ -58,8 +58,8 @@ fin
 
 funcion enviarTeclado(chatId, texto, teclado, formato)
   enlace = URL . "sendMessage?chat_id=" . chatId . "&text=" . codificar(texto) . "&reply_markup=" .codificar(teclado)
+
 	si formato
-	
 		si ( formato == verdadero )
 			enlace = enlace . "&parse_mode=markdown"
 		fin
@@ -67,7 +67,6 @@ funcion enviarTeclado(chatId, texto, teclado, formato)
 		si ( formato == html )
 			enlace = enlace . "&parse_mode=html"
 		fin
-		
 	fin
 	
 	json = peticion(enlace)
@@ -145,8 +144,10 @@ si capcion
 	enlace = enlace . "&caption=" . capcion
 fin
 
-si ( notificar == verdadero )
-	enlace = enlace . "&disable_notification=true"
+si notificar
+	si ( notificar == verdadero )
+		enlace = enlace . "&disable_notification=true"
+	fin
 fin
 
 si msgId
@@ -165,8 +166,10 @@ si capcion
 	enlace = enlace . "&caption=" . capcion
 fin
 
-si ( notificar == verdadero )
-	enlace = enlace . "&disable_notification=true"
+si notificar
+	si ( notificar == verdadero )
+		enlace = enlace . "&disable_notification=true"
+	fin
 fin
 
 si msgId
@@ -186,8 +189,10 @@ si capcion
 	enlace = enlace . "&caption=" . capcion
 fin
 
-si ( notificar == verdadero )
-	enlace = enlace . "&disable_notification=true"
+si notificar
+	si ( notificar == verdadero )
+		enlace = enlace . "&disable_notification=true"
+	fin
 fin
 
 si msgId
@@ -207,8 +212,10 @@ si capcion
 	enlace = enlace . "&caption=" . capcion
 fin
 
-si ( notificar == verdadero )
-	enlace = enlace . "&disable_notification=true"
+si notificar
+	si ( notificar == verdadero )
+		enlace = enlace . "&disable_notification=true"
+	fin
 fin
 
 si msgId
@@ -228,8 +235,10 @@ si capcion
 	enlace = enlace . "&caption=" . capcion
 fin
 
-si ( notificar == verdadero )
-	enlace = enlace . "&disable_notification=true"
+si notificar
+	si ( notificar == verdadero )
+		enlace = enlace . "&disable_notification=true"
+	fin
 fin
 
 si msgId
@@ -249,8 +258,10 @@ si capcion
 	enlace = enlace . "&caption=" . capcion
 fin
 
-si ( notificar == verdadero )
-	enlace = enlace . "&disable_notification=true"
+si notificar
+	si ( notificar == verdadero )
+		enlace = enlace . "&disable_notification=true"
+	fin
 fin
 
 si msgId
@@ -272,8 +283,10 @@ si capcion
 	enlace = enlace . "&caption=" . capcion
 fin
 
-si ( notificar == verdadero )
-	enlace = enlace . "&disable_notification=true"
+si notificar
+	si ( notificar == verdadero )
+		enlace = enlace . "&disable_notification=true"
+	fin
 fin
 
 si msgId
@@ -291,8 +304,10 @@ si capcion
 	enlace = enlace . "&caption=" . capcion
 fin
 
-si ( notificar == verdadero )
-	enlace = enlace . "&disable_notification=true"
+si notificar
+	si ( notificar == verdadero )
+		enlace = enlace . "&disable_notification=true"
+	fin
 fin
 
 si msgId
@@ -311,8 +326,10 @@ si capcion
 	enlace = enlace . "&caption=" . capcion
 fin
 
-si ( notificar == verdadero )
-	enlace = enlace . "&disable_notification=true"
+si notificar
+	si ( notificar == verdadero )
+		enlace = enlace . "&disable_notification=true"
+	fin
 fin
 
 si msgId
@@ -331,8 +348,10 @@ si capcion
 	enlace = enlace . "&caption=" . capcion
 fin
 
-si ( notificar == verdadero )
-	enlace = enlace . "&disable_notification=true"
+si notificar
+	si ( notificar == verdadero )
+		enlace = enlace . "&disable_notification=true"
+	fin
 fin
 
 si msgId
@@ -351,8 +370,10 @@ si capcion
 	enlace = enlace . "&caption=" . capcion
 fin
 
-si ( notificar == verdadero )
-	enlace = enlace . "&disable_notification=true"
+si notificar
+	si ( notificar == verdadero )
+		enlace = enlace . "&disable_notification=true"
+	fin
 fin
 
 si msgId
@@ -371,8 +392,10 @@ si capcion
 	enlace = enlace . "&caption=" . capcion
 fin
 
-si ( notificar == verdadero )
-	enlace = enlace . "&disable_notification=true"
+si notificar
+	si ( notificar == verdadero )
+		enlace = enlace . "&disable_notification=true"
+	fin
 fin
 
 si msgId

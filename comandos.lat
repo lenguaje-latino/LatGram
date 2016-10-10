@@ -2,13 +2,14 @@ elegir(msg->texto)
 
  caso "/start":
  	ayuda = '{"inline_keyboard":[[{"text":"Programación Latino","url":"https://github.com/primitivorm/latino"},{"text":"Repositorio del Bot","url":"https://github.com/jarriztg/telegram-bot-latino"}]]}'
+
 	enviarTeclado(chat->id, "¡Hey! ".usuario->nombre."\n\nEstás probando el nuevo bot escrito completamente en la *programación Latino*. Por el momento faltan cosas. Pero de poco a poco irá mejorando 😄👍", ayuda, verdadero)
   
  caso "/id":
 	enviarMensaje(chat->id, "*Id* ".usuario->id."\n*Chat Id* ".chat->id, verdadero, msg->id)
 
  caso "/foto":
- 	enviarFoto(chat->id, "https://raw.githubusercontent.com/lenguaje-latino/latino-sublimetext-plugin/master/latino_sublime.png", "Sublime Text sintaxis Latino", falso, falso)
+ 	enviarFoto(chat->id, "https://raw.githubusercontent.com/lenguaje-latino/latino-sublimetext-plugin/master/latino_sublime.png", "Sublime Text sintaxis Latino")
 
  caso "#miembros":
  	miembros = obtenerCuentaMiembros(chat->id)
@@ -22,7 +23,7 @@ elegir(inline->consulta)
 fin
 
 si nuevo_usuario->id
-	enviarMensaje(chat->id, "Hola ".nuevo_usuario->nombre.", bienvenido a ".chat->titulo, falso, falso)
+	enviarMensaje(chat->id, "Hola ".nuevo_usuario->nombre.", bienvenido a ".chat->titulo)
 fin
 
 si msg->texto
