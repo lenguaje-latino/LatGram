@@ -93,7 +93,7 @@ fin
 // Acciones de chat
 
 funcion abandonarChat(chatId)
-  	json = peticion(URL . "leaveChat?chat_id=" . chatId)
+	json = peticion(URL . "leaveChat?chat_id=" . chatId)
 	estado = json_decodificar(json)
 	retorno estado->ok
 fin
@@ -112,7 +112,7 @@ funcion banearUsuario(chatId, userId)
 fin
 
 funcion desbanearUsuario(chatId, userId)
-  	json = peticion(URL . "unbanChatMember?chat_id=" . chatId . "&user_id=" . userId)
+	json = peticion(URL . "unbanChatMember?chat_id=" . chatId . "&user_id=" . userId)
 	estado = json_decodificar(json)
 	retorno estado->ok
 fin
