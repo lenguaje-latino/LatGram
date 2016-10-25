@@ -1,7 +1,7 @@
 URL = 'https://api.telegram.org/bot' . api_key . '/'
 aURL = 'https://api.telegram.org/file/bot' . api_key . '/'
-html="html"
-markdown="markdown"
+html = "html"
+markdown = "markdown"
 
 // Actualizaciones
 
@@ -9,10 +9,12 @@ funcion actualizaciones()
 	consulta = peticion(URL . "getUpdates")
 	offset = json_decodificar(consulta)
 	offset = offset->result[0]->update_id
+
 	si offset > 0
 		offset = offset + 1
 		peticion(URL . "getUpdates?offset=" . offset)
 	fin
+
   retorno consulta
 fin
 
@@ -30,19 +32,29 @@ funcion ObtenerBot()
 	retorno res
 fin
 
+bot = ObtenerBot()
+bot = {
+	"id": bot->result->id,
+	"nombre": bot->result->first_name,
+	"usuario": bot->result->username
+}
+
 // Mensajes
 
 
 funcion enviarMensaje(chatId, texto, formato, responder)
 	enlace = URL . "sendMessage?chat_id=" . chatId . "&text=" . codificar(texto)
- si formato
-	si ( formato == "markdown" )
-		enlace = enlace . "&parse_mode=markdown"
+	
+	si formato
+		elegir(formato)
+			caso "markdown":
+			enlace = enlace . "&parse_mode=markdown"
+		
+			caso "html":
+			enlace = enlace . "&parse_mode=html"
+		fin
 	fin
-	si ( formato == html )
-		enlace = enlace . "&parse_mode=html"
-	fin
-fin
+
 	si responder 
 		enlace = enlace . "&reply_to_message_id=" . responder
 	fin
@@ -55,12 +67,14 @@ fin
 funcion enviarTeclado(chatId, texto, teclado, formato)
 	enlace = URL . "sendMessage?chat_id=" . chatId . "&text=" . codificar(texto) . "&reply_markup=" .codificar(teclado)
 
-	si ( formato == markdown )
-		enlace = enlace . "&parse_mode=markdown"
-	fin
+	si formato
+		elegir(formato)
+			caso "markdown":
+			enlace = enlace . "&parse_mode=markdown"
 		
-	si ( formato == html )
-		enlace = enlace . "&parse_mode=html"
+			caso "html":
+			enlace = enlace . "&parse_mode=html"
+		fin
 	fin
 	
   json = peticion(enlace)
@@ -93,7 +107,7 @@ fin
 // Acciones de chat
 
 funcion abandonarChat(chatId)
-	json = peticion(URL . "leaveChat?chat_id=" . chatId)
+  	json = peticion(URL . "leaveChat?chat_id=" . chatId)
 	estado = json_decodificar(json)
 	retorno estado->ok
 fin
@@ -112,105 +126,124 @@ funcion banearUsuario(chatId, userId)
 fin
 
 funcion desbanearUsuario(chatId, userId)
-	json = peticion(URL . "unbanChatMember?chat_id=" . chatId . "&user_id=" . userId)
+  	json = peticion(URL . "unbanChatMember?chat_id=" . chatId . "&user_id=" . userId)
 	estado = json_decodificar(json)
 	retorno estado->ok
 fin
 
+// Juegos
+
+funcion enviarJuego(chatId, juego, notificacion, msgId)
+	enlace = URL . "sendGame?chat_id=".chatId."&game_short_name=".juego
+
+	si notificacion
+		enlace = enlace . "&disable_notification=true"
+	fin
+
+	si msgId
+		enlace = enlace . "&reply_to_message_id=".msgId
+	fin
+
+  json = peticion(enlace)
+  estado = json_decodificar(json)
+  retorno estado->ok
+ fin
 
 // Enviar x
 
 
 funcion obtenerArchivo(Id)
-datos = peticion(URL . "getFile?file_id=" . Id)
-status = json_decodificar(datos)
-si status->ok
-	sistema('wget --no-check-certificate '.aURL.status->result->file_path)
-fin
-retorno status->ok
+	datos = peticion(URL . "getFile?file_id=" . Id)
+	status = json_decodificar(datos)
+
+	si status->ok
+		sistema('wget --no-check-certificate '.aURL.status->result->file_path)
+	fin
+
+  retorno status->ok
 fin
 
 
 funcion enviarFoto(chatId, foto, capcion, notificar, msgId)
-enlace = URL . "sendPhoto?chat_id=".chatId."&photo=".codificar(foto)
+	enlace = URL . "sendPhoto?chat_id=".chatId."&photo=".codificar(foto)
 
-si capcion
-	enlace = enlace . "&caption=" . capcion
-fin
+	si capcion
+		enlace = enlace . "&caption=" . capcion
+	fin
 
-si notificar
-	enlace = enlace . "&disable_notification=true"
-fin
+	si notificar
+		enlace = enlace . "&disable_notification=true"
+	fin
 
-si msgId
-	enlace = enlace . "&reply_to_message_id=" . msgId
-fin
+	si msgId
+		enlace = enlace . "&reply_to_message_id=" . msgId
+	fin
 
- json = peticion(enlace)
- estado = json_decodificar(json)
- retorno estado->ok
+  json = peticion(enlace)
+  estado = json_decodificar(json)
+  retorno estado->ok
 fin
 
 funcion enviarAudio(chatId, audio, capcion, notificar, msgId)
-enlace = URL . "sendAudio?chat_id=".chatId."&audio=".codificar(audio)
+	enlace = URL . "sendAudio?chat_id=".chatId."&audio=".codificar(audio)
 
-si capcion
-	enlace = enlace . "&caption=" . capcion
-fin
+	si capcion
+		enlace = enlace . "&caption=" . capcion
+	fin
 
-si notificar
-	enlace = enlace . "&disable_notification=true"
-fin
+	si notificar
+		enlace = enlace . "&disable_notification=true"
+	fin
 
-si msgId
-	enlace = enlace . "&reply_to_message_id=" . msgId
-fin
+	si msgId
+		enlace = enlace . "&reply_to_message_id=" . msgId
+	fin
 
- json = peticion(enlace)
- estado = json_decodificar(json)
- retorno estado->ok
+  json = peticion(enlace)
+  estado = json_decodificar(json)
+  retorno estado->ok
 fin
 
 
 funcion enviarArchivo(chatId, documento, capcion, notificar, msgId)
-enlace = URL . "sendDocument?chat_id=".chatId."&document=".codificar(documento)
+	enlace = URL . "sendDocument?chat_id=".chatId."&document=".codificar(documento)
 
-si capcion
-	enlace = enlace . "&caption=" . capcion
-fin
+	si capcion
+		enlace = enlace . "&caption=" . capcion
+	fin
 
-si notificar
-	enlace = enlace . "&disable_notification=true"
-fin
+	si notificar
+		enlace = enlace . "&disable_notification=true"
+	fin
 
-si msgId
-	enlace = enlace . "&reply_to_message_id=" . msgId
-fin
+	si msgId
+		enlace = enlace . "&reply_to_message_id=" . msgId
+	fin
 
- json = peticion(enlace)
- estado = json_decodificar(json)
- retorno estado->ok
+  json = peticion(enlace)
+  estado = json_decodificar(json)
+  retorno estado->ok
 fin
 
 
 funcion enviarSticker(chatId, sticker, capcion, notificar, msgId)
-enlace = URL . "sendSticker?chat_id=".chatId."&sticker=".codificar(sticker)
+	enlace = URL . "sendSticker?chat_id=".chatId."&sticker=".codificar(sticker)
 
-si capcion
-	enlace = enlace . "&caption=" . capcion
-fin
+	si capcion
+		enlace = enlace . "&caption=" . capcion
+	fin
 
-si notificar
-	enlace = enlace . "&disable_notification=true"
-fin
+	si notificar
+		enlace = enlace . "&disable_notification=true"
+	fin
 
-si msgId
-	enlace = enlace . "&reply_to_message_id=" . msgId
-fin
+	si msgId
+		enlace = enlace . "&reply_to_message_id=" . msgId
+	fin
 
- json = peticion(enlace)
- estado = json_decodificar(json)
- retorno estado->ok
+  json = peticion(enlace)
+  estado = json_decodificar(json)
+  retorno estado->ok
 fin
 
 
@@ -406,11 +439,14 @@ funcion textoInline(consultaId, titulo, texto, descripcion, formato, url)
 		articulo = articulo.',"description":"'.descripcion.'"'
 	fin
 
-	si (formato == markdown)
-		articulo = articulo.',"parse_mode":"markdown"'
-	fin
-	si (formato == html)
-		articulo = articulo.',"parse_mode":"html"'
+	si formato
+		elegir(formato)
+	 		caso "markdown":
+			articulo = articulo.',"parse_mode":"markdown"'
+
+			caso "html":
+			articulo = articulo.',"parse_mode":"html"'
+		fin
 	fin
 
 	si url
