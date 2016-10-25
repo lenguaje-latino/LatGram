@@ -1,5 +1,13 @@
-administrador = 0 # tu id, puedes saberla iniciando el bot y escribir /id
+ # Tu ID, puedes saberla iniciando el bot y escribirle /idm y despúes reemplaza ese 0 por tu ID
+administrador = 0
 
-api_key = "TU_API_KEY_AQUI"
+api_key = "" # Aquí ingresa tu api_key
 
-canal = "tucanal" # Aquí ingresa tu canal sin poner el @
+sesion = "Latino" # Nombre de la sesión de lo vas a ejecutar con Tmux
+
+script = "ejemplo.lat" # script si lo vas a ejecutar con Tmux
+
+/*
+TMUX es solamente para Linux
+NO WINDOWS
+*/
