@@ -1,6 +1,0 @@
-bot = ObtenerBot()
-bot = {
-	"id": bot->result->id,
-	"nombre": bot->result->first_name,
-	"usuario": bot->result->username
-}
