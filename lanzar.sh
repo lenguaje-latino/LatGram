@@ -1,10 +1,10 @@
 # Puedes cambiar el nombre de la sesión tmux si así deseas
-Sesion="Latino"
-
+Sesion=$(latino -e 'incluir("ajustes") | imprimir(sesion)')
+Script=$(latino -e 'incluir("ajustes") | imprimir(script)')
 function limpiar_updates() {
 
 while true; do {
-	ApiKey=$(cat key)
+	ApiKey=$(latino -e 'incluir("ajustes") | imprimir(api_key)')
 	res=$(curl -s 'https://api.telegram.org/bot'$ApiKey'/getUpdates')
 
 	# Offset
@@ -19,5 +19,5 @@ while true; do {
 
 if [ "$1" == true ]; then limpiar_updates;fi
 if [ "$1" == "limpiar" ]; then sudo tmux new-session -s "temp" -d '. '$0' true';tmux attach -t "temp";fi
-if [ ! $1 ]; then sudo tmux new-session -s $Sesion -d 'latino bot.lat';tmux attach -t $Sesion;fi
+if [ ! $1 ]; then sudo tmux new-session -s $Sesion -d 'latino '$Script ;tmux attach -t $Sesion;fi
 if [ "$1" == "matar" ]; then tmux kill-session -t $Sesion;fi
