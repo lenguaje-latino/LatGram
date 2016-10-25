@@ -5,14 +5,14 @@ function limpiar_updates() {
 
 while true; do {
 	ApiKey=$(latino -e 'incluir("ajustes") | imprimir(api_key)')
-	res=$(curl -s 'https://api.telegram.org/bot'$ApiKey'/getUpdates')
+	res=$(latino -e 'b = peticion("https://api.telegram.org/bot'$ApiKey'/getUpdates") | imprimir(b)')
 
 	# Offset
 	OFFSET=$(echo "$res" | jq -r '.result[0].update_id +1')
 
 	if [ "$OFFSET" != 1 ]; then
 		echo -e '\e[1;33m[ consulta con offset ] [ update_id = '$(expr $OFFSET - 1 )' ]\e[0m'
- 		curl -s 'https://api.telegram.org/bot'$ApiKey'/getUpdates?offset='$OFFSET&>/dev/null;else break
+ 		latino -e 'peticion("https://api.telegram.org/bot'$ApiKey'/getUpdates?offset='$OFFSET'")'&>/dev/null;else break
  	fi
 }; done
 }
