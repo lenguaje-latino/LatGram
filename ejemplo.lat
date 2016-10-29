@@ -9,8 +9,12 @@ incluir('res')
 elegir(msg->texto)
 
  caso "/start":
- 	ayuda = '{"inline_keyboard":[[{"text":"Programación Latino","url":"https://github.com/primitivorm/latino"},{"text":"Repositorio del Bot","url":"https://github.com/jarriztg/telegram-bot-latino"}]]}'
-	enviarTeclado(chat->id, "¡Hey! ".usuario->nombre."\n\nEstás probando el nuevo bot escrito completamente en la *programación Latino*. Por el momento faltan cosas. Pero de poco a poco irá mejorando 😄👍", ayuda, markdown)
+	ayuda = {"inline_keyboard":[
+ 	[{"text":"Programación Latino","url":"https://github.com/primitivorm/latino"},
+ 	{"text":"Repositorio del Bot","url":"https://github.com/jarriztg/telegram-bot-latino"}]
+ 	]}
+	
+	enviarTeclado(chat->id, "¡Hey! ".usuario->nombre."\n\nEstás probando el nuevo bot escrito completamente en la *programación Latino*. Por el momento faltan cosas. Pero de poco a poco irá mejorando 😄👍", cadena(ayuda), markdown)
   
  caso "/id":
 	enviarMensaje(chat->id, "*Id* ".usuario->id."\n*Chat Id* ".chat->id, markdown, msg->id)
