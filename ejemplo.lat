@@ -36,9 +36,7 @@ fin
 
 si nuevo_usuario->id
 	enviarMensaje(chat->id, "Hola ".nuevo_usuario->nombre.", bienvenido a ".chat->titulo)
-fin
-
-si msg->texto
+osi msg->texto
 	imprimir(msg->texto." desde ".usuario->nombre)
 fin
 
