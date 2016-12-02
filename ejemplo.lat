@@ -3,7 +3,7 @@ incluir('bot')
 
 mientras verdadero
 
-res = json_decodificar(actualizaciones())
+res = json->decodificar(actualizaciones())
 incluir('res')
 
 elegir(msg->texto)
@@ -14,7 +14,7 @@ elegir(msg->texto)
  	{"text":"Repositorio del Bot","url":"https://github.com/jarriztg/telegram-bot-latino"}]
  	]}
 	
-	enviarTeclado(chat->id, "¡Hey! ".usuario->nombre."\n\nEstás probando el nuevo bot escrito completamente en la *programación Latino*. Por el momento faltan cosas. Pero de poco a poco irá mejorando 😄👍", cadena(ayuda), markdown)
+	enviarTeclado(chat->id, "¡Hey! ".usuario->nombre."\n\nEstás probando el nuevo bot escrito completamente en la *programación Latino*. Por el momento faltan cosas. Pero de poco a poco irá mejorando 😄👍", convertir->cadena(ayuda), markdown)
   
  caso "/id":
 	enviarMensaje(chat->id, "*Id* ".usuario->id."\n*Chat Id* ".chat->id, markdown, msg->id)

@@ -1,5 +1,4 @@
-incluir ('ajustes')
-incluir ('urls')
+config = incluir ('ajustes')
 incluir ('metodos')
 
 verificacion = verificar_apikey()
@@ -8,9 +7,9 @@ si ! verificacion->ok
 	retorno 0
 fin
 
-inicio = enviarMensaje(administrador, "<b>Bot iniciado</b>", html, falso)
+inicio = enviarMensaje(config->admin, "<b>Bot iniciado</b>", html, falso)
 si inicio
-	imprimir("Confirmación enviada a " . administrador . ".\nBot @".bot->usuario, 1)
+	imprimir("Confirmación enviada a " . config->admin . ".\nBot @".bot->usuario, 1)
 sino
 	imprimir("Error en confirmación.\nBot @".bot->usuario, 1)
 fin
