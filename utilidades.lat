@@ -1,0 +1,8 @@
+funcion no_markdown(texto, reemplazo)
+  si ! reemplazo
+    texto = cadena->reemplazar(texto, "*", "x")
+    texto = cadena->reemplazar(texto, "_", "x")
+    texto = cadena->reemplazar(texto, "`", "x")
+  fin
+  retornar texto
+fin

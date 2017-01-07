@@ -1,0 +1,20 @@
+funcion mensajes()
+  si matches[0][1] == "id"
+    enviarMensaje(usuario->id, "*Chat ID*: ".chat->id.". *User ID*: ".usuario->id, md, falso)
+  fin
+  si matches[0][1] == "start"
+    ayuda = {"inline_keyboard":[
+   	[{"text":"Programación Latino","url":"https://github.com/primitivorm/latino"},
+   	{"text":"Repositorio del Bot","url":"https://github.com/jarriztg/telegram-bot-latino"}]
+   	]}
+  	enviarTeclado(chat->id, "¡Hey! ".no_markdown(usuario->nombre)."\n\nEstás probando el nuevo bot escrito completamente en la *programación Latino*. Por el momento faltan cosas. Pero de poco a poco irá mejorando 😄👍", convertir->cadena(ayuda), md)
+  fin
+fin
+
+comandos = [
+	"^/(id)$",
+  "^/(start)$",
+	{
+		"accion": mensajes
+	}
+]

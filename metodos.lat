@@ -1,7 +1,7 @@
 URL = 'https://api.telegram.org/bot' . config->api_key . '/'
 aURL = 'https://api.telegram.org/file/bot' . config->api_key . '/'
 html = "html"
-markdown = "markdown"
+md = "markdown"
 
 // Actualizaciones
 
@@ -42,18 +42,18 @@ bot = {
 
 funcion enviarMensaje(chatId, texto, formato, responder)
 	enlace = URL . "sendMessage?chat_id=" . chatId . "&text=" . curl->escape(texto)
-	
+
 	si formato
 		elegir(formato)
 			caso "markdown":
 			enlace = enlace . "&parse_mode=markdown"
-		
+
 			caso "html":
 			enlace = enlace . "&parse_mode=html"
 		fin
 	fin
 
-	si responder 
+	si responder
 		enlace = enlace . "&reply_to_message_id=" . responder
 	fin
   raw = curl->peticion(enlace)
@@ -72,12 +72,12 @@ funcion enviarTeclado(chatId, texto, teclado, formato)
 		elegir(formato)
 			caso "markdown":
 			enlace = enlace . "&parse_mode=markdown"
-		
+
 			caso "html":
 			enlace = enlace . "&parse_mode=html"
 		fin
 	fin
-	
+
   raw = curl->peticion(enlace)
   estado = json->decodificar(raw)
   si estado->ok
@@ -439,7 +439,7 @@ fin
 
 funcion textoInline(consultaId, titulo, texto, descripcion, formato, url)
 	articulo = '[{"type":"article","id":"'.consultaId.'","title":"'.titulo.'","message_text":"'.texto.'"'
-  
+
 	si descripcion
 		articulo = articulo.',"description":"'.descripcion.'"'
 	fin
@@ -463,7 +463,7 @@ fin
 
 funcion fotoInline(consultaId, foto, descripcion)
 	articulo = '[{"type":"photo","id":"'.consultaId.'","photo_url":"'.foto.'"'
-  
+
 	si foto
 		articulo = articulo.',"thumb_url":"'.foto.'"'
 	fin
