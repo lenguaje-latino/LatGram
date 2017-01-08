@@ -17,6 +17,7 @@ fin
 
 bot = ObtenerBot()
 com = redis->conectar("127.0.0.1", 6379)
+funcion iniciar_bot()
 mientras verdadero
 	res = json->decodificar(actualizaciones())
 	res = res->result[0]
@@ -88,3 +89,7 @@ desde (i=0; i<(lista->longitud(comandos)-1); i++)
 fin
 fin
 fin
+fin
+
+
+iniciar_bot()
