@@ -1,20 +1,75 @@
-funcion mensajes()
-  si matches[0][1] == "id"
-    enviarMensaje(usuario->id, "*Chat ID*: ".chat->id.". *User ID*: ".usuario->id, md, falso)
+funcion subproceso()
+  hash = "status:".chat->id.":bienvenida"
+  hash2 = "custom:".chat->id.":bienvenida"
+  nombre_usuario = nuevo_usuario->usuario
+  si ! nombre_usuario
+    nombre_usuario = "(sin usuario)"
   fin
-  si matches[0][1] == "start"
-    ayuda = {"inline_keyboard":[
-   	[{"text":"Programación Latino","url":"https://github.com/primitivorm/latino"},
-   	{"text":"Repositorio del Bot","url":"https://github.com/jarriztg/telegram-bot-latino"}]
-   	]}
-  	enviarTeclado(chat->id, "¡Hey! ".no_markdown(usuario->nombre)."\n\nEstás probando el nuevo bot escrito completamente en la *programación Latino*. Por el momento faltan cosas. Pero de poco a poco irá mejorando 😄👍", convertir->cadena(ayuda), md)
+  bienvenida = redis->obtener(com, hash)
+  bienvenida_custom = redis->obtener(com, hash2)
+  si bienvenida == "on"
+    si nuevo_usuario->id
+      si bienvenida_custom
+        mensaje = cadena->reemplazar(bienvenida_custom, "$usuario", acadena(nombre_usuario))
+        mensaje = cadena->reemplazar(mensaje, "$id", acadena(nuevo_usuario->id))
+        mensaje = cadena->reemplazar(mensaje, "$nombre", acadena(nuevo_usuario->nombre))
+        mensaje = cadena->reemplazar(mensaje, "$titulo", acadena(chat->titulo))
+      sino
+        mensaje = "Bienvenido ".nuevo_usuario->nombre." a ".chat->titulo
+      fin
+        enviarMensaje(chat->id, mensaje, md)
+        retornar "Nuevo miembro en ".chat->titulo."\nMiembro: ".nuevo_usuario->nombre." (".nuevo_usuario->id.")"
+    fin
+  fin
+  retornar falso
+fin
+
+funcion mensajes()
+  si matches[1] == "id"
+    enviarMensaje(chat->id, "*Chat ID*: ".chat->id.". *User ID*: ".usuario->id, md)
+  fin
+  si matches[1] == "start"
+    ayuda = '{"inline_keyboard":[[{"text":"Programación Latino","url":"https://github.com/primitivorm/latino"},{"text":"Repositorio del Bot","url":"https://github.com/jarriztg/telegram-bot-latino"}]]}'
+  	enviarTeclado(chat->id, "¡Hey! ".no_markdown(usuario->nombre)."\n\nEstás probando el nuevo bot escrito completamente en la *programación Latino*. Por el momento faltan cosas. Pero de poco a poco irá mejorando 😄👍", ayuda, md)
+  fin
+  si matches[1] == "bienvenida"
+    hash = "status:".chat->id.":bienvenida"
+    hash2 = "custom:".chat->id.":bienvenida"
+    estado = redis->obtener(com, hash)
+    elegir(matches[2])
+    caso "on":
+      si estado == "on"
+        enviarMensaje(chat->id, "La bienvenida *ya está activada*", md)
+      sino
+        redis->asignar(com, hash, matches[2])
+        enviarMensaje(chat->id, "La bienvenida *activada*", md)
+      fin
+    caso "off":
+      si estado == "off"
+        enviarMensaje(chat->id, "La bienvenida *ya está desactivada*", md)
+      sino
+        redis->asignar(com, hash, matches[2])
+        enviarMensaje(chat->id, "La bienvenida *desactivada*", md)
+      fin
+    defecto:
+      ok = enviarMensaje(chat->id, "*Nueva bienvenida asignada*:\n".matches[2], md)
+      si ! ok
+        enviarMensaje(chat->id, "*El markdown está mal.*", md)
+      sino
+        redis->asignar(com, hash2, matches[2])
+      fin
+    fin
   fin
 fin
 
 comandos = [
 	"^/(id)$",
+  "^/(id)@".bot->usuario."$",
   "^/(start)$",
+  "^/(start)@".bot->usuario."$",
+  "^/(bienvenida) (.+)$",
 	{
-		"accion": mensajes
+		"accion": mensajes,
+    "subproceso": subproceso
 	}
 ]

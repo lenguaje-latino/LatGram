@@ -13,7 +13,7 @@ funcion actualizaciones()
 		offset = offset + 1
 		curl->peticion(URL . "getUpdates?offset=" . offset)
 	fin
-  retorno consulta
+	retornar consulta
 fin
 
 funcion verificar_apikey()
@@ -41,7 +41,7 @@ bot = {
 
 
 funcion enviarMensaje(chatId, texto, formato, responder)
-	enlace = URL . "sendMessage?chat_id=" . chatId . "&text=" . curl->escape(texto)
+	enlace = URL . "sendMessage?chat_id=" . chatId . "&text=" . cod(texto)
 
 	si formato
 		elegir(formato)
@@ -59,14 +59,14 @@ funcion enviarMensaje(chatId, texto, formato, responder)
   raw = curl->peticion(enlace)
   estado = json->decodificar(raw)
   si estado->ok
-  	retornar convertir->cadena(estado)
+  	retornar estado
   sino
   	retornar falso
   fin
 fin
 
 funcion enviarTeclado(chatId, texto, teclado, formato)
-	enlace = URL . "sendMessage?chat_id=" . chatId . "&text=" . curl->escape(texto) . "&reply_markup=" .curl->escape(teclado)
+	enlace = URL . "sendMessage?chat_id=" . chatId . "&text=" . cod(texto) . "&reply_markup=" .curl->escape(teclado)
 
 	si formato
 		elegir(formato)
@@ -81,10 +81,9 @@ funcion enviarTeclado(chatId, texto, teclado, formato)
   raw = curl->peticion(enlace)
   estado = json->decodificar(raw)
   si estado->ok
-  	retornar convertir->cadena(estado)
-  sino
-  	retornar falso
+  	retornar estado
   fin
+  retornar falso
 fin
 
 funcion enviarAccion(chatId, accion)
@@ -105,35 +104,50 @@ fin
 funcion reenviarMensaje(chatId, userId, msgId)
 	raw = curl->peticion(URL . "forwardMessage?chat_id=" . chatId . "&from_chat_id=" . userId . "&message_id=" . msgId)
 	estado = json->decodificar(raw)
-	retorno estado->ok
+	si estado->ok
+		retornar estado
+	fin
+	retornar falso
 fin
 
 
 // Acciones de chat
 
 funcion abandonarChat(chatId)
-  	raw = curl->peticion(URL . "leaveChat?chat_id=" . chatId)
+  raw = curl->peticion(URL . "leaveChat?chat_id=" . chatId)
 	estado = json->decodificar(raw)
-	retorno estado->ok
+	si estado->ok
+		retornar estado
+	fin
+	retornar falso
 fin
 
 funcion expulsarUsuario(chatId, userId)
 	raw = curl->peticion(URL . "kickChatMember?chat_id=" . chatId . "&user_id=" . userId)
 	curl->peticion(URL . "unbanChatMember?chat_id=" . chatId . "&user_id=" . userId)
 	estado = json->decodificar(raw)
-	retorno estado->ok
+	si estado->ok
+		retornar estado
+	fin
+	retornar falso
 fin
 
 funcion banearUsuario(chatId, userId)
-  	raw = curl->peticion(URL . "kickChatMember?chat_id=" . chatId . "&user_id=" . userId)
+  raw = curl->peticion(URL . "kickChatMember?chat_id=" . chatId . "&user_id=" . userId)
 	estado = json->decodificar(raw)
-	retorno estado->ok
+	si estado->ok
+		retornar estado
+	fin
+	retornar falso
 fin
 
 funcion desbanearUsuario(chatId, userId)
-  	raw = curl->peticion(URL . "unbanChatMember?chat_id=" . chatId . "&user_id=" . userId)
-	raw = json->decodificar(raw)
-	retorno estado->ok
+  raw = curl->peticion(URL . "unbanChatMember?chat_id=" . chatId . "&user_id=" . userId)
+	estado = json->decodificar(raw)
+	si estado->ok
+		retornar estado
+	fin
+	retornar falso
 fin
 
 // Juegos

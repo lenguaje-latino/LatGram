@@ -1,8 +1,27 @@
 funcion no_markdown(texto, reemplazo)
   si ! reemplazo
-    texto = cadena->reemplazar(texto, "*", "x")
-    texto = cadena->reemplazar(texto, "_", "x")
-    texto = cadena->reemplazar(texto, "`", "x")
+    texto = cadena->reemplazar(texto, "*", "")
+    texto = cadena->reemplazar(texto, "_", "")
+    texto = cadena->reemplazar(texto, "`", "")
+  sino
+    texto = cadena->reemplazar(texto, "*", reemplazo)
+    texto = cadena->reemplazar(texto, "_", reemplazo)
+    texto = cadena->reemplazar(texto, "`", reemplazo)
   fin
   retornar texto
 fin
+
+funcion cod(texto)
+    x = cadena->reemplazar(texto, "\n", "
+")
+  retornar curl->escape(x)
+fin
+/*
+funcion crear_teclado(x)
+  desde (i=0;i<)
+  {"inline_keyboard":[
+  [{"text":"Programación Latino","url":"https://github.com/primitivorm/latino"},
+  {"text":"Repositorio del Bot","url":"https://github.com/jarriztg/telegram-bot-latino"}]
+  ]}
+fin
+*/

@@ -1,0 +1,13 @@
+funcion mensajes()
+  si matches[0][1] == "perro"
+    enviarMensaje(usuario->id, "perro", md, falso)
+  fin
+fin
+
+comandos = [
+	"^/(perro)$",
+	{
+		"accion": mensajes
+	}
+]
+retornar comandos
