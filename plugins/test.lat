@@ -21,6 +21,12 @@ funcion subproceso()
         retornar "Nuevo miembro en ".chat->titulo."\nMiembro: ".nuevo_usuario->nombre." (".nuevo_usuario->id.")"
     fin
   fin
+  hash = "custom:".chat->id.":comando"
+  comando_nuevo = redis->hobtener(com, hash, msg->texto)
+  si comando_nuevo
+    enviarMensaje(chat->id, comando_nuevo, md)
+    retorno "comando personalizado ejecutado"
+  fin
   retornar falso
 fin
 
@@ -31,6 +37,15 @@ funcion mensajes()
   si matches[1] == "start"
     ayuda = '{"inline_keyboard":[[{"text":"Programación Latino","url":"https://github.com/primitivorm/latino"},{"text":"Repositorio del Bot","url":"https://github.com/jarriztg/telegram-bot-latino"}]]}'
   	enviarTeclado(chat->id, "¡Hey! ".no_markdown(usuario->nombre)."\n\nEstás probando el nuevo bot escrito completamente en la *programación Latino*. Por el momento faltan cosas. Pero de poco a poco irá mejorando 😄👍", ayuda, md)
+  fin
+  si matches[1] == "comando"
+    hash = "custom:".chat->id.":comando"
+    ok = enviarMensaje(chat->id, "*Nuevo comando*: !".matches[2]."\nResponde: ".matches[3], md)
+    si ok
+      redis->hasignar(com, hash, "!".matches[2], matches[3])
+    sino
+      enviarMensaje(chat->id, "*Error de markdown*", md)
+    fin
   fin
   si matches[1] == "bienvenida"
     hash = "status:".chat->id.":bienvenida"
@@ -68,6 +83,7 @@ comandos = [
   "^/(start)$",
   "^/(start)@".bot->usuario."$",
   "^/(bienvenida) (.+)$",
+  "^/(comando) !([a-Z]+) (.*)$",
 	{
 		"accion": mensajes,
     "subproceso": subproceso
