@@ -1,4 +1,8 @@
 config = incluir ('ajustes')
+URL = 'https://api.telegram.org/bot' . config->api_key . '/'
+aURL = 'https://api.telegram.org/file/bot' . config->api_key . '/'
+html = "html"
+md = "markdown"
 incluir ('utilidades')
 incluir ('metodos')
 
@@ -21,41 +25,51 @@ funcion iniciar_bot()
 mientras verdadero
 	res = json->decodificar(actualizaciones())
 	res = res->result[0]
+	// traducimos la api
+	msg = res->message
 	msg = {
-		"texto": res->message->text,
-		"id": res->message->message_id,
-		"fecha": res->message->date,
-		"fecha_reenvio": res->message->forward_date,
-		"fecha_editado": res->message->edit_date,
-		"capcion": res->message->caption,
-		"nuevo_titulo": res->message->new_chat_title,
-		"foto_eliminada": res->message->delete_chat_photo,
-		"grupo_chat_creado": res->message->group_chat_created,
-		"supergrupo_creado": res->message->supergroup_chat_created,
-		"canal_chat_creado": res->message->channel_chat_created,
-		"migrado_para_id": res->message->migrate_to_chat_id,
-		"migrado_desde_id": res->message->migrate_from_chat_id
+		"id": msg->id,
+		"texto": msg->text,
+		"fecha": msg->date,
+		"de": {
+			"id": msg->from->id,
+			"nombre": msg->from->first_name,
+			"apellido": msg->from->last_name,
+			"usuario": msg->from->username
+		},
+		"chat": {
+			"id": msg->chat->id,
+			"nombre": msg->chat->first_name,
+			"apellido": msg->chat->last_name,
+			"usuario": msg->chat->username,
+			"tipo": msg->chat->type
 		}
-
-	usuario = {
-		"id": res->message->from->id,
-		"nombre": res->message->from->first_name,
-		"apellido": res->message->from->last_name,
-		"usuario": res->message->from->username
-			}
-
-	chat = {
-		"id": res->message->chat->id,
-		"titulo": res->message->chat->title,
-		"usuario": res->message->chat->username
-			}
+	}
 
 	nuevo_usuario = {
-		"id": res->message->new_chat_member->id,
-		"nombre": res->message->new_chat_member->first_name,
+		"id": msg->new_chat_member->id,
+		"nombre": msg->new_chat_member->first_name,
 		"apellido": res->message->new_chat_member->last_name,
 		"usuario": res->message->new_chat_member->username
 			}
+
+		sticker = {
+			"anchura": res->message->sticker->width,
+			"altura": res->message->sticker->height,
+			"emoji": res->message->sticker->emoji,
+			"thumb": {
+				"archivo_id": res->message->sticker->thumb->file_id,
+				"archivo_t": res->message->sticker->thumb->file_size,
+				"anchura": res->message->sticker->thumb->width,
+				"altura": res->message->sticker->thumb->height
+			},
+			"archivo_id": res->message->sticker->file_id,
+			"archivo_t": res->message->sticker->file_size
+		}
+
+//		foto = {
+//
+//		}
 
 	inline = {
 		"id": res->inline_query->id,
@@ -67,29 +81,30 @@ mientras verdadero
 			"nombre": bot->result->first_name,
 			"usuario": bot->result->username
 		}
-
-incluir("plugins/test")
 si (res)
-in = comandos[lista->longitud(comandos)-1]
-
-si convertir->cadena(in->subproceso) == "funcion"
-	retorna = in->subproceso()
-	si retorna imprimir("Subproceso: ".retorna, 1) fin
-fin
-
-desde (i=0; i<(lista->longitud(comandos)-1); i++)
-	matches = cadena->match(msg->texto, comandos[i])
-	matches = matches[0]
-	si matches
- 		si convertir->cadena(in->accion) == "funcion"
-			in->accion()
-			imprimir("\nComando ejecutado: ".matches[0]."\nUsuario: ".usuario->nombre."\nID: ".usuario->id, 1)
+si config->ires == verdadero ires() fin
+desde (o=0; o<config->plugins; o++)
+	plugin = incluir(config->plugins[o])
+	imprimir(tipo(plugin)) # convierte el diccionario a cadena si lo corres
+	in = plugin->comandos[lista->longitud(plugin->comandos)-1] // obtenemos el array ultimo del retorno para acortarlo
+	si convertir->cadena(in->subproceso) == "funcion" // convertimos a cadena
+		retorna = in->subproceso()
+		si retorna imprimir("\nSubproceso: ".retorna, 1) fin
+	fin
+	desde (i=0; i<(plugin->comandos-1); i++)
+		matches = cadena->match(msg->texto, plugin->comandos[i])
+		matches = matches[0]
+		blocks = matches
+		si matches
+			si convertir->cadena(in->accion) == "funcion"
+				in->accion()
+				imprimir("\nComando ejecutado: ".matches[0]."\nUsuario: ".msg->de->nombre."\nID: ".msg->de->id, 1)
+			fin
 		fin
 	fin
 fin
 fin
 fin
 fin
-
-
 iniciar_bot()
+redis->desconectar(com)

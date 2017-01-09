@@ -1,8 +1,3 @@
-URL = 'https://api.telegram.org/bot' . config->api_key . '/'
-aURL = 'https://api.telegram.org/file/bot' . config->api_key . '/'
-html = "html"
-md = "markdown"
-
 // Actualizaciones
 
 funcion actualizaciones()
@@ -264,7 +259,6 @@ funcion enviarSticker(chatId, sticker, capcion, notificar, msgId)
   estado = json->decodificar(raw)
   retorno estado->ok
 fin
-
 
 funcion enviarVideo(chatId, video, capcion, notificar, msgId)
 	enlace = URL . "sendVideo?chat_id=".chatId."&video=".curl->escape(video)

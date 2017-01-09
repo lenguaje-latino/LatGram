@@ -16,6 +16,47 @@ funcion cod(texto)
 ")
   retornar curl->escape(x)
 fin
+
+funcion usuario_es_admin(chatId, userId)
+	res = curl->peticion(URL . "getChatAdministrators?chat_id=".chatId)
+	j = json->decodificar(res)
+	desde (i=0; i<lista->longitud(j->result);i++)
+		si j->result[i]->user->id == userId
+			retornar verdadero
+		fin
+  fin
+	retornar falso
+fin
+
+funcion ires()
+  si res
+    imprimir(sistema->pipe("echo '".res."' | jq -r '.'"))
+    retornar 1
+  fin
+  imprimir("\033[1;32mVariable res no encontrada", 1)
+  retornar 0
+fin
+
+funcion leer_comandos()
+si comandos
+in = comandos[lista->longitud(comandos)-1] // obtenemos el array ultimo del retorno para acortarlo
+si convertir->cadena(in->subproceso) == "funcion" // convertimos a cadena
+	retorna = in->subproceso()
+	si retorna imprimir("\nSubproceso: ".retorna, 1) fin
+fin
+desde (i=0; i<(comandos-1); i++)
+	matches = cadena->match(msg->texto, comandos[i])
+	matches = matches[0]
+	blocks = matches
+	si matches
+		si convertir->cadena(in->accion) == "funcion"
+			in->accion()
+			imprimir("\nComando ejecutado: ".matches[0]."\nUsuario: ".msg->de->nombre."\nID: ".msg->de->id, 1)
+		fin
+	fin
+fin
+fin
+fin
 /*
 funcion crear_teclado(x)
   desde (i=0;i<)
