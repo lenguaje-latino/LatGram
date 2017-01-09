@@ -21,8 +21,8 @@ fin
 
 bot = ObtenerBot()
 com = redis->conectar("127.0.0.1", 6379)
+
 funcion iniciar_bot()
-mientras verdadero
 	res = json->decodificar(actualizaciones())
 	res = res->result[0]
 	// traducimos la api
@@ -105,6 +105,8 @@ desde (o=0; o<config->plugins; o++)
 fin
 fin
 fin
+
+mientras verdadero
+	iniciar_bot()
 fin
-iniciar_bot()
 redis->desconectar(com)
