@@ -83,8 +83,8 @@ funcion iniciar_bot()
 		}
 si (res)
 si config->ires == verdadero ires() fin
-desde (o=0; o<config->plugins; o++)
-	plugin = incluir(config->plugins[o])
+desde (o=0; o<config->plugins; o++) // aumento cada vez la variable 'o' hasta el tamaño de la lista de los plugins
+	plugin = incluir(config->dir.config->plugins[o]) // incluyo plugin por plugin
 	imprimir(tipo(plugin)) # convierte el diccionario a cadena si lo corres
 	in = plugin->comandos[lista->longitud(plugin->comandos)-1] // obtenemos el array ultimo del retorno para acortarlo
 	si convertir->cadena(in->subproceso) == "funcion" // convertimos a cadena
