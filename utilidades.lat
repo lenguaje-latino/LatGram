@@ -38,21 +38,18 @@ funcion ires()
 fin
 
 funcion cargar_plugins()
-        desde (o=0; o<config->plugins; o++)
+        plugins = []
+        desde (o=0; o<(config->plugins); o++)
                 plugin = incluir(config->dir.config->plugins[o])
-        	in = plugin->comandos[lista->longitud(plugin->comandos)-1] // obtenemos el array ultimo del retorno para acortarlo
-        	si convertir->cadena(in->subproceso) == "funcion" // convertimos a cadena
-        		retorna = in->subproceso()
-        		si retorna imprimir("\nSubproceso: ".retorna, 1) fin
-        	fin
+                lista->agregar(plugins, plugin)
         fin
+        retornar plugins
 fin
-/*
-funcion crear_teclado(x)
-  desde (i=0;i<)
-  {"inline_keyboard":[
-  [{"text":"Programación Latino","url":"https://github.com/primitivorm/latino"},
-  {"text":"Repositorio del Bot","url":"https://github.com/jarriztg/telegram-bot-latino"}]
-  ]}
+
+funcion parsear(x)
+  inline = []
+  desde (i=0;i<lista->longitud(x);i++)
+          lista->agregar(inline, x[i])
+  fin
+  retornar curl->escape('{"inline_keyboard":'.inline."}")
 fin
-*/
