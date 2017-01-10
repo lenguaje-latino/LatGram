@@ -1,13 +1,14 @@
-dir = "plugins/"
-plugins = [
-	"test",
-	"perro"
-  ]
-
 retornar {
+        "plugins": [
+          "subprocesos",
+          "basicos"
+          ],
+
+        "dir": "plugins/",
+
 	"admin": 189041244,
+
 	"api_key": "270233092:AAFfrK7qrqLXmhh9W3nC0qD3ufk7jZLPIKs",
-	"dir": dir,
-	"plugins": plugins,
-	"ires": falso // cambiar a verdadero para imprimir el resultado del res
-	}
+
+        "ires": falso // cambiar a verdadero para imprimir el resultado del res
+}
