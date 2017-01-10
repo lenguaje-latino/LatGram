@@ -1,7 +1,7 @@
 retornar {
         "plugins": [
-          "subprocesos",
-          "basicos"
+          "start",
+          "servicios"
           ],
 
         "dir": "plugins/",
