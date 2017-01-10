@@ -37,25 +37,15 @@ funcion ires()
   retornar 0
 fin
 
-funcion leer_comandos()
-si comandos
-in = comandos[lista->longitud(comandos)-1] // obtenemos el array ultimo del retorno para acortarlo
-si convertir->cadena(in->subproceso) == "funcion" // convertimos a cadena
-	retorna = in->subproceso()
-	si retorna imprimir("\nSubproceso: ".retorna, 1) fin
-fin
-desde (i=0; i<(comandos-1); i++)
-	matches = cadena->match(msg->texto, comandos[i])
-	matches = matches[0]
-	blocks = matches
-	si matches
-		si convertir->cadena(in->accion) == "funcion"
-			in->accion()
-			imprimir("\nComando ejecutado: ".matches[0]."\nUsuario: ".msg->de->nombre."\nID: ".msg->de->id, 1)
-		fin
-	fin
-fin
-fin
+funcion cargar_plugins()
+        desde (o=0; o<config->plugins; o++)
+                plugin = incluir(config->dir.config->plugins[o])
+        	in = plugin->comandos[lista->longitud(plugin->comandos)-1] // obtenemos el array ultimo del retorno para acortarlo
+        	si convertir->cadena(in->subproceso) == "funcion" // convertimos a cadena
+        		retorna = in->subproceso()
+        		si retorna imprimir("\nSubproceso: ".retorna, 1) fin
+        	fin
+        fin
 fin
 /*
 funcion crear_teclado(x)
