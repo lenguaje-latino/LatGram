@@ -12,6 +12,8 @@ si ! verificacion->ok
 	retorno 0
 fin
 
+com = redis->conectar("127.0.0.1", 6379)
+
 inicio = enviarMensaje(config->admin, "<b>Bot iniciado</b>", html, falso)
 si inicio
 	imprimir("Confirmación enviada a " . config->admin . ".\nBot @".bot->usuario, 1)
@@ -20,7 +22,14 @@ sino
 fin
 
 bot = ObtenerBot()
-com = redis->conectar("127.0.0.1", 6379)
+bot = bot->result
+bot = {
+		"id": bot->id,
+		"nombre": bot->first_name,
+		"usuario": bot->username
+	}
+plugins = cargar_plugins()
+imprimir(plugins)
 funcion iniciar_bot()
 	res = json->decodificar(actualizaciones())
 	res = res->result[0]
@@ -67,35 +76,29 @@ funcion iniciar_bot()
 		"peso": sticker->file_size
 	}
 
-//		foto = {
-//
-//		}
-
 	cinline = res->inline_query
 	cinline = {
 		"id": cinline->id,
 		"consulta": cinline->query
 		}
-
-	bot = bot->result
-	bot = {
-			"id": bot->id,
-			"nombre": bot->first_name,
-			"usuario": bot->username
-		}
-
 si (res)
 si config->ires ires() fin
-desde (i=0; i<(plugin->comandos-1); i++)
-	matches = cadena->match(msg->texto, plugin->comandos[i])
-	matches = matches[0]
-	blocks = matches
+desde (o=0; o<plugins; o++)
+	si convertir->cadena(plugins[o]->subproceso) == "funcion" // convertimos a cadena
+		retorna = plugins[o]->subproceso()
+		si retorna imprimir("\nSubproceso: ".retorna, 1) fin
+	fin
+desde (i=0; i<(plugins[o]->comandos); i++)
+	matches = cadena->match(msg->texto, plugins[o]->comandos[i])
 	si matches
-		si convertir->cadena(in->accion) == "funcion"
-			in->accion()
+		matches = matches[0]
+		blocks = matches
+		si convertir->cadena(plugins[o]->accion) == "funcion"
+			plugins[o]->accion()
 			imprimir("\nComando ejecutado: ".matches[0]."\nUsuario: ".msg->de->nombre."\nID: ".msg->de->id, 1)
 		fin
 	fin
+fin
 fin
 fin
 fin
