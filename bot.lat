@@ -21,85 +21,80 @@ fin
 
 bot = ObtenerBot()
 com = redis->conectar("127.0.0.1", 6379)
-
+i=0
 funcion iniciar_bot()
 	res = json->decodificar(actualizaciones())
 	res = res->result[0]
 	// traducimos la api
-	msg = res->message
+	msj = res->message
 	msg = {
-		"id": msg->id,
-		"texto": msg->text,
-		"fecha": msg->date,
+		"id": msj->id,
+		"texto": msj->text,
+		"fecha": msj->date,
 		"de": {
-			"id": msg->from->id,
-			"nombre": msg->from->first_name,
-			"apellido": msg->from->last_name,
-			"usuario": msg->from->username
+			"id": msj->from->id,
+			"nombre": msj->from->first_name,
+			"apellido": msj->from->last_name,
+			"usuario": msj->from->username
 		},
 		"chat": {
-			"id": msg->chat->id,
-			"nombre": msg->chat->first_name,
-			"apellido": msg->chat->last_name,
-			"usuario": msg->chat->username,
-			"tipo": msg->chat->type
+			"id": msj->chat->id,
+			"nombre": msj->chat->first_name,
+			"apellido": msj->chat->last_name,
+			"usuario": msj->chat->username,
+			"tipo": msj->chat->type
 		}
 	}
 
 	nuevo_usuario = {
-		"id": msg->new_chat_member->id,
-		"nombre": msg->new_chat_member->first_name,
-		"apellido": res->message->new_chat_member->last_name,
-		"usuario": res->message->new_chat_member->username
+		"id": msj->new_chat_member->id,
+		"nombre": msj->new_chat_member->first_name,
+		"apellido": msj->new_chat_member->last_name,
+		"usuario": msj->new_chat_member->username
 			}
 
-		sticker = {
-			"anchura": res->message->sticker->width,
-			"altura": res->message->sticker->height,
-			"emoji": res->message->sticker->emoji,
-			"thumb": {
-				"archivo_id": res->message->sticker->thumb->file_id,
-				"archivo_t": res->message->sticker->thumb->file_size,
-				"anchura": res->message->sticker->thumb->width,
-				"altura": res->message->sticker->thumb->height
-			},
-			"archivo_id": res->message->sticker->file_id,
-			"archivo_t": res->message->sticker->file_size
-		}
+	sticker = msj->sticker
+	sticker = {
+		"anchura": sticker->width,
+		"altura": sticker->height,
+		"emoji": sticker->emoji,
+		"thumb": {
+			"id": sticker->thumb->file_id,
+			"peso": sticker->thumb->file_size,
+			"anchura": sticker->thumb->width,
+			"altura": sticker->thumb->height
+		},
+		"id": sticker->file_id,
+		"peso": sticker->file_size
+	}
 
 //		foto = {
 //
 //		}
 
-	inline = {
-		"id": res->inline_query->id,
-		"consulta": res->inline_query->query
+	cinline = res->inline_query
+	cinline = {
+		"id": cinline->id,
+		"consulta": cinline->query
 		}
 
+	bot = bot->result
 	bot = {
-			"id": bot->result->id,
-			"nombre": bot->result->first_name,
-			"usuario": bot->result->username
+			"id": bot->id,
+			"nombre": bot->first_name,
+			"usuario": bot->username
 		}
+
 si (res)
-si config->ires == verdadero ires() fin
-desde (o=0; o<config->plugins; o++) // aumento cada vez la variable 'o' hasta el tamaño de la lista de los plugins
-	plugin = incluir(config->dir.config->plugins[o]) // incluyo plugin por plugin
-	imprimir(tipo(plugin)) # convierte el diccionario a cadena si lo corres
-	in = plugin->comandos[lista->longitud(plugin->comandos)-1] // obtenemos el array ultimo del retorno para acortarlo
-	si convertir->cadena(in->subproceso) == "funcion" // convertimos a cadena
-		retorna = in->subproceso()
-		si retorna imprimir("\nSubproceso: ".retorna, 1) fin
-	fin
-	desde (i=0; i<(plugin->comandos-1); i++)
-		matches = cadena->match(msg->texto, plugin->comandos[i])
-		matches = matches[0]
-		blocks = matches
-		si matches
-			si convertir->cadena(in->accion) == "funcion"
-				in->accion()
-				imprimir("\nComando ejecutado: ".matches[0]."\nUsuario: ".msg->de->nombre."\nID: ".msg->de->id, 1)
-			fin
+si config->ires ires() fin
+desde (i=0; i<(plugin->comandos-1); i++)
+	matches = cadena->match(msg->texto, plugin->comandos[i])
+	matches = matches[0]
+	blocks = matches
+	si matches
+		si convertir->cadena(in->accion) == "funcion"
+			in->accion()
+			imprimir("\nComando ejecutado: ".matches[0]."\nUsuario: ".msg->de->nombre."\nID: ".msg->de->id, 1)
 		fin
 	fin
 fin
@@ -109,4 +104,5 @@ fin
 mientras verdadero
 	iniciar_bot()
 fin
+
 redis->desconectar(com)
