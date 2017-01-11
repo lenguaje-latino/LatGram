@@ -12,8 +12,7 @@ funcion mensajes()
         fin
         si matches[1] == "comandos"
                 comandos = redis->smiembros(com, "custom:".msg->chat->id.":scomando")
-                si lista
-                        imprimir(comandos)
+                si comandos
                         desde (i=0; i<lista->longitud(comandos); i++)
                                 imprimir(comandos[i])
                         fin
