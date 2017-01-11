@@ -2,13 +2,16 @@
 
 funcion actualizaciones()
 	consulta = curl->peticion(URL . "getUpdates")
-	offset = json->decodificar(consulta)
-	offset = offset->result[0]->update_id
+	consulta = json->decodificar(consulta)
+	offset = consulta->result[0]->update_id
 	si offset > 0
 		offset = offset + 1
 		curl->peticion(URL . "getUpdates?offset=" . offset)
 	fin
-	retornar consulta
+	si consulta->result > 0
+		retornar consulta
+	fin
+	retornar falso
 fin
 
 funcion verificar_apikey()
@@ -491,11 +494,13 @@ funcion fotoInline(consultaId, foto, descripcion)
 fin
 
 funcion limpiar_updates()
-	update = json->decodificar(actualizaciones())
-	update = update->result
-	si lista->longitud(update) > config->max_updates
-		curl->peticion(URL."getUpdates?offset=".update[update-1]->update_id+1)
-		retornar anumero(update)
+	update = actualizaciones()
+	si update
+		update = update->result
+		si lista->longitud(update) > config->max_updates
+			curl->peticion(URL."getUpdates?offset=".update[update-1]->update_id+1)
+			retornar anumero(update)
+		fin
 	fin
 	retornar falso
 fin

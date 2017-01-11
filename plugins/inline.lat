@@ -1,0 +1,10 @@
+funcion inline()
+        enviarMensaje(config->admin, "Nos están consultando")
+fin
+
+retornar {
+        "icomandos": [
+                "hola"
+        ],
+        "inline": inline
+}

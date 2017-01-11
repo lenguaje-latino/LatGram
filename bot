@@ -75,7 +75,8 @@ funcion iniciar_bot()
 			"tipo": respuesta->chat->type,
 			"id": respuesta->chat->id,
 			"usuario": respuesta->chat->username,
-			"nombre": respuesta->chat->first_name
+			"nombre": respuesta->chat->first_name,
+			"apellido": respuesta->chat->last_name
 		},
 		"sticker": {
 			"id": respuesta->sticker->file_id,
@@ -116,7 +117,14 @@ funcion iniciar_bot()
 	cinline = res->inline_query
 	cinline = {
 		"id": cinline->id,
-		"consulta": cinline->query
+		"texto": cinline->query,
+		"offset": cinline->offset,
+		"de": {
+			"id": cinline->from->id,
+			"nombre": cinline->from->first_name,
+			"apellido": cinline->from->last_name,
+			"usuario": cinline->from->username
+		}
 	}
 	si config->ires ires() fin
 	desde (o=0; o<plugins; o++)
@@ -139,11 +147,26 @@ funcion iniciar_bot()
 				fin
 			fin
 		fin
+		si plugins[o]->icomandos
+			desde (i=0; i<(plugins[o]->icomandos); i++)
+				si cinline->texto
+					matches = cadena->match(cinline->texto, plugins[o]->icomandos[i])
+					si matches
+						matches = matches[0]
+						blocks = matches
+						si convertir->cadena(plugins[o]->inline) == "funcion"
+							plugins[o]->inline()
+							imprimir("\nConsulta inline: ".matches[0]."\nUsuario: ".cinline->de->username, 1)
+						fin
+					fin
+				fin
+			fin
+		fin
 	fin
 fin
 
 mientras verdadero
-	res = json->decodificar(actualizaciones())
+	res = actualizaciones()
 	si res
 		res = res->result[0]
 		iniciar_bot()

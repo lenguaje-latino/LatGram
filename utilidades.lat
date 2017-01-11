@@ -32,7 +32,7 @@ funcion ires()
                 imprimir(sistema->pipe("echo '".res."' | jq -r '.'"))
                 retornar verdadero
         fin
-        imprimir("\033[1;32mVariable res no encontrada", 1)
+        imprimir("Variable res no encontrada", 1)
         retornar falso
 fin
 
