@@ -1,38 +1,38 @@
 funcion subproceso()
-  hash = "status:".msg->chat->id.":bienvenida"
-  hash2 = "custom:".msg->chat->id.":bienvenida"
-  nombre_usuario = nuevo_usuario->usuario
-  si resp->sticker->id
-          enviarSticker(msg->chat->id, resp->sticker->id)
-  fin
-  si ! nombre_usuario
-    nombre_usuario = "(sin usuario)"
-  fin
-  bienvenida = redis->obtener(com, hash)
-  bienvenida_custom = redis->obtener(com, hash2)
-  si bienvenida == "on"
-    si nuevo_usuario->id
-      /*si bienvenida_custom
-        mensaje = cadena->reemplazar(bienvenida_custom, "$usuario", convertir->cadena(nombre_usuario))
-        mensaje = cadena->reemplazar(mensaje, "$id", convertir->cadena(nuevo_usuario->id))
-        mensaje = cadena->reemplazar(mensaje, "$nombre", convertir->cadena(nuevo_usuario->nombre))
-        mensaje = cadena->reemplazar(mensaje, "$titulo", convertir->cadena(msg->chat->titulo))
-sino*/
-        mensaje = "Bienvenido ".nuevo_usuario->nombre." a ".msg->chat->titulo
-      //fin
-        enviarMensaje(msg->chat->id, mensaje, md)
-        retornar "Nuevo miembro en ".msg->chat->titulo."\nMiembro: ".nuevo_usuario->nombre." (".nuevo_usuario->id.")"
-    fin
-  fin
-  hash = "custom:".msg->chat->id.":comando"
-  comando_nuevo = redis->hobtener(com, hash, msg->texto)
-  si comando_nuevo
-    enviarMensaje(msg->chat->id, comando_nuevo, md)
-    retorno "comando personalizado ejecutado"
-  fin
-  retornar falso
+        hash = "status:".msg->chat->id.":bienvenida"
+        hash2 = "custom:".msg->chat->id.":bienvenida"
+        nombre_usuario = nuevo_usuario->usuario
+        si resp->sticker->id
+                enviarSticker(msg->chat->id, resp->sticker->id)
+        fin
+        si ! nombre_usuario
+                nombre_usuario = "(sin usuario)"
+        fin
+        bienvenida = redis->obtener(com, hash)
+        bienvenida_custom = redis->obtener(com, hash2)
+        si bienvenida == "on"
+                si nuevo_usuario->id
+                        si bienvenida_custom
+                                mensaje = cadena->reemplazar(bienvenida_custom, "$usuario", convertir->cadena(nombre_usuario))
+                                mensaje = cadena->reemplazar(mensaje, "$id", convertir->cadena(nuevo_usuario->id))
+                                mensaje = cadena->reemplazar(mensaje, "$nombre", convertir->cadena(nuevo_usuario->nombre))
+                                mensaje = cadena->reemplazar(mensaje, "$titulo", convertir->cadena(msg->chat->titulo))
+                        sino
+                                mensaje = "Bienvenido ".nuevo_usuario->nombre." a ".msg->chat->titulo
+                        fin
+                        enviarMensaje(msg->chat->id, mensaje, md)
+                        retornar "Nuevo miembro en ".msg->chat->titulo."\nMiembro: ".nuevo_usuario->nombre." (".nuevo_usuario->id.")"
+                fin
+        fin
+        hash = "custom:".msg->chat->id.":comando"
+        comando_nuevo = redis->hobtener(com, hash, msg->texto)
+        si comando_nuevo
+                enviarMensaje(msg->chat->id, comando_nuevo, md)
+                retorno "comando personalizado ejecutado (".msg->texto.")"
+        fin
+        retornar falso
 fin
 
 retornar {
-    "subproceso": subproceso
+        "subproceso": subproceso
 }

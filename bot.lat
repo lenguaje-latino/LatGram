@@ -37,6 +37,7 @@ si config->limpiar_updates_al_iniciar
 fin
 
 plugins = cargar_plugins()
+imprimir(plugins)
 funcion iniciar_bot()
 	res = json->decodificar(actualizaciones())
 	res = res->result[0]

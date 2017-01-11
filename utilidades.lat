@@ -1,40 +1,39 @@
 funcion no_markdown(texto, reemplazo)
-  si ! reemplazo
-    texto = cadena->reemplazar(texto, "*", "")
-    texto = cadena->reemplazar(texto, "_", "")
-    texto = cadena->reemplazar(texto, "`", "")
-  sino
-    texto = cadena->reemplazar(texto, "*", reemplazo)
-    texto = cadena->reemplazar(texto, "_", reemplazo)
-    texto = cadena->reemplazar(texto, "`", reemplazo)
-  fin
-  retornar texto
+        si ! reemplazo
+                texto = cadena->reemplazar(texto, "*", "")
+                texto = cadena->reemplazar(texto, "_", "")
+                texto = cadena->reemplazar(texto, "`", "")
+        sino
+                texto = cadena->reemplazar(texto, "*", reemplazo)
+                texto = cadena->reemplazar(texto, "_", reemplazo)
+                texto = cadena->reemplazar(texto, "`", reemplazo)
+        fin
+        retornar texto
 fin
 
 funcion cod(texto)
-    x = cadena->reemplazar(texto, "\n", "
-")
-  retornar curl->escape(x)
+        x = cadena->reemplazar(texto, "\\n", "\n")
+        retornar curl->escape(x)
 fin
 
 funcion usuario_es_admin(chatId, userId)
-	res = curl->peticion(URL . "getChatAdministrators?chat_id=".chatId)
-	j = json->decodificar(res)
-	desde (i=0; i<lista->longitud(j->result);i++)
-		si j->result[i]->user->id == userId
-			retornar verdadero
-		fin
-  fin
-	retornar falso
+        res = curl->peticion(URL . "getChatAdministrators?chat_id=".chatId)
+        j = json->decodificar(res)
+        desde (i=0; i<lista->longitud(j->result);i++)
+                si j->result[i]->user->id == userId
+                        retornar verdadero
+                fin
+        fin
+        retornar falso
 fin
 
 funcion ires()
-  si res
-    imprimir(sistema->pipe("echo '".res."' | jq -r '.'"))
-    retornar 1
-  fin
-  imprimir("\033[1;32mVariable res no encontrada", 1)
-  retornar 0
+        si res
+                imprimir(sistema->pipe("echo '".res."' | jq -r '.'"))
+                retornar verdadero
+        fin
+        imprimir("\033[1;32mVariable res no encontrada", 1)
+        retornar falso
 fin
 
 funcion cargar_plugins()
@@ -46,10 +45,10 @@ funcion cargar_plugins()
         retornar plugins
 fin
 
-funcion parsear(x)
-  inline = []
-  desde (i=0;i<lista->longitud(x);i++)
-          lista->agregar(inline, x[i])
-  fin
-  retornar curl->escape('{"inline_keyboard":'.inline."}")
+funcion parsear(teclado_inline)
+        inline = []
+        desde (i=0;i<lista->longitud(teclado_inline);i++)
+                lista->agregar(inline, teclado_inline[i])
+        fin
+        retornar curl->escape('{"inline_keyboard":'.inline."}")
 fin

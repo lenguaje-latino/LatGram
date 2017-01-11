@@ -1,0 +1,60 @@
+funcion mensajes()
+        si matches[1] == "comando"
+                hash = "custom:".msg->chat->id.":comando"
+                shash = "custom:".msg->chat->id.":scomando"
+                ok = enviarMensaje(msg->chat->id, "*Nuevo comando*: !".matches[2]."\nResponde: ".matches[3], md)
+                si ok
+                        redis->hasignar(com, hash, "!".matches[2], matches[3])
+                        redis->sagregar(com, shash, "!".matches[2])
+                sino
+                        enviarMensaje(msg->chat->id, "*Error de markdown*", md)
+                fin
+        fin
+        si matches[1] == "comandos"
+                lista = redis->smiembros(com, "custom:".msg->chat->id.":scomando")
+                si lista
+                        desde (i=0; i<lista; i++)
+                                imprimir(lista[i])
+                        fin
+                fin
+        fin
+        si matches[1] == "bienvenida"
+                si ! usuario_es_admin(msg->chat->id, msg->de->id)
+                        enviarMensaje(msg->chat->id, "*No eres administrador en el grupo*", md)
+                        retornar 0
+                fin
+                hash = "status:".msg->chat->id.":bienvenida"
+                hash2 = "custom:".msg->chat->id.":bienvenida"
+                estado = redis->obtener(com, hash)
+                elegir(matches[2])
+                        caso "on":
+                        si estado == "on"
+                                enviarMensaje(msg->chat->id, "La bienvenida *ya está activada*", md)
+                                retornar 0
+                        fin
+                        redis->asignar(com, hash, matches[2])
+                        enviarMensaje(msg->chat->id, "La bienvenida *activada*", md)
+                        caso "off":
+                                si estado == "off"
+                                        enviarMensaje(msg->chat->id, "La bienvenida *ya está desactivada*", md)
+                                fin
+                                redis->asignar(com, hash, matches[2])
+                                enviarMensaje(msg->chat->id, "La bienvenida *desactivada*", md)
+                                defecto:
+                                ok = enviarMensaje(msg->chat->id, "*Nueva bienvenida asignada*:\n".matches[2], md)
+                                si ! ok
+                                        enviarMensaje(msg->chat->id, "*El markdown está mal.*", md)
+                                sino
+                                        redis->asignar(com, hash2, matches[2])
+                                fin
+                fin
+        fin
+fin
+
+retornar {
+        "comandos": [
+                "^/(bienvenida) (.+)$",
+                "^/(comando) !([a-Z]+) (.*)$"
+        ],
+        "accion": mensajes
+}
