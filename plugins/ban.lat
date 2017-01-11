@@ -1,0 +1,57 @@
+funcion mensajes()
+        si matches[1] == "ban"
+                si msg->chat->tipo != "private"
+                        si respuesta->a->id
+                                miembro_baneado = banearUsuario(msg->chat->id, respuesta->a->id)
+                                si miembro_baneado
+                                        enviarMensaje(msg->chat->id, no_markdown(respuesta->a->nombre)." *ha sido baneado*.", md)
+                                        retornar 1
+                                fin
+                                enviarMensaje(msg->chat->id, "*No puedo banear a este miembro*\nPosiblemente no soy administrador o intentas banear a un administrador.", md)
+                        sino
+                                enviarMensaje(msg->chat->id, "Este comando *solo funciona por respuesta*.", md)
+                        fin
+                sino
+                        enviarMensaje(msg->chat->id, "*Esta función no puede ser usada en chats públicos*", md)
+                fin
+        osi matches[1] == "expulsar"
+                si msg->chat->tipo != "private"
+                        si respuesta->a->id
+                                miembro_expulsado = expulsarUsuario(msg->chat->id, respuesta->a->id)
+                                si miembro_expulsado
+                                        enviarMensaje(msg->chat->id, no_markdown(respuesta->a->nombre)." *ha sido expulsado*.", md)
+                                        retornar 1
+                                fin
+                                enviarMensaje(msg->chat->id, "*No puedo expulsar a este miembro*\nPosiblemente no soy administrador o intentas banear a un administrador.", md)
+                        sino
+                                enviarMensaje(msg->chat->id, "Este comando *solo funciona por respuesta*.", md)
+                        fin
+                sino
+                        enviarMensaje(msg->chat->id, "*Esta función no puede ser usada en chats públicos*", md)
+                fin
+        osi matches[1] == "desban"
+                si msg->chat->tipo != "private"
+                        si respuesta->a->id
+                                ok = desbanearUsuario(msg->chat->id, respuesta->a->id)
+                                si ok
+                                        enviarMensaje(msg->chat->id, no_markdown(respuesta->a->nombre)." *ha sido desbaneado*.", md)
+                                sino
+                                        enviarMensaje(msg->chat->id, "*No puedo desbanear a este miembro*\nPosiblemente no soy administrador o intentas banear a un administrador.", md)
+                                fin
+                        sino
+                                enviarMensaje(msg->chat->id, "Este comando *solo funciona por respuesta*.", md)
+                        fin
+                sino
+                        enviarMensaje(msg->chat->id, "*Esta función no puede ser usada en chats públicos*", md)
+                fin
+         fin
+fin
+
+retornar {
+  "comandos": [
+        "^/(ban)$",
+        "^/(expulsar)$",
+        "^/(desban)$"
+ ],
+ "accion": mensajes
+}

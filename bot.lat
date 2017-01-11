@@ -37,7 +37,6 @@ si config->limpiar_updates_al_iniciar
 fin
 
 plugins = cargar_plugins()
-imprimir(plugins)
 funcion iniciar_bot()
 	// traducimos la api
 	msj = res->message
@@ -67,34 +66,34 @@ funcion iniciar_bot()
 		"usuario": msj->new_chat_member->username
 	}
 
-	resp = msj->reply_to_message
-	resp = {
-		"texto": resp->text,
-		"fecha": resp->date,
-		"chat": {
-			"tipo": resp->chat->type,
-			"id": resp->chat->id,
-			"usuario": res->chat->username,
-			"nombre": resp->chat->first_name
+	respuesta = msj->reply_to_message
+	respuesta = {
+		"texto": respuesta->text,
+		"fecha": respuesta->date,
+		"de": {
+			"tipo": respuesta->chat->type,
+			"id": respuesta->chat->id,
+			"usuario": respuesta->chat->username,
+			"nombre": respuesta->chat->first_name
 		},
 		"sticker": {
-			"id": resp->sticker->file_id,
+			"id": respuesta->sticker->file_id,
 			"thumb": {
-				"id": resp->sticker->thumb->file_id,
-				"peso": resp->sticker->thumb->file_size,
-				"anchura": resp->sticker->thumb->width,
-				"altura": resp->sticker->thumb->height
+				"id": respuesta->sticker->thumb->file_id,
+				"peso": respuesta->sticker->thumb->file_size,
+				"anchura": respuesta->sticker->thumb->width,
+				"altura": respuesta->sticker->thumb->height
 			},
-			"peso": resp->sticker->file_size,
-			"emoji": resp->sticker->emoji,
-			"anchura": resp->sticker->width,
-			"altura": resp->sticker->height
+			"peso": respuesta->sticker->file_size,
+			"emoji": respuesta->sticker->emoji,
+			"anchura": respuesta->sticker->width,
+			"altura": respuesta->sticker->height
 		},
-		"msg_id": resp->message_id,
-		"de": {
-			"id": resp->from->id,
-			"usuario": resp->from->username,
-			"first_name": resp->from->first_name
+		"msg_id": respuesta->message_id,
+		"a": {
+			"id": respuesta->from->id,
+			"usuario": respuesta->from->username,
+			"first_name": respuesta->from->first_name
 		}
 	}
 

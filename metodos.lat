@@ -49,7 +49,7 @@ funcion enviarMensaje(chatId, texto, formato, responder)
 fin
 
 funcion enviarTeclado(chatId, texto, teclado, formato)
-	enlace = URL . "sendMessage?chat_id=" . chatId . "&text=" . cod(texto) . "&reply_markup=".parsear(teclado) 
+	enlace = URL . "sendMessage?chat_id=" . chatId . "&text=" . cod(texto) . "&reply_markup=".parsear(teclado)
 
 	si formato
 		elegir(formato)

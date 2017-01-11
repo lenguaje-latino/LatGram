@@ -2,8 +2,8 @@ funcion subproceso()
         hash = "status:".msg->chat->id.":bienvenida"
         hash2 = "custom:".msg->chat->id.":bienvenida"
         nombre_usuario = nuevo_usuario->usuario
-        si resp->sticker->id
-                enviarSticker(msg->chat->id, resp->sticker->id)
+        si respuesta->sticker->id
+                enviarSticker(msg->chat->id, respuesta->sticker->id)
         fin
         si ! nombre_usuario
                 nombre_usuario = "(sin usuario)"
