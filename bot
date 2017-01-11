@@ -118,24 +118,22 @@ funcion iniciar_bot()
 		"id": cinline->id,
 		"consulta": cinline->query
 	}
-	si (res)
-		si config->ires ires() fin
-		desde (o=0; o<plugins; o++)
-			si convertir->cadena(plugins[o]->subproceso) == "funcion" // convertimos a cadena y obligamos al usuario a usar una función
-				retorna = plugins[o]->subproceso()
-				si retorna imprimir("\nSubproceso: ".retorna, 1) fin
-			fin
-			si plugins[o]->comandos
-				desde (i=0; i<(plugins[o]->comandos); i++)
-					si msg->texto
-						matches = cadena->match(msg->texto, plugins[o]->comandos[i])
-						si matches
-							matches = matches[0]
-							blocks = matches
-							si convertir->cadena(plugins[o]->accion) == "funcion"
-								plugins[o]->accion()
-								imprimir("\nComando ejecutado: ".matches[0]."\nUsuario: ".msg->de->nombre."\nID: ".msg->de->id, 1)
-							fin
+	si config->ires ires() fin
+	desde (o=0; o<plugins; o++)
+		si convertir->cadena(plugins[o]->subproceso) == "funcion" // convertimos a cadena y obligamos al usuario a usar una función
+			retorna = plugins[o]->subproceso()
+			si retorna imprimir("\nSubproceso: ".retorna, 1) fin
+		fin
+		si plugins[o]->comandos
+			desde (i=0; i<(plugins[o]->comandos); i++)
+				si msg->texto
+					matches = cadena->match(msg->texto, plugins[o]->comandos[i])
+					si matches
+						matches = matches[0]
+						blocks = matches
+						si convertir->cadena(plugins[o]->accion) == "funcion"
+							plugins[o]->accion()
+							imprimir("\nComando ejecutado: ".matches[0]."\nUsuario: ".msg->de->nombre."\nID: ".msg->de->id, 1)
 						fin
 					fin
 				fin
@@ -146,8 +144,10 @@ fin
 
 mientras verdadero
 	res = json->decodificar(actualizaciones())
-	res = res->result[0]
-	iniciar_bot()
+	si res
+		res = res->result[0]
+		iniciar_bot()
+	fin
 fin
 
 redis->desconectar(com)
