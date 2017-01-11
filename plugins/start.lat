@@ -13,7 +13,7 @@ fin
 
 retornar {
   "comandos": [
-        "^/([Ii][Dd])$",
+        "^/(id)$",
         "^/(id)@".bot->usuario."$",
         "^/(start)$",
         "^/(start)@".bot->usuario."$"
