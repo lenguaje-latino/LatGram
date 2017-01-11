@@ -11,10 +11,11 @@ funcion mensajes()
                 fin
         fin
         si matches[1] == "comandos"
-                lista = redis->smiembros(com, "custom:".msg->chat->id.":scomando")
+                comandos = redis->smiembros(com, "custom:".msg->chat->id.":scomando")
                 si lista
-                        desde (i=0; i<lista; i++)
-                                imprimir(lista[i])
+                        imprimir(comandos)
+                        desde (i=0; i<lista->longitud(comandos); i++)
+                                imprimir(comandos[i])
                         fin
                 fin
         fin
@@ -54,7 +55,8 @@ fin
 retornar {
         "comandos": [
                 "^/(bienvenida) (.+)$",
-                "^/(comando) !([a-Z]+) (.*)$"
+                "^/(comando) !([a-Z]+) (.*)$",
+                "^/(comandos)$"
         ],
         "accion": mensajes
 }

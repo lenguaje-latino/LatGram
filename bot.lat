@@ -39,8 +39,6 @@ fin
 plugins = cargar_plugins()
 imprimir(plugins)
 funcion iniciar_bot()
-	res = json->decodificar(actualizaciones())
-	res = res->result[0]
 	// traducimos la api
 	msj = res->message
 	msg = {
@@ -147,6 +145,8 @@ funcion iniciar_bot()
 fin
 
 mientras verdadero
+	res = json->decodificar(actualizaciones())
+	res = res->result[0]
 	iniciar_bot()
 fin
 

@@ -1,4 +1,8 @@
 retornar {
+        "admin": 189041244,
+
+        "api_key": "270233092:AAFfrK7qrqLXmhh9W3nC0qD3ufk7jZLPIKs",
+        
         "plugins": [
                 "servicios",
                 "start",
@@ -6,10 +10,6 @@ retornar {
         ],
 
         "dir": "plugins/",
-
-        "admin": 189041244,
-
-        "api_key": "270233092:AAFfrK7qrqLXmhh9W3nC0qD3ufk7jZLPIKs",
 
         "limpiar_updates_al_iniciar": verdadero,
 
