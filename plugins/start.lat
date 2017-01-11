@@ -19,14 +19,14 @@ funcion mensajes()
                   enviarMensaje(msg->chat->id, "*Error de markdown*", md)
           fin
   fin
-  si matches[1] == "comandos"
+/*  si matches[1] == "comandos"
           lista = redis->smiembros(com, "custom:".msg->chat->id.":scomando")
           si lista
                   desde (i=0; i<lista; i++)
                           imprimir(lista[i])
                   fin
           fin
-  fin
+  fin*/
   si matches[1] == "bienvenida"
           si ! usuario_es_admin(msg->chat->id, msg->de->id)
                   enviarMensaje(msg->chat->id, "*No eres administrador en el grupo*", md)
@@ -69,8 +69,7 @@ retornar {
         "^/(start)$",
         "^/(start)@".bot->usuario."$",
         "^/(bienvenida) (.+)$",
-        "^/(comando) !([a-Z]+) (.*)$",
-        "^/(comandos)$"
+        "^/(comando) !([a-Z]+) (.*)$"
  ],
  "accion": mensajes
 }

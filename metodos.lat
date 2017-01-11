@@ -13,51 +13,39 @@ fin
 
 funcion verificar_apikey()
 	consulta = curl->peticion(URL . "getUpdates")
-	res = json->decodificar(consulta)
-	retornar res
+	status = json->decodificar(consulta)
+	retornar status
 fin
 
 // bot
-
 funcion ObtenerBot()
 	consulta = curl->peticion(URL . "getMe")
-	res = json->decodificar(consulta)
-	retornar res
+	status = json->decodificar(consulta)
+	retornar status
 fin
 
-bot = ObtenerBot()
-bot = {
-	"id": bot->result->id,
-	"nombre": bot->result->first_name,
-	"usuario": bot->result->username
-}
-
 // Mensajes
-
-
 funcion enviarMensaje(chatId, texto, formato, responder)
 	enlace = URL . "sendMessage?chat_id=" . chatId . "&text=" . cod(texto)
 
 	si formato
 		elegir(formato)
 			caso "markdown":
-			enlace = enlace . "&parse_mode=markdown"
-
+			enlace = enlace . "&parse_mode=".formato
 			caso "html":
-			enlace = enlace . "&parse_mode=html"
+			enlace = enlace . "&parse_mode=".formato
 		fin
 	fin
 
 	si responder
 		enlace = enlace . "&reply_to_message_id=" . responder
 	fin
-  raw = curl->peticion(enlace)
-  estado = json->decodificar(raw)
-  si estado->ok
-  	retornar estado
-  sino
-  	retornar falso
-  fin
+	raw = curl->peticion(enlace)
+	estado = json->decodificar(raw)
+	si estado->ok
+		retornar estado
+	fin
+	retornar falso
 fin
 
 funcion enviarTeclado(chatId, texto, teclado, formato)
@@ -67,32 +55,36 @@ funcion enviarTeclado(chatId, texto, teclado, formato)
 		elegir(formato)
 			caso "markdown":
 			enlace = enlace . "&parse_mode=markdown"
-
 			caso "html":
 			enlace = enlace . "&parse_mode=html"
 		fin
 	fin
-
-  raw = curl->peticion(enlace)
-  estado = json->decodificar(raw)
-  si estado->ok
-  	retornar estado
-  fin
-  retornar falso
+	raw = curl->peticion(enlace)
+	estado = json->decodificar(raw)
+	si estado->ok
+		retornar estado
+	fin
+	retornar falso
 fin
 
-funcion enviarAccion(chatId, accion)
-	accion = cadena->reemplazar(accion, "escribiendo", "typing")
-	accion = cadena->reemplazar(accion, "subiendo_foto", "upload_photo")
-	accion = cadena->reemplazar(accion, "subiendo_video", "upload_video")
-	accion = cadena->reemplazar(accion, "subiendo_audio", "upload_audio")
-	accion = cadena->reemplazar(accion, "subiendo_documento", "upload_document")
-	accion = cadena->reemplazar(accion, "grabando_video", "record_video")
-	accion = cadena->reemplazar(accion, "grabando_audio", "record_audio")
-	accion = cadena->reemplazar(accion, "buscar_localizacion", "find_location")
+funcion enviarAccion(chatId, tipo)
+	elegir(tipo)
+		caso "escribiendo": accion = "typing"
+		caso "subir_foto": accion = "upload_photo"
+		caso "subir_video": accion = "upload_video"
+		caso "subir_audio": accion = "upload_audio"
+		caso "subir_archivo": accion = "upload_document"
+		caso "grabar_video": accion = "record_video"
+		caso "grabar_audio": accion = "record_audio"
+		caso "buscar_lugar": accion = "find_location"
+	fin
+	si ! accion retornar falso fin
 	raw = curl->peticion(URL . "sendChatAction?chat_id=" . chatId . "&action=" . accion)
 	estado = json->decodificar(raw)
-	retorno estado->ok
+	si estado->ok
+		retornar estado
+	fin
+	retornar falso
 fin
 
 
@@ -109,7 +101,7 @@ fin
 // Acciones de chat
 
 funcion abandonarChat(chatId)
-  raw = curl->peticion(URL . "leaveChat?chat_id=" . chatId)
+	raw = curl->peticion(URL . "leaveChat?chat_id=" . chatId)
 	estado = json->decodificar(raw)
 	si estado->ok
 		retornar estado
@@ -128,7 +120,7 @@ funcion expulsarUsuario(chatId, userId)
 fin
 
 funcion banearUsuario(chatId, userId)
-  raw = curl->peticion(URL . "kickChatMember?chat_id=" . chatId . "&user_id=" . userId)
+	raw = curl->peticion(URL . "kickChatMember?chat_id=" . chatId . "&user_id=" . userId)
 	estado = json->decodificar(raw)
 	si estado->ok
 		retornar estado
@@ -137,7 +129,7 @@ funcion banearUsuario(chatId, userId)
 fin
 
 funcion desbanearUsuario(chatId, userId)
-  raw = curl->peticion(URL . "unbanChatMember?chat_id=" . chatId . "&user_id=" . userId)
+	raw = curl->peticion(URL . "unbanChatMember?chat_id=" . chatId . "&user_id=" . userId)
 	estado = json->decodificar(raw)
 	si estado->ok
 		retornar estado
@@ -157,24 +149,24 @@ funcion enviarJuego(chatId, juego, notificacion, msgId)
 	si msgId
 		enlace = enlace . "&reply_to_message_id=".msgId
 	fin
-
-  raw = curl->peticion(enlace)
-  estado = json->decodificar(raw)
-  retorno estado->ok
- fin
+	raw = curl->peticion(enlace)
+	estado = json->decodificar(raw)
+	si estado->ok
+		retornar estado
+	fin
+	retornar falso
+fin
 
 // Enviar x
-
 
 funcion obtenerArchivo(Id)
 	datos = curl->peticion(URL . "getFile?file_id=" . Id)
 	status = json->decodificar(datos)
-
 	si status->ok
 		sistema('wget --no-check-certificate '.aURL.status->result->file_path)
+		retornar status
 	fin
-
-  retorno status->ok
+	retornar falso
 fin
 
 
@@ -193,9 +185,12 @@ funcion enviarFoto(chatId, foto, capcion, notificar, msgId)
 		enlace = enlace . "&reply_to_message_id=" . msgId
 	fin
 
-  raw = curl->peticion(enlace)
-  estado = json->decodificar(raw)
-  retorno estado->ok
+	raw = curl->peticion(enlace)
+	estado = json->decodificar(raw)
+	si estado->ok
+		retornar estado
+	fin
+	retornar falso
 fin
 
 funcion enviarAudio(chatId, audio, capcion, notificar, msgId)
@@ -213,9 +208,12 @@ funcion enviarAudio(chatId, audio, capcion, notificar, msgId)
 		enlace = enlace . "&reply_to_message_id=" . msgId
 	fin
 
-  raw = curl->peticion(enlace)
-  estado = json->decodificar(raw)
-  retorno estado->ok
+	raw = curl->peticion(enlace)
+	estado = json->decodificar(raw)
+	si estado->ok
+		retornar estado
+	fin
+	retornar falso
 fin
 
 
@@ -234,9 +232,12 @@ funcion enviarArchivo(chatId, documento, capcion, notificar, msgId)
 		enlace = enlace . "&reply_to_message_id=" . msgId
 	fin
 
-  raw = curl->peticion(enlace)
-  estado = json->decodificar(raw)
-  retorno estado->ok
+	raw = curl->peticion(enlace)
+	estado = json->decodificar(raw)
+	si estado->ok
+		retornar estado
+	fin
+	retornar falso
 fin
 
 
@@ -255,9 +256,12 @@ funcion enviarSticker(chatId, sticker, capcion, notificar, msgId)
 		enlace = enlace . "&reply_to_message_id=" . msgId
 	fin
 
-  raw = curl->peticion(enlace)
-  estado = json->decodificar(raw)
-  retorno estado->ok
+	raw = curl->peticion(enlace)
+	estado = json->decodificar(raw)
+	si estado->ok
+		retornar estado
+	fin
+	retornar falso
 fin
 
 funcion enviarVideo(chatId, video, capcion, notificar, msgId)
@@ -275,9 +279,12 @@ funcion enviarVideo(chatId, video, capcion, notificar, msgId)
 		enlace = enlace . "&reply_to_message_id=" . msgId
 	fin
 
-  raw = curl->peticion(enlace)
-  estado = json->decodificar(raw)
-  retorno estado->ok
+	raw = curl->peticion(enlace)
+	estado = json->decodificar(raw)
+	si estado->ok
+		retornar estado
+	fin
+	retornar falso
 fin
 
 
@@ -296,9 +303,12 @@ funcion enviarVoz(chatId, voz, capcion, notificar, msgId)
 		enlace = enlace . "&reply_to_message_id=" . msgId
 	fin
 
-  raw = curl->peticion(enlace)
-  estado = json->decodificar(raw)
-  retorno estado->ok
+	raw = curl->peticion(enlace)
+	estado = json->decodificar(raw)
+	si estado->ok
+		retornar estado
+	fin
+	retornar falso
 fin
 
 
@@ -319,8 +329,8 @@ funcion enviariFoto(chatId, foto, capcion, notificar, msgId)
 		enlace = enlace . "&reply_to_message_id=" . msgId
 	fin
 
-  curl = ejecutar_pipe("curl -sk '" . enlace . "' -F 'photo=@".foto."'")
-  retorno curl
+	curl = ejecutar_pipe("curl -sk '" . enlace . "' -F 'photo=@".foto."'")
+	retornar curl
 fin
 
 funcion enviariAudio(chatId, audio, capcion, notificar, msgId)
@@ -338,8 +348,8 @@ funcion enviariAudio(chatId, audio, capcion, notificar, msgId)
 		enlace = enlace . "&reply_to_message_id=" . msgId
 	fin
 
-  curl = ejecutar_pipe("curl -sk '" . enlace . "' -F 'audio=@".audio."'")
-  retorno curl
+	curl = ejecutar_pipe("curl -sk '" . enlace . "' -F 'audio=@".audio."'")
+	retornar curl
 fin
 
 
@@ -358,8 +368,8 @@ funcion enviariArchivo(chatId, documento, capcion, notificar, msgId)
 		enlace = enlace . "&reply_to_message_id=" . msgId
 	fin
 
-  curl = ejecutar_pipe("curl -sk '" . enlace . "' -F 'document=@".documento."'")
-  retorno curl
+	curl = ejecutar_pipe("curl -sk '" . enlace . "' -F 'document=@".documento."'")
+	retornar curl
 fin
 
 
@@ -378,8 +388,8 @@ funcion enviariSticker(chatId, sticker, capcion, notificar, msgId)
 		enlace = enlace . "&reply_to_message_id=" . msgId
 	fin
 
-  curl = ejecutar_pipe("curl -sk '" . enlace . "' -F 'sticker=@".sticker."'")
-  retorno curl
+	curl = ejecutar_pipe("curl -sk '" . enlace . "' -F 'sticker=@".sticker."'")
+	retornar curl
 fin
 
 
@@ -398,17 +408,17 @@ funcion enviariVideo(chatId, video, capcion, notificar, msgId)
 		enlace = enlace . "&reply_to_message_id=" . msgId
 	fin
 
-  curl = ejecutar_pipe("curl -sk '" . enlace . "' -F 'video=@".video."'")
-  retorno curl
+	curl = ejecutar_pipe("curl -sk '" . enlace . "' -F 'video=@".video."'")
+	retornar curl
 fin
 
 
 funcion enviariVoz(chatId, voz, capcion, notificar, msgId)
- 	enlace = URL . "sendVoice?chat_id=".chatId
+	enlace = URL . "sendVoice?chat_id=".chatId
 
- 	si capcion
- 		enlace = enlace . "&caption=" . capcion
- 	fin
+	si capcion
+		enlace = enlace . "&caption=" . capcion
+	fin
 
 	si notificar
 		enlace = enlace . "&disable_notification=true"
@@ -418,30 +428,30 @@ funcion enviariVoz(chatId, voz, capcion, notificar, msgId)
 		enlace = enlace . "&reply_to_message_id=" . msgId
 	fin
 
-  curl = ejecutar_pipe("curl -sk '" . enlace . "' -F 'voice=@".voz."'")
-  retorno curl
+	curl = ejecutar_pipe("curl -sk '" . enlace . "' -F 'voice=@".voz."'")
+	retornar curl
 fin
-
 
 // Utilidades del chat
 
 funcion obtenerCuentaMiembros(chatId)
 	raw = curl->peticion(URL . "getChatMembersCount?chat_id=".chatId)
-	res = json->decodificar(raw)
-
-	si res->ok
-		retorno res->result
-	sino
-		retorno falso
+	status = json->decodificar(raw)
+	si status->ok
+		retornar status
 	fin
+	retornar falso
 fin
 
 // consultas inline
 
 funcion enviarConsultaInline(IdConsulta, resultado)
 	raw = curl->peticion(URL . "answerInlineQuery?inline_query_id=".IdConsulta."&results=".resultado)
-	res = json->decodificar(raw)
-	retorno res->ok
+	status = json->decodificar(raw)
+	si status->ok
+		retornar status
+	fin
+	retornar falso
 fin
 
 
@@ -456,7 +466,6 @@ funcion textoInline(consultaId, titulo, texto, descripcion, formato, url)
 		elegir(formato)
 	 		caso "markdown":
 			articulo = articulo.',"parse_mode":"markdown"'
-
 			caso "html":
 			articulo = articulo.',"parse_mode":"html"'
 		fin
@@ -465,8 +474,7 @@ funcion textoInline(consultaId, titulo, texto, descripcion, formato, url)
 	si url
 		articulo = articulo.',"url":"'.url.'"'
 	fin
-
-  retorno articulo.'}]'
+	retornar articulo.'}]'
 fin
 
 funcion fotoInline(consultaId, foto, descripcion)
@@ -479,6 +487,15 @@ funcion fotoInline(consultaId, foto, descripcion)
 	si descripcion
 		articulo = articulo.',"description":"'.descripcion.'"'
 	fin
+	retornar articulo.'}]'
+fin
 
-  retorno articulo.'}]'
+funcion limpiar_updates()
+	update = json->decodificar(actualizaciones())
+	update = update->result
+	si lista->longitud(update) > config->max_updates
+		curl->peticion(URL."getUpdates?offset=".update[update-1]->update_id+1)
+		retornar anumero(update)
+	fin
+	retornar falso
 fin

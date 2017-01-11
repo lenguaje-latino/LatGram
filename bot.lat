@@ -6,13 +6,21 @@ md = "markdown"
 incluir ('utilidades')
 incluir ('metodos')
 
+bot = ObtenerBot()
+bot = bot->result
+bot = {
+	"id": bot->id,
+	"nombre": bot->first_name,
+	"usuario": bot->username
+}
+
 verificacion = verificar_apikey()
 si ! verificacion->ok
 	imprimir("\aERROR (".verificacion->error_code." - ".verificacion->description.")\n\nVerifica la apikey en ajustes.lat", 1)
 	retorno 0
 fin
 
-com = redis->conectar("127.0.0.1", 6379)
+com = redis->conectar(config->redis_ip, config->redis_puerto)
 
 inicio = enviarMensaje(config->admin, "<b>Bot iniciado</b>", html, falso)
 si inicio
@@ -21,15 +29,14 @@ sino
 	imprimir("Error en confirmación.\nBot @".bot->usuario, 1)
 fin
 
-bot = ObtenerBot()
-bot = bot->result
-bot = {
-		"id": bot->id,
-		"nombre": bot->first_name,
-		"usuario": bot->username
-	}
+si config->limpiar_updates_al_iniciar
+	updates = limpiar_updates()
+	si updates
+		imprimir("Actualizaciones limpias con un total de ".updates."\n", 1)
+	fin
+fin
+
 plugins = cargar_plugins()
-imprimir(plugins)
 funcion iniciar_bot()
 	res = json->decodificar(actualizaciones())
 	res = res->result[0]
@@ -59,7 +66,38 @@ funcion iniciar_bot()
 		"nombre": msj->new_chat_member->first_name,
 		"apellido": msj->new_chat_member->last_name,
 		"usuario": msj->new_chat_member->username
-			}
+	}
+
+	resp = msj->reply_to_message
+	resp = {
+		"texto": resp->text,
+		"fecha": resp->date,
+		"chat": {
+			"tipo": resp->chat->type,
+			"id": resp->chat->id,
+			"usuario": res->chat->username,
+			"nombre": resp->chat->first_name
+		},
+		"sticker": {
+			"id": resp->sticker->file_id,
+			"thumb": {
+				"id": resp->sticker->thumb->file_id,
+				"peso": resp->sticker->thumb->file_size,
+				"anchura": resp->sticker->thumb->width,
+				"altura": resp->sticker->thumb->height
+			},
+			"peso": resp->sticker->file_size,
+			"emoji": resp->sticker->emoji,
+			"anchura": resp->sticker->width,
+			"altura": resp->sticker->height
+		},
+		"msg_id": resp->message_id,
+		"de": {
+			"id": resp->from->id,
+			"usuario": resp->from->username,
+			"first_name": resp->from->first_name
+		}
+	}
 
 	sticker = msj->sticker
 	sticker = {
@@ -80,27 +118,31 @@ funcion iniciar_bot()
 	cinline = {
 		"id": cinline->id,
 		"consulta": cinline->query
-		}
-si (res)
-si config->ires ires() fin
-desde (o=0; o<plugins; o++)
-	si convertir->cadena(plugins[o]->subproceso) == "funcion" // convertimos a cadena
-		retorna = plugins[o]->subproceso()
-		si retorna imprimir("\nSubproceso: ".retorna, 1) fin
-	fin
-desde (i=0; i<(plugins[o]->comandos); i++)
-	matches = cadena->match(msg->texto, plugins[o]->comandos[i])
-	si matches
-		matches = matches[0]
-		blocks = matches
-		si convertir->cadena(plugins[o]->accion) == "funcion"
-			plugins[o]->accion()
-			imprimir("\nComando ejecutado: ".matches[0]."\nUsuario: ".msg->de->nombre."\nID: ".msg->de->id, 1)
+	}
+	si (res)
+		si config->ires ires() fin
+		desde (o=0; o<plugins; o++)
+			si convertir->cadena(plugins[o]->subproceso) == "funcion" // convertimos a cadena y obligamos al usuario a usar una función
+				retorna = plugins[o]->subproceso()
+				si retorna imprimir("\nSubproceso: ".retorna, 1) fin
+			fin
+			si plugins[o]->comandos
+				desde (i=0; i<(plugins[o]->comandos); i++)
+					si msg->texto
+						matches = cadena->match(msg->texto, plugins[o]->comandos[i])
+						si matches
+							matches = matches[0]
+							blocks = matches
+							si convertir->cadena(plugins[o]->accion) == "funcion"
+								plugins[o]->accion()
+								imprimir("\nComando ejecutado: ".matches[0]."\nUsuario: ".msg->de->nombre."\nID: ".msg->de->id, 1)
+							fin
+						fin
+					fin
+				fin
+			fin
 		fin
 	fin
-fin
-fin
-fin
 fin
 
 mientras verdadero

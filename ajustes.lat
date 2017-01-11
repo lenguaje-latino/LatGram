@@ -10,5 +10,12 @@ retornar {
 
 	"api_key": "270233092:AAFfrK7qrqLXmhh9W3nC0qD3ufk7jZLPIKs",
 
-        "ires": falso // cambiar a verdadero para imprimir el resultado del res
+        "limpiar_updates_al_iniciar": verdadero,
+
+        "max_updates": 3, // indicamos un valor como máximo de updates que pueden quedar al iniciar.
+
+        "ires": verdadero, // cambiar a verdadero para imprimir el resultado del res
+
+        "redis_ip": "127.0.0.1",
+        "redis_puerto": 6379
 }
