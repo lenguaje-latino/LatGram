@@ -1,5 +1,5 @@
 #!/usr/bin/latino
-config = incluir ('ajustes')
+config = incluir ('config')
 URL = 'https://api.telegram.org/bot' . config->api_key . '/'
 aURL = 'https://api.telegram.org/file/bot' . config->api_key . '/'
 html = "html"

@@ -1,21 +1,19 @@
 funcion subproceso()
-        hash = "status:".msg->chat->id.":bienvenida"
-        hash2 = "custom:".msg->chat->id.":bienvenida"
-        si respuesta->sticker->id
-                enviarSticker(msg->chat->id, respuesta->sticker->id)
+        funcion usuario_hace_spam()
+                si msg->chat->tipo != "private"
+                        spam_match = cadena->match(msg->texto, "(@[[:alnum:]]+)")
+                        si spam_match
+                                es_chat = obtenerChat(spam_match[0][1])
+                                si es_chat
+                                        retornar verdadero
+                                fin
+                        fin
+                fin
+                retornar falso
         fin
-        bienvenida = redis->obtener(com, hash)
-        bienvenida_custom = redis->obtener(com, hash2)
-        si bot_eliminado()
-                redis->sborrar(com, bot_shash, acadena(msg->chat->id))
-                retornar "Bot eliminado de ".msg->chat->titulo
-        fin
-        si bot_agregado()
-                enviarMensaje(msg->chat->id, "¡Hola! soy ".bot->nombre.", gracias por añadirme a este chat.")
-                redis->sagregar(com, bot_shash, acadena(msg->chat->id))
-                retornar "Bot añadido a ".msg->chat->titulo
-        fin
-        si bienvenida == "on"
+
+        funcion nuevo_usuario()
+                bienvenida_custom = redis->obtener(com, "custom:".msg->chat->id.":bienvenida")
                 si msg->agregado->id
                         nombre_usuario = msg->agregado->usuario
                         si ! nombre_usuario
@@ -25,22 +23,61 @@ funcion subproceso()
                                 mensaje = cadena->reemplazar(bienvenida_custom, "$usuario", nombre_usuario)
                                 mensaje = cadena->reemplazar(mensaje, "$id", acadena(msg->agregado->id))
                                 mensaje = cadena->reemplazar(mensaje, "$nombre", msg->agregado->nombre)
-                                mensaje = mensaje
-                                ultimo = cadena->reemplazar(mensaje, "$titulo", msg->chat->titulo)
+                                mensaje = cadena->reemplazar(mensaje, "$titulo", msg->chat->titulo)
                         sino
-                                mensaje = "Bienvenido ".msg->agregado->nombre." a ".msg->chat->titulo
+                                mensaje = "Bienvenido ".no_markdown(msg->agregado->nombre)." a ".no_markdown(msg->chat->titulo)
                         fin
-                        enviarMensaje(msg->chat->id, mensaje, md)
+                        retornar mensaje
+                fin
+                retornar falso
+        fin
+
+        funcion comando_personalizado()
+                hash = "custom:".msg->chat->id.":comando"
+                comando_nuevo = redis->hobtener(com, hash, msg->texto)
+                si comando_nuevo
+                        retornar comando_nuevo
+                fin
+                retornar falso
+        fin
+
+        si bot_eliminado()
+                redis->sborrar(com, bot_shash, acadena(msg->chat->id))
+                retornar "Bot eliminado de ".msg->chat->titulo
+        fin
+        si bot_agregado()
+                enviarMensaje(msg->chat->id, "¡Hola! soy ".bot->nombre.", gracias por añadirme a este chat.")
+                redis->sagregar(com, bot_shash, acadena(msg->chat->id))
+                retornar "Bot añadido a ".msg->chat->titulo
+        fin
+
+        si comando_personalizado()
+                status = redis->obtener(com, "ajustes:".msg->chat->id.":extras")
+                si status == "on"
+                        enviarMensaje(msg->chat->id, comando_personalizado(), md)
+                        retornar "comando personalizado ejecutado (".msg->texto.")"
+                fin
+        fin
+
+        si nuevo_usuario()
+                status = redis->obtener(com, "ajustes:".msg->chat->id.":bienvenida")
+                si status == "on"
+                        enviarMensaje(msg->chat->id, nuevo_usuario(), md)
                         retornar "Nuevo miembro en ".msg->chat->titulo."\nMiembro: ".msg->agregado->nombre." (".msg->agregado->id.")"
                 fin
         fin
-        hash = "custom:".msg->chat->id.":comando"
-        comando_nuevo = redis->hobtener(com, hash, msg->texto)
-        si comando_nuevo
-                enviarMensaje(msg->chat->id, comando_nuevo, md)
-                retorno "comando personalizado ejecutado (".msg->texto.")"
+
+        si usuario_hace_spam()
+                status = redis->obtener(com, "ajustes:".msg->chat->id.":spam")
+                si status == "off"
+                        accion = banearUsuario(msg->chat->id, msg->de->id)
+                        si ! accion
+                                retornar "spam en chat en ".msg->chat->titulo."\nDe: ".msg->de->nombre."\nId: ".msg->de->id."\nMensaje: ".msg->texto."\nEstado: sin expulsar"
+                        fin
+                        retornar "spam en chat en ".msg->chat->titulo."\nDe: ".msg->de->nombre."\nId: ".msg->de->id."\nMensaje: ".msg->texto."\nEstado: expulsado"
+                fin
+                retornar falso
         fin
-        retornar falso
 fin
 
 retornar {
