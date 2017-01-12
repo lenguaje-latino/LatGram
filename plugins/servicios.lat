@@ -2,8 +2,8 @@ funcion subproceso()
         funcion usuario_hace_spam()
                 si msg->chat->tipo != "private"
                         spam_match = falso
-                        spam_match_texto = cadena->match(msg->texto, "(@[[:alnum:]]+)")
-                        spam_match_capcion = cadena->match(msg->capcion, "(@[[:alnum:]]+)")
+                        spam_match_texto = cadena->match(msg->texto, "(@[a-Z_0-9]+)")
+                        spam_match_capcion = cadena->match(msg->capcion, "(@[a-Z_0-9]+)")
                         si spam_match_texto
                                 spam_match = spam_match_texto
                         osi spam_match_capcion
