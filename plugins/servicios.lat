@@ -1,27 +1,37 @@
 funcion subproceso()
         hash = "status:".msg->chat->id.":bienvenida"
         hash2 = "custom:".msg->chat->id.":bienvenida"
-        nombre_usuario = nuevo_usuario->usuario
         si respuesta->sticker->id
                 enviarSticker(msg->chat->id, respuesta->sticker->id)
         fin
-        si ! nombre_usuario
-                nombre_usuario = "(sin usuario)"
-        fin
         bienvenida = redis->obtener(com, hash)
         bienvenida_custom = redis->obtener(com, hash2)
+        si bot_eliminado()
+                redis->sborrar(com, bot_shash, acadena(msg->chat->id))
+                retornar "Bot eliminado de ".msg->chat->titulo
+        fin
+        si bot_agregado()
+                enviarMensaje(msg->chat->id, "¡Hola! soy ".bot->nombre.", gracias por añadirme a este chat.")
+                redis->sagregar(com, bot_shash, acadena(msg->chat->id))
+                retornar "Bot añadido a ".msg->chat->titulo
+        fin
         si bienvenida == "on"
-                si nuevo_usuario->id
+                si msg->agregado->id
+                        nombre_usuario = msg->agregado->usuario
+                        si ! nombre_usuario
+                                nombre_usuario = "(sin usuario)"
+                        fin
                         si bienvenida_custom
-                                mensaje = cadena->reemplazar(bienvenida_custom, "$usuario", convertir->cadena(nombre_usuario))
-                                mensaje = cadena->reemplazar(mensaje, "$id", convertir->cadena(nuevo_usuario->id))
-                                mensaje = cadena->reemplazar(mensaje, "$nombre", convertir->cadena(nuevo_usuario->nombre))
-                                mensaje = cadena->reemplazar(mensaje, "$titulo", convertir->cadena(msg->chat->titulo))
+                                mensaje = cadena->reemplazar(bienvenida_custom, "$usuario", nombre_usuario)
+                                mensaje = cadena->reemplazar(mensaje, "$id", acadena(msg->agregado->id))
+                                mensaje = cadena->reemplazar(mensaje, "$nombre", msg->agregado->nombre)
+                                mensaje = mensaje
+                                ultimo = cadena->reemplazar(mensaje, "$titulo", msg->chat->titulo)
                         sino
-                                mensaje = "Bienvenido ".nuevo_usuario->nombre." a ".msg->chat->titulo
+                                mensaje = "Bienvenido ".msg->agregado->nombre." a ".msg->chat->titulo
                         fin
                         enviarMensaje(msg->chat->id, mensaje, md)
-                        retornar "Nuevo miembro en ".msg->chat->titulo."\nMiembro: ".nuevo_usuario->nombre." (".nuevo_usuario->id.")"
+                        retornar "Nuevo miembro en ".msg->chat->titulo."\nMiembro: ".msg->agregado->nombre." (".msg->agregado->id.")"
                 fin
         fin
         hash = "custom:".msg->chat->id.":comando"

@@ -1,0 +1,11 @@
+a = "hola"
+b = cadena->reemplazar(a, "h", "o")
+b = cadena->reemplazar(b, "a", "o")
+b = cadena->reemplazar(b, "l", "o")
+a = "hola"
+b = cadena->reemplazar(a, "h", "o")
+b = cadena->reemplazar(b, "/s", "o")
+str = "$id $titulo $nombre"
+a = cadena->reemplazar(str, "$id", "323")
+a = cadena->reemplazar(a, "$titulo", "tests bot latino")
+a = cadena->reemplazar(a, "$nombre", "Abierto")

@@ -3,12 +3,15 @@ retornar {
 
         "api_key": "270233092:AAFfrK7qrqLXmhh9W3nC0qD3ufk7jZLPIKs",
 
+        "lenguaje": "en",
+
         "plugins": [
                 "servicios",
                 "start",
                 "extras",
                 "ban",
-                "inline"
+                "inline",
+                "spam"
         ],
 
         "dir": "plugins/",
@@ -17,7 +20,7 @@ retornar {
 
         "max_updates": 3, // indicamos un valor como máximo de updates que pueden quedar al iniciar.
 
-        "ires": falso, // cambiar a verdadero para imprimir el resultado del res
+        "ires": verdadero, // cambiar a verdadero para imprimir el resultado del res
 
         "redis_ip": "127.0.0.1",
         "redis_puerto": 6379

@@ -1,5 +1,6 @@
 funcion mensajes()
   si matches[1] == "id"
+          enviarAccion(msg->chat->id, "grabar_audio")
           enviarMensaje(msg->chat->id, "*Chat ID*: ".msg->chat->id."\n*User ID*: ".msg->de->id, md)
   fin
   si matches[1] == "start"

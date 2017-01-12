@@ -1,0 +1,5 @@
+es = {
+        "start": "¡Hey! ".no_markdown(msg->de->nombre)."\n\nEstás probando el nuevo bot escrito completamente en la *programación Latino* con matches, consultas inline y más. 😄👍"
+}
+
+retornar es

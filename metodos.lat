@@ -1,5 +1,10 @@
 // Actualizaciones
 
+funcion cod(texto)
+        x = cadena->reemplazar(texto, "\\n", "\n")
+        retornar curl->escape(x)
+fin
+
 funcion actualizaciones()
 	consulta = curl->peticion(URL . "getUpdates")
 	consulta = json->decodificar(consulta)
@@ -71,6 +76,7 @@ funcion enviarTeclado(chatId, texto, teclado, formato)
 fin
 
 funcion enviarAccion(chatId, tipo)
+	accion = falso
 	elegir(tipo)
 		caso "escribiendo": accion = "typing"
 		caso "subir_foto": accion = "upload_photo"
@@ -81,7 +87,10 @@ funcion enviarAccion(chatId, tipo)
 		caso "grabar_audio": accion = "record_audio"
 		caso "buscar_lugar": accion = "find_location"
 	fin
-	si ! accion retornar falso fin
+	si ! accion
+		imprimir("error: la acción '".tipo."' no existe.\nAcciones disponibles:\n\tescribiendo\n\tsubir_foto\n\tsubir_video\n\tsubir_audio\n\tsubir_archivo\n\tgrabar_video\n\tgrabar_audio\n\tbuscar_lugar", 1)
+		retornar falso
+	fin
 	raw = curl->peticion(URL . "sendChatAction?chat_id=" . chatId . "&action=" . accion)
 	estado = json->decodificar(raw)
 	si estado->ok
@@ -435,7 +444,16 @@ funcion enviariVoz(chatId, voz, capcion, notificar, msgId)
 	retornar curl
 fin
 
-// Utilidades del chat
+// Utilidades de chat
+
+funcion obtenerChat(chatId)
+	raw = curl->peticion(URL . "getChat?chat_id=".chatId)
+	status = json->decodificar(raw)
+	si status->ok
+		retornar status
+	fin
+	retornar falso
+fin
 
 funcion obtenerCuentaMiembros(chatId)
 	raw = curl->peticion(URL . "getChatMembersCount?chat_id=".chatId)

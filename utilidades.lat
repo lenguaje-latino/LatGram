@@ -3,17 +3,34 @@ funcion no_markdown(texto, reemplazo)
                 texto = cadena->reemplazar(texto, "*", "")
                 texto = cadena->reemplazar(texto, "_", "")
                 texto = cadena->reemplazar(texto, "`", "")
-        sino
-                texto = cadena->reemplazar(texto, "*", reemplazo)
-                texto = cadena->reemplazar(texto, "_", reemplazo)
-                texto = cadena->reemplazar(texto, "`", reemplazo)
+                retornar texto
         fin
+        texto = cadena->reemplazar(texto, "*", reemplazo)
+        texto = cadena->reemplazar(texto, "_", reemplazo)
+        texto = cadena->reemplazar(texto, "`", reemplazo)
         retornar texto
 fin
 
-funcion cod(texto)
-        x = cadena->reemplazar(texto, "\\n", "\n")
-        retornar curl->escape(x)
+funcion bot_agregado()
+        si bot->id
+                si msg->agregado->id
+                        si msg->agregado->id == bot->id
+                                retornar verdadero
+                        fin
+                fin
+        fin
+        retornar falso
+fin
+
+funcion bot_eliminado()
+        si bot->id
+                si msg->eliminado->id
+                        si msg->eliminado->id == bot->id
+                                retornar verdadero
+                        fin
+                fin
+        fin
+        retornar falso
 fin
 
 funcion usuario_es_admin(chatId, userId)
@@ -38,17 +55,20 @@ fin
 
 funcion cargar_plugins()
         plugins = []
-        desde (o=0; o<(config->plugins); o++)
-                plugin = incluir(config->dir.config->plugins[o])
+        desde (plugin_cargado=0; plugin_cargado<(config->plugins); plugin_cargado++)
+                plugin = incluir(config->dir.config->plugins[plugin_cargado])
                 lista->agregar(plugins, plugin)
         fin
         retornar plugins
 fin
 
 funcion parsear(teclado_inline)
-        inline = []
-        desde (i=0;i<lista->longitud(teclado_inline);i++)
-                lista->agregar(inline, teclado_inline[i])
+        si tipo(teclado_inline) == "lista"
+                inline = []
+                desde (teclado=0;teclado<teclado_inline;teclado++)
+                        lista->agregar(inline, teclado_inline[teclado])
+                fin
+                retornar curl->escape('{"inline_keyboard":'.inline.'}')
         fin
-        retornar curl->escape('{"inline_keyboard":'.inline."}")
+        imprimir("Elemento inesperado, el elemento debe ser lista, no ".tipo(teclado_inline))
 fin
