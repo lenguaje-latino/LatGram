@@ -47,6 +47,7 @@ funcion variables()
 		"id": msj->id,
 		"texto": msj->text,
 		"fecha": msj->date,
+		"capcion": msj->caption,
 		"de": {
 			"id": msj->from->id,
 			"nombre": msj->from->first_name,
@@ -120,6 +121,16 @@ funcion variables()
 		},
 		"id": sticker->file_id,
 		"peso": sticker->file_size
+	}
+
+	foto = msj->photo
+	foto_tabla = 0
+	foto = {
+		"id": foto[foto_tabla]->file_id,
+		"peso": foto[foto_tabla]->file_size,
+		"path": foto[foto_tabla]->file_path,
+		"anchura": foto[foto_tabla]->width,
+		"altura": foto[foto_tabla]->height
 	}
 
 	cinline = res->inline_query

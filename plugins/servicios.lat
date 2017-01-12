@@ -1,7 +1,14 @@
 funcion subproceso()
         funcion usuario_hace_spam()
                 si msg->chat->tipo != "private"
-                        spam_match = cadena->match(msg->texto, "(@[[:alnum:]]+)")
+                        spam_match = falso
+                        spam_match_texto = cadena->match(msg->texto, "(@[[:alnum:]]+)")
+                        spam_match_capcion = cadena->match(msg->capcion, "(@[[:alnum:]]+)")
+                        si spam_match_texto
+                                spam_match = spam_match_texto
+                        osi spam_match_capcion
+                                spam_match = spam_match_capcion
+                        fin
                         si spam_match
                                 es_chat = obtenerChat(spam_match[0][1])
                                 si es_chat
@@ -74,6 +81,7 @@ funcion subproceso()
                         si ! accion
                                 retornar "spam en chat en ".msg->chat->titulo."\nDe: ".msg->de->nombre."\nId: ".msg->de->id."\nMensaje: ".msg->texto."\nEstado: sin expulsar"
                         fin
+                        enviarMensaje(msg->chat->id, no_markdown(msg->de->nombre)." *baneado por spam*.", md)
                         retornar "spam en chat en ".msg->chat->titulo."\nDe: ".msg->de->nombre."\nId: ".msg->de->id."\nMensaje: ".msg->texto."\nEstado: expulsado"
                 fin
                 retornar falso
