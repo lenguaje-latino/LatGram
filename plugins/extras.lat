@@ -1,59 +1,58 @@
 funcion mensajes()
-        si matches[1] == "comando"
-                elegir(matches[3])
-                        caso "[del]":
-                                hash = "custom:".msg->chat->id.":comando"
-                                existe = redis->hobtener(com, hash, matches[2])
-                                si existe
-                                        redis->hborrar(com, hash, matches[2])
-                                        enviarMensaje(msg->chat->id, "El comando *".matches[2]."* fué eliminado con éxito.", md)
-                                        retornar 1
-                                fin
-                                enviarMensaje(msg->chat->id, "El comando *".matches[2]."* no existe.", md)
-                        defecto:
-                                hash = "custom:".msg->chat->id.":comando"
-                                shash = "custom:".msg->chat->id.":scomando"
-                                ok = enviarMensaje(msg->chat->id, "*Nuevo comando*: ".matches[2]."\n\n*Respuesta*:\n".matches[3], md)
-                                si ok
-                                        redis->hasignar(com, hash, matches[2], matches[3])
-                                        redis->sagregar(com, shash, matches[2])
-                                sino
-                                        enviarMensaje(msg->chat->id, "*Error de markdown*", md)
-                                fin
-                fin
-        fin
-        si matches[1] == "comandos"
-                comandos = redis->smiembros(com, "custom:".msg->chat->id.":scomando")
-                respuestas = "custom:".msg->chat->id.":comando"
-                si comandos
-                        lista_final=""
-                        desde (v=0; v<lista->longitud(comandos); v++)
-                                respuesta = redis->hobtener(com, respuestas, comandos[v])
-                                lista_final = lista_final."\n_".comandos[v]."_: ".respuesta."."
-                                imprimir(lista_final)
-                        fin
-                        enviarMensaje(msg->chat->id, "*Lista de comandos añadidos*".lista_final, md)
-                        retornar 1
-                fin
-                enviarMensaje(msg->chat->id, "*No hay comandos añadidos aún*.", md)
-        fin
-        si matches[1] == "bienvenida"
-                si (matches[2] == "on") || (matches[2] == "off")
-                        retornar 0
-                fin
-                si ! usuario_es_admin(msg->chat->id, msg->de->id)
-                        enviarMensaje(msg->chat->id, "*No eres administrador en el grupo*", md)
-                        retornar 0
-                fin
-                hash = "custom:".msg->chat->id.":bienvenida"
-                ok = enviarMensaje(msg->chat->id, "*Nueva bienvenida asignada*:\n".matches[2], md)
-                si ! ok
-                        enviarMensaje(msg->chat->id, "*El markdown está mal.*", md)
-                sino
-                        redis->asignar(com, hash, matches[2])
-                fin
+    si matches[1] == "comando"
+        elegir(matches[3])
+        caso "[del]":
+            hash = "custom:".msg->chat->id.":comando"
+            existe = redis->hobtener(com, hash, matches[2])
+            si existe
+                redis->hborrar(com, hash, matches[2])
+                enviarMensaje(msg->chat->id, "El comando *".matches[2]."* fué eliminado con éxito.", md)
                 retornar 1
+            fin
+            enviarMensaje(msg->chat->id, "El comando *".matches[2]."* no existe.", md)
+            defecto:
+                hash = "custom:".msg->chat->id.":comando"
+                shash = "custom:".msg->chat->id.":scomando"
+                ok = enviarMensaje(msg->chat->id, "*Nuevo comando*: ".matches[2]."\n\n*Respuesta*:\n".matches[3], md)
+                si ok
+                    redis->hasignar(com, hash, matches[2], matches[3])
+                    redis->sagregar(com, shash, matches[2])
+                sino
+                    enviarMensaje(msg->chat->id, "*Error de markdown*", md)
+                fin
         fin
+    fin
+    si matches[1] == "comandos"
+        comandos = redis->smiembros(com, "custom:".msg->chat->id.":scomando")
+        respuestas = "custom:".msg->chat->id.":comando"
+        si comandos
+            lista_final=""
+            desde (v=0; v<lista->longitud(comandos); v++)
+                respuesta = redis->hobtener(com, respuestas, comandos[v])
+                lista_final = lista_final."\n_".comandos[v]."_: ".respuesta."."
+            fin
+            enviarMensaje(msg->chat->id, "*Lista de comandos añadidos*".lista_final, md)
+            retornar 1
+        fin
+        enviarMensaje(msg->chat->id, "*No hay comandos añadidos aún*.", md)
+    fin
+    si matches[1] == "bienvenida"
+        si (matches[2] == "on") || (matches[2] == "off")
+            retornar 0
+        fin
+        si ! usuario_es_admin(msg->chat->id, msg->de->id)
+            enviarMensaje(msg->chat->id, "*No eres administrador en el grupo*", md)
+            retornar 0
+        fin
+        hash = "custom:".msg->chat->id.":bienvenida"
+        ok = enviarMensaje(msg->chat->id, "*Nueva bienvenida asignada*:\n".matches[2], md)
+        si ! ok
+            enviarMensaje(msg->chat->id, "*El markdown está mal.*", md)
+        sino
+            redis->asignar(com, hash, matches[2])
+        fin
+        retornar 1
+    fin
 fin
 
 retornar {

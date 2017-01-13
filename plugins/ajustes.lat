@@ -73,7 +73,10 @@ retornar {
         "comandos": [
                 "^/(spam) (on|off)$",
                 "^/(extras) (on|off)$",
-                "^/(bienvenida) (on|off)$"
+                "^/(bienvenida) (on|off)$",
+                "^/(stickers) (on|off)",
+                "^/(notas) (on|off)",
+                "^/(fotos) (on|off)"
         ],
         "accion": mensajes
 }

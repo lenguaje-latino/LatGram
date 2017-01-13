@@ -11,7 +11,8 @@ retornar {
                 "extras",
                 "ban",
                 "inline",
-                "ajustes"
+                "ajustes",
+                "plus"
         ],
 
         "dir": "plugins/",

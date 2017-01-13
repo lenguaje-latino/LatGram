@@ -1,10 +1,11 @@
 funcion mensajes()
         si matches[1] == "ban"
                 si msg->chat->tipo != "private"
-                        si respuesta->a->id
-                                miembro_baneado = banearUsuario(msg->chat->id, respuesta->a->id)
+                        si respuesta->de->id
+                                miembro_baneado = banearUsuario(msg->chat->id, respuesta->de->id)
+                                si respuesta->de->id == bot->id imprimir("Subproceso: bot eliminado de") fin
                                 si miembro_baneado
-                                        enviarMensaje(msg->chat->id, no_markdown(respuesta->a->nombre)." *ha sido baneado*.", md)
+                                        enviarMensaje(msg->chat->id, no_markdown(respuesta->de->nombre)." *ha sido baneado*.", md)
                                         retornar 1
                                 fin
                                 enviarMensaje(msg->chat->id, "*No puedo banear a este miembro*\nPosiblemente no soy administrador o intentas banear a un administrador.", md)

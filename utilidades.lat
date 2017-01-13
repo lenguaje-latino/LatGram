@@ -46,7 +46,7 @@ fin
 
 funcion ires()
         si res
-                imprimir(sistema->pipe("echo '".res."' | jq -r '.'"))
+                imprimir(sistema->pipe("echo '".acadena(res)."' | jq -r"))
                 retornar verdadero
         fin
         imprimir("Variable res no encontrada", 1)
@@ -58,6 +58,7 @@ funcion cargar_plugins()
         desde (plugin_cargado=0; plugin_cargado<(config->plugins); plugin_cargado++)
                 plugin = incluir(config->dir.config->plugins[plugin_cargado])
                 lista->agregar(plugins, plugin)
+                imprimir("Plugin cargado\t".config->plugins[plugin_cargado],1)
         fin
         retornar plugins
 fin
@@ -71,4 +72,10 @@ funcion parsear(teclado_inline)
                 retornar curl->escape('{"inline_keyboard":'.inline.'}')
         fin
         imprimir("Elemento inesperado, el elemento debe ser lista, no ".tipo(teclado_inline))
+fin
+
+funcion unescape(a)
+    b = cadena->reemplazar(a, '"', '')
+    b = cadena->reemplazar(b, "'", '')
+    retornar b
 fin
