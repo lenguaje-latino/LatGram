@@ -222,7 +222,7 @@ funcion iniciar_bot()
 	fin
 fin
 color = colores()
-imprimir(color->blanco)
+imprimir(color->r_cyan)
 mientras verdadero
 	res = actualizaciones()
 	si res
