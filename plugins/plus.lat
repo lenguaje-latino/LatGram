@@ -30,7 +30,6 @@ funcion mensajes()
         portapapeles = redis->obtener(com, hash)
         si portapapeles
             c = json->decodificar(portapapeles)
-            imprimir(c->tipo)
             si c->tipo == "sticker"
                 enviarSticker(msg->chat->id, c->contenido)
             osi c->tipo == "foto"
