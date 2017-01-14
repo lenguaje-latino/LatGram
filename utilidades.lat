@@ -27,90 +27,94 @@ fin
 color = colores()
 
 funcion no_markdown(texto, reemplazo)
-        si ! reemplazo
-                texto = cadena->reemplazar(texto, "*", "\*")
-                texto = cadena->reemplazar(texto, "_", "\_")
-                texto = cadena->reemplazar(texto, "`", "\`")
-                retornar texto
-        fin
-        texto = cadena->reemplazar(texto, "*", reemplazo)
-        texto = cadena->reemplazar(texto, "_", reemplazo)
-        texto = cadena->reemplazar(texto, "`", reemplazo)
+    si ! reemplazo
+        texto = cadena->reemplazar(texto, "*", "\*")
+        texto = cadena->reemplazar(texto, "_", "\_")
+        texto = cadena->reemplazar(texto, "`", "\`")
         retornar texto
+    fin
+    texto = cadena->reemplazar(texto, "*", reemplazo)
+    texto = cadena->reemplazar(texto, "_", reemplazo)
+    texto = cadena->reemplazar(texto, "`", reemplazo)
+    retornar texto
 fin
 
 funcion bot_agregado()
-        si bot->id
-                si msg->agregado->id
-                        si msg->agregado->id == bot->id
-                                retornar verdadero
-                        fin
-                fin
+    si bot->id
+        si msg->agregado->id
+            si msg->agregado->id == bot->id
+                retornar verdadero
+            fin
         fin
-        retornar falso
+    fin
+    retornar falso
 fin
 
 funcion bot_eliminado()
-        si bot->id
-                si msg->eliminado->id
-                        si msg->eliminado->id == bot->id
-                                retornar verdadero
-                        fin
-                fin
+    si bot->id
+        si msg->eliminado->id
+            si msg->eliminado->id == bot->id
+                retornar verdadero
+            fin
         fin
-        retornar falso
+    fin
+    retornar falso
 fin
 
 funcion usuario_es_admin(chatId, userId)
-        res = curl.peticion(URL . "getChatAdministrators?chat_id=".chatId)
-        j = json->decodificar(res)
-        desde (i=0; i<lista->longitud(j->result);i++)
-                si j->result[i]->user->id == userId
-                        retornar verdadero
-                fin
+    res = curl.peticion(URL . "getChatAdministrators?chat_id=".chatId)
+    j = json->decodificar(res)
+    desde (i=0; i<lista->longitud(j->result);i++)
+        si j->result[i]->user->id == userId
+            retornar verdadero
         fin
-        retornar falso
+    fin
+    retornar falso
 fin
 
 funcion ires()
-        si res
-                imprimir(sistema->pipe("echo '".acadena(res)."' | jq -r"))
-                retornar verdadero
-        fin
-        imprimir("Variable res no encontrada", 1)
-        retornar falso
+    si res
+        imprimir(color->color.color->bold.res.color->reset)
+        retornar res
+    fin
+    imprimir("Variable res no encontrada", 1)
+    retornar falso
 fin
 
 funcion cargar_plugins()
-        plugins = []
-        desde (plugin_cargado=0; plugin_cargado<(config->plugins); plugin_cargado++)
-                existe = archivo->leer(config->dir.config->plugins[plugin_cargado].".lat")
-                si ! existe
-                    imprimir(color->r_rojo."\tError al leer plugin ".color->blanco."'".config->plugins[plugin_cargado].".lat'.".color->reset,1)
-                sino
-                    plugin = incluir(config->dir.config->plugins[plugin_cargado])
-                    lista->agregar(plugins, plugin)
-                    imprimir(color->verde."\tPlugin:\t".color->cyan.config->plugins[plugin_cargado]."\t".color->amarillo."[".(plugin_cargado+1)."/".(config->plugins+0)."] ".color->r_cyan."...iniciado.".color->reset,1)
-                fin
+    plugins = []
+    desde (plugin_cargado=0; plugin_cargado<(config->plugins); plugin_cargado++)
+        existe = archivo->leer(config->dir.config->plugins[plugin_cargado].".lat")
+        si ! existe
+            imprimir(color->r_rojo."\tError al leer plugin ".color->blanco."'".config->plugins[plugin_cargado].".lat'.".color->reset,1)
+        sino
+            plugin = incluir(config->dir.config->plugins[plugin_cargado])
+            lista->agregar(plugins, plugin)
+            imprimir(color->verde."\tPlugin:\t".color->cyan.config->plugins[plugin_cargado]."\t".color->amarillo."[".(plugin_cargado+1)."/".(config->plugins+0)."] ".color->r_cyan."...iniciado.".color->reset,1)
         fin
-        retornar plugins
+    fin
+    imprimir(color->bold.color->blanco."\n\tSubproceso ".color->marcado.color->r_azul."  ".color->reset
+    .color->bold.color->blanco."   Match ".color->marcado.color->r_verde."  ".color->reset
+    .color->bold.color->blanco."   Inline ".color->marcado.color->r_purpura."  "
+    .color->reset,1)
+    retornar plugins
 fin
 
 funcion parsear(teclado_inline)
-        si tipo(teclado_inline) == "lista"
-                inline = []
-                desde (teclado=0;teclado<teclado_inline;teclado++)
-                        lista->agregar(inline, teclado_inline[teclado])
-                fin
-                retornar curl->escape('{"inline_keyboard":'.inline.'}')
+    si tipo(teclado_inline) == "lista"
+        inline = []
+        desde (teclado=0;teclado<teclado_inline;teclado++)
+            lista->agregar(inline, teclado_inline[teclado])
         fin
-        imprimir("Elemento inesperado, el elemento debe ser lista, no ".tipo(teclado_inline))
+        retornar curl->escape('{"inline_keyboard":'.inline.'}')
+    fin
+    imprimir("Elemento inesperado, el elemento debe ser lista, no ".tipo(teclado_inline))
 fin
 
 funcion unescape(a)
     b = cadena->reemplazar(a, '"', '\"')
     b = cadena->reemplazar(b, "'", "\'")
     b = cadena->reemplazar(b, "
-", "\n")
+    ", "\n")
     retornar b
 fin

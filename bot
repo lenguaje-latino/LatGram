@@ -1,51 +1,10 @@
 #!/usr/bin/latino
-limpiar()
 config = incluir ('config')
 URL = 'https://api.telegram.org/bot' . config->api_key . '/'
 aURL = 'https://api.telegram.org/file/bot' . config->api_key . '/'
 html = "html"
 md = "markdown"
-incluir ('metodos')
-incluir ('utilidades')
 
-bot = ObtenerBot()
-bot = bot->result
-bot = {
-	"id": bot->id,
-	"nombre": bot->first_name,
-	"usuario": bot->username
-}
-
-bot_shash = "bot:".bot->id.":schats"
-verificacion = verificar_apikey()
-si ! verificacion->ok
-	imprimir("\aERROR (".verificacion->error_code." - ".verificacion->description.")\n\nVerifica la apikey en ajustes.lat", 1)
-	retorno 0
-fin
-
-com = redis->conectar(config->redis_ip, config->redis_puerto)
-
-inicio = enviarMensaje(config->admin, "<b>Bot iniciado</b>", html, falso)
-imprimir(color->azul)
-si inicio
-	imprimir("\tConfirmación enviada a " . config->admin . ".\n\tBot @".bot->usuario.".", 1)
-sino
-	imprimir("\tError en confirmación.\n\tBot @".bot->usuario, 1)
-fin
-imprimir(color->reset."\n", 1)
-
-si config->limpiar_updates_al_iniciar
-	updates = limpiar_updates()
-	si updates
-		imprimir("Actualizaciones limpias con un total de ".updates."\n", 1)
-	fin
-fin
-
-plugins = cargar_plugins()
-imprimir(color->bold.color->blanco."\n\tSubproceso ".color->marcado.color->r_azul."  ".color->reset
-.color->bold.color->blanco."   Match ".color->marcado.color->r_verde."  ".color->reset
-.color->bold.color->blanco."   Inline ".color->marcado.color->r_purpura."  "
-.color->reset,1)
 funcion variables()
 	foto_tabla = 0
 	res = res->result[0]
@@ -189,11 +148,10 @@ funcion variables()
 fin
 
 funcion iniciar_bot()
-	si config->ires ires() fin
 	desde (num_plugin=0; num_plugin<plugins; num_plugin++)
 		si acadena(plugins[num_plugin]->subproceso) == "funcion" // convertimos a cadena y obligamos al usuario a usar una función
 			retorna = plugins[num_plugin]->subproceso()
-			si retorna
+			si (retorna && tipo(retorna) != "logico" && !json_res)
 				imprimir(color->r_azul.color->marcado."\n ".retorna." ".color->reset
 				.color->r_rojo."\nPlugin: ".color->blanco.color->subrayado.config->plugins[num_plugin].".lat"
 				.color->reset, 1)
@@ -206,7 +164,7 @@ funcion iniciar_bot()
 					si matches
 						matches = matches[0]
 						blocks = matches
-						si convertir->cadena(plugins[num_plugin]->accion) == "funcion"
+						si convertir->cadena(plugins[num_plugin]->accion) == "funcion" && !json_res
 							plugins[num_plugin]->accion()
 							imprimir(color->marcado.color->r_verde."\n ".matches[0]." ".color->reset
 							.color->r_verde."\nUsuario: ".color->reset.msg->de->nombre
@@ -225,7 +183,7 @@ funcion iniciar_bot()
 					si imatches
 						imatches = imatches[0]
 						iblocks = imatches
-						si convertir->cadena(plugins[num_plugin]->inline) == "funcion"
+						si convertir->cadena(plugins[num_plugin]->inline) == "funcion" && !json_res
 							plugins[num_plugin]->inline()
 							imprimir(color->marcado.color->r_purpura."\n ".imatches[0]." ".color->reset
 							.color->r_verde."\nUsuario: ".color->reset.cinline->de->nombre
@@ -240,12 +198,56 @@ funcion iniciar_bot()
 	fin
 fin
 
-mientras verdadero
-	res = actualizaciones()
-	si res
-		variables()
-		iniciar_bot()
-	fin
-fin
 
-redis->desconectar(com)
+funcion menu(argc, argv)
+	incluir ('metodos')
+	incluir ('utilidades')
+	limpiar()
+	json_res=falso
+	si argv[0] == "--json" || argv[0] == "-j" json_res=verdadero fin
+	si argv[0] == "-h" || argv[0] == "--help" imprimir("Help ./bot [opción]\n\t[--json ][-j]: imprimir en formato json",1) retornar 0 fin
+
+	bot = ObtenerBot()
+	bot = bot->result
+	bot = {
+		"id": bot->id,
+		"nombre": bot->first_name,
+		"usuario": bot->username
+	}
+
+	bot_shash = "bot:".bot->id.":schats"
+	verificacion = verificar_apikey()
+	si ! verificacion->ok
+		imprimir("\aERROR (".verificacion->error_code." - ".verificacion->description.")\n\nVerifica la apikey en ajustes.lat", 1)
+		retorno 0
+	fin
+
+	com = redis->conectar(config->redis_ip, config->redis_puerto)
+
+	inicio = enviarMensaje(config->admin, "<b>Bot iniciado</b>", html, falso)
+	imprimir(color->azul)
+	si inicio
+		imprimir("\tConfirmación enviada a " . config->admin . ".\n\tBot @".bot->usuario.".", 1)
+	sino
+		imprimir("\tError en confirmación.\n\tBot @".bot->usuario, 1)
+	fin
+	imprimir(color->reset."\n", 1)
+	si config->limpiar_updates_al_iniciar
+		updates = limpiar_updates()
+		si updates
+			imprimir(color->cafe."Actualizaciones limpias con un total de ".updates.color->reset."\n", 1)
+		fin
+	fin
+
+	plugins = cargar_plugins()
+
+	mientras verdadero
+		res = actualizaciones()
+		si res
+			variables()
+			si json_res ires() fin
+			iniciar_bot()
+		fin
+	fin
+	redis->desconectar(com)
+fin
