@@ -3,7 +3,7 @@ retornar {
 
         "api_key": "270233092:AAFfrK7qrqLXmhh9W3nC0qD3ufk7jZLPIKs",
 
-        "lenguaje": "en",
+    //    "lenguaje": "en", # aún no los termino xd
 
         "plugins": [
                 "servicios",

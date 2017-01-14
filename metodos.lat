@@ -78,6 +78,7 @@ fin
 
 funcion enviarAccion(chatId, tipo)
 	accion = falso
+    acc=verdadero
 	elegir(tipo)
 		caso "escribiendo": accion = "typing"
 		caso "subir_foto": accion = "upload_photo"
@@ -87,10 +88,13 @@ funcion enviarAccion(chatId, tipo)
 		caso "grabar_video": accion = "record_video"
 		caso "grabar_audio": accion = "record_audio"
 		caso "buscar_lugar": accion = "find_location"
+        caso "nula": acc=falso accion=verdadero
 	fin
-	si ! accion
+	si !accion
 		imprimir("error: la acción '".tipo."' no existe.\nAcciones disponibles:\n\tescribiendo\n\tsubir_foto\n\tsubir_video\n\tsubir_audio\n\tsubir_archivo\n\tgrabar_video\n\tgrabar_audio\n\tbuscar_lugar", 1)
-		retornar falso
+        retornar falso
+    osi !acc
+        retornar falso
 	fin
 	raw = curl->peticion(URL . "sendChatAction?chat_id=" . chatId . "&action=" . accion)
 	estado = json->decodificar(raw)
@@ -187,7 +191,7 @@ funcion enviarFoto(chatId, foto, capcion, notificar, msgId)
 	enlace = URL . "sendPhoto?chat_id=".chatId."&photo=".curl->escape(foto)
 
 	si capcion
-		enlace = enlace . "&caption=" . capcion
+		enlace = enlace . "&caption=" . curl->escape(capcion)
 	fin
 
 	si notificar
@@ -210,7 +214,7 @@ funcion enviarAudio(chatId, audio, capcion, notificar, msgId)
 	enlace = URL . "sendAudio?chat_id=".chatId."&audio=".curl->escape(audio)
 
 	si capcion
-		enlace = enlace . "&caption=" . capcion
+		enlace = enlace . "&caption=" . curl->escape(capcion)
 	fin
 
 	si notificar
@@ -234,7 +238,7 @@ funcion enviarArchivo(chatId, documento, capcion, notificar, msgId)
 	enlace = URL . "sendDocument?chat_id=".chatId."&document=".curl->escape(documento)
 
 	si capcion
-		enlace = enlace . "&caption=" . capcion
+		enlace = enlace . "&caption=" . curl->escape(capcion)
 	fin
 
 	si notificar
@@ -258,7 +262,7 @@ funcion enviarSticker(chatId, sticker, capcion, notificar, msgId)
 	enlace = URL . "sendSticker?chat_id=".chatId."&sticker=".curl->escape(sticker)
 
 	si capcion
-		enlace = enlace . "&caption=" . capcion
+		enlace = enlace . "&caption=" . curl->escape(capcion)
 	fin
 
 	si notificar
@@ -281,7 +285,7 @@ funcion enviarVideo(chatId, video, capcion, notificar, msgId)
 	enlace = URL . "sendVideo?chat_id=".chatId."&video=".curl->escape(video)
 
 	si capcion
-		enlace = enlace . "&caption=" . capcion
+		enlace = enlace . "&caption=" . curl->escape(capcion)
 	fin
 
 	si notificar
@@ -305,7 +309,7 @@ funcion enviarVoz(chatId, voz, capcion, notificar, msgId)
 	enlace = URL . "sendVoice?chat_id=".chatId."&voice=".curl->escape(voz)
 
 	si capcion
-		enlace = enlace . "&caption=" . capcion
+		enlace = enlace . "&caption=" . curl->escape(capcion)
 	fin
 
 	si notificar
@@ -331,7 +335,7 @@ funcion enviariFoto(chatId, foto, capcion, notificar, msgId)
 	enlace = URL . "sendPhoto?chat_id=".chatId
 
 	si capcion
-		enlace = enlace . "&caption=" . capcion
+		enlace = enlace . "&caption=" . curl->escape(capcion)
 	fin
 
 	si notificar
@@ -350,7 +354,7 @@ funcion enviariAudio(chatId, audio, capcion, notificar, msgId)
 	enlace = URL . "sendAudio?chat_id=".chatId
 
 	si capcion
-		enlace = enlace . "&caption=" . capcion
+		enlace = enlace . "&caption=" . curl->escape(capcion)
 	fin
 
 	si notificar
@@ -370,7 +374,7 @@ funcion enviariArchivo(chatId, documento, capcion, notificar, msgId)
 	enlace = URL . "sendDocument?chat_id=".chatId
 
 	si capcion
-		enlace = enlace . "&caption=" . capcion
+		enlace = enlace . "&caption=" . curl->escape(capcion)
 	fin
 
 	si notificar
@@ -390,7 +394,7 @@ funcion enviariSticker(chatId, sticker, capcion, notificar, msgId)
 	enlace = URL . "sendSticker?chat_id=".chatId
 
 	si capcion
-		enlace = enlace . "&caption=" . capcion
+		enlace = enlace . "&caption=" . curl->escape(capcion)
 	fin
 
 	si notificar
@@ -410,7 +414,7 @@ funcion enviariVideo(chatId, video, capcion, notificar, msgId)
 	enlace = URL . "sendVideo?chat_id=".chatId
 
 	si capcion
-		enlace = enlace . "&caption=" . capcion
+		enlace = enlace . "&caption=" . curl->escape(capcion)
 	fin
 
 	si notificar
@@ -430,7 +434,7 @@ funcion enviariVoz(chatId, voz, capcion, notificar, msgId)
 	enlace = URL . "sendVoice?chat_id=".chatId
 
 	si capcion
-		enlace = enlace . "&caption=" . capcion
+		enlace = enlace . "&caption=" . curl->escape(capcion)
 	fin
 
 	si notificar
