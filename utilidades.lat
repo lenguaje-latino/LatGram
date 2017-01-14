@@ -3,9 +3,12 @@ funcion colores()
         "amarillo": sistema->pipe('echo "\033[1;33m"'),
         "blanco": sistema->pipe('echo "\033[1;37m"'),
         "gris": sistema->pipe('echo "\033[0;37m"'),
+        "marcado": sistema->pipe('echo "\033[7m"'),
         "r_gris": sistema->pipe('echo "\033[1;30m"'),
         "cafe": sistema->pipe('echo "\033[0;33m"'),
         "purpura": sistema->pipe('echo "\033[0;35m"'),
+        "bold": sistema->pipe('echo "\033[1m"'),
+        "subrayado": sistema->pipe('echo "\033[4m"'),
         "r_purpura": sistema->pipe('echo "\033[1;35m"'),
         "rojo": sistema->pipe('echo "\033[0;31m"'),
         "r_rojo": sistema->pipe('echo "\033[1;31m"'),
@@ -15,16 +18,19 @@ funcion colores()
         "r_verde": sistema->pipe('echo "\033[1;32m"'),
         "azul": sistema->pipe('echo "\033[0;34m"'),
         "r_azul": sistema->pipe('echo "\033[1;34m"'),
+        "reset": sistema->pipe('echo "\033[0m"'),
         "negro": sistema->pipe('echo "\033[0;30m"')
     }
     retornar colores
 fin
 
+color = colores()
+
 funcion no_markdown(texto, reemplazo)
         si ! reemplazo
-                texto = cadena->reemplazar(texto, "*", "")
-                texto = cadena->reemplazar(texto, "_", "")
-                texto = cadena->reemplazar(texto, "`", "")
+                texto = cadena->reemplazar(texto, "*", "\*")
+                texto = cadena->reemplazar(texto, "_", "\_")
+                texto = cadena->reemplazar(texto, "`", "\`")
                 retornar texto
         fin
         texto = cadena->reemplazar(texto, "*", reemplazo)
@@ -76,12 +82,16 @@ funcion ires()
 fin
 
 funcion cargar_plugins()
-        color = colores()
         plugins = []
         desde (plugin_cargado=0; plugin_cargado<(config->plugins); plugin_cargado++)
-                plugin = incluir(config->dir.config->plugins[plugin_cargado])
-                lista->agregar(plugins, plugin)
-                imprimir(color->verde."Plugin:\t".color->cyan.config->plugins[plugin_cargado].color->amarillo." [".(plugin_cargado+1)."/".(config->plugins+0)."] ".color->r_cyan."...iniciado.",1)
+                existe = archivo->leer(config->dir.config->plugins[plugin_cargado].".lat")
+                si ! existe
+                    imprimir(color->r_rojo."\tError al leer plugin ".color->blanco."'".config->plugins[plugin_cargado].".lat'.".color->reset,1)
+                sino
+                    plugin = incluir(config->dir.config->plugins[plugin_cargado])
+                    lista->agregar(plugins, plugin)
+                    imprimir(color->verde."\tPlugin:\t".color->cyan.config->plugins[plugin_cargado]."\t".color->amarillo."[".(plugin_cargado+1)."/".(config->plugins+0)."] ".color->r_cyan."...iniciado.".color->reset,1)
+                fin
         fin
         retornar plugins
 fin
@@ -98,7 +108,9 @@ funcion parsear(teclado_inline)
 fin
 
 funcion unescape(a)
-    b = cadena->reemplazar(a, '"', '')
-    b = cadena->reemplazar(b, "'", '')
+    b = cadena->reemplazar(a, '"', '\"')
+    b = cadena->reemplazar(b, "'", "\'")
+    b = cadena->reemplazar(b, "
+", "\n")
     retornar b
 fin

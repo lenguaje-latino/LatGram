@@ -1,7 +1,8 @@
 // Actualizaciones
 
 funcion cod(texto)
-        x = cadena->reemplazar(texto, "\\n", "\n")
+        x = cadena->reemplazar(texto, "\n", "
+")
         retornar curl->escape(x)
 fin
 

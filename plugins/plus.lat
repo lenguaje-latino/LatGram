@@ -19,7 +19,7 @@ funcion mensajes()
                     enviarMensaje(msg->chat->id, "El texto a copiar *es demasiado largo*, intenta con un texto menor a 200\nPuedes responder con el comando /longitud a un texto para obtener su longitud.", md)
                     retornar 0
                 fin
-                redis->asignar(com, hash, '{"tipo": "texto", "contenido":"'.unescape(cadena->reemplazar(respuesta->texto, "\n", "")).'"}')
+                redis->asignar(com, hash, '{"tipo": "texto", "contenido":"'.unescape(respuesta->texto).'"}')
                 enviarMensaje(msg->chat->id, "*Texto copiado en el portapapeles*.", md)
             fin
         sino

@@ -1,4 +1,5 @@
 #!/usr/bin/latino
+limpiar()
 config = incluir ('config')
 URL = 'https://api.telegram.org/bot' . config->api_key . '/'
 aURL = 'https://api.telegram.org/file/bot' . config->api_key . '/'
@@ -25,11 +26,13 @@ fin
 com = redis->conectar(config->redis_ip, config->redis_puerto)
 
 inicio = enviarMensaje(config->admin, "<b>Bot iniciado</b>", html, falso)
+imprimir(color->azul)
 si inicio
-	imprimir("Confirmación enviada a " . config->admin . ".\nBot @".bot->usuario, 1)
+	imprimir("\tConfirmación enviada a " . config->admin . ".\n\tBot @".bot->usuario.".", 1)
 sino
-	imprimir("Error en confirmación.\nBot @".bot->usuario, 1)
+	imprimir("\tError en confirmación.\n\tBot @".bot->usuario, 1)
 fin
+imprimir(color->reset."\n", 1)
 
 si config->limpiar_updates_al_iniciar
 	updates = limpiar_updates()
@@ -39,7 +42,10 @@ si config->limpiar_updates_al_iniciar
 fin
 
 plugins = cargar_plugins()
-
+imprimir(color->bold.color->blanco."\n\tSubproceso ".color->marcado.color->r_azul."  ".color->reset
+.color->bold.color->blanco."   Match ".color->marcado.color->r_verde."  ".color->reset
+.color->bold.color->blanco."   Inline ".color->marcado.color->r_purpura."  "
+.color->reset,1)
 funcion variables()
 	foto_tabla = 0
 	res = res->result[0]
@@ -187,7 +193,11 @@ funcion iniciar_bot()
 	desde (num_plugin=0; num_plugin<plugins; num_plugin++)
 		si acadena(plugins[num_plugin]->subproceso) == "funcion" // convertimos a cadena y obligamos al usuario a usar una función
 			retorna = plugins[num_plugin]->subproceso()
-			si retorna imprimir("\nSubproceso: ".retorna."\nPlugin: ".config->plugins[num_plugin].".lat", 1) fin
+			si retorna
+				imprimir(color->r_azul.color->marcado."\n ".retorna." ".color->reset
+				.color->r_rojo."\nPlugin: ".color->blanco.color->subrayado.config->plugins[num_plugin].".lat"
+				.color->reset, 1)
+			fin
 		fin
 		si plugins[num_plugin]->comandos
 			desde (num_comando=0; num_comando<(plugins[num_plugin]->comandos); num_comando++)
@@ -198,7 +208,11 @@ funcion iniciar_bot()
 						blocks = matches
 						si convertir->cadena(plugins[num_plugin]->accion) == "funcion"
 							plugins[num_plugin]->accion()
-							imprimir("\nComando ejecutado: ".matches[0]."\nUsuario: ".msg->de->nombre."\nID: ".msg->de->id."\nPlugin: ".config->plugins[num_plugin].".lat", 1)
+							imprimir(color->marcado.color->r_verde."\n ".matches[0]." ".color->reset
+							.color->r_verde."\nUsuario: ".color->reset.msg->de->nombre
+							.color->r_verde."\nID: ".color->amarillo.msg->de->id
+							.color->r_rojo."\nPlugin: ".color->blanco.color->subrayado.config->plugins[num_plugin].".lat"
+							.color->reset, 1)
 						fin
 					fin
 				fin
@@ -213,7 +227,11 @@ funcion iniciar_bot()
 						iblocks = imatches
 						si convertir->cadena(plugins[num_plugin]->inline) == "funcion"
 							plugins[num_plugin]->inline()
-							imprimir("\nConsulta inline: ".imatches[0]."\nUsuario: ".cinline->de->nombre."\nPlugin: ".config->plugins[num_plugin].".lat", 1)
+							imprimir(color->marcado.color->r_purpura."\n ".imatches[0]." ".color->reset
+							.color->r_verde."\nUsuario: ".color->reset.cinline->de->nombre
+							.color->r_verde."\nID: ".color->amarillo.cinline->de->id
+							.color->r_rojo."\nPlugin: ".color->blanco.color->subrayado.config->plugins[num_plugin].".lat"
+							.color->reset, 1)
 						fin
 					fin
 				fin
@@ -221,8 +239,7 @@ funcion iniciar_bot()
 		fin
 	fin
 fin
-color = colores()
-imprimir(color->r_cyan)
+
 mientras verdadero
 	res = actualizaciones()
 	si res
