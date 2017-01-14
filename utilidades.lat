@@ -115,6 +115,6 @@ funcion unescape(a)
     b = cadena->reemplazar(a, '"', '\"')
     b = cadena->reemplazar(b, "'", "\'")
     b = cadena->reemplazar(b, "
-    ", "\n")
+", "\n")
     retornar b
 fin

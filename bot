@@ -202,10 +202,11 @@ fin
 funcion menu(argc, argv)
 	incluir ('metodos')
 	incluir ('utilidades')
-	limpiar()
+
 	json_res=falso
 	si argv[0] == "--json" || argv[0] == "-j" json_res=verdadero fin
 	si argv[0] == "-h" || argv[0] == "--help" imprimir("Help ./bot [opción]\n\t[--json ][-j]: imprimir en formato json",1) retornar 0 fin
+	limpiar()
 
 	bot = ObtenerBot()
 	bot = bot->result
