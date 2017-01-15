@@ -1,12 +1,12 @@
 funcion inline()
-        cinline_datos = "\n*ID*: ".cinline->de->id."\n*Nombre*: ".no_markdown(cinline->de->nombre)
-        si cinline->de->apellido
-                cinline_datos = cinline_datos."\n*Apellido*: ".no_markdown(cinline->de->apellido)
+        cinline_datos = "\n*ID*: "..cinline.de.id.."\n*Nombre*: "..no_markdown(cinline.de.nombre)
+        si cinline.de.apellido
+                cinline_datos = cinline_datos.."\n*Apellido*: "..no_markdown(cinline.de.apellido)
         fin
-        si cinline->de->usuario
-                cinline_datos = cinline_datos."\n*Usuario*: @".no_markdown(cinline->de->usuario)
+        si cinline.de.usuario
+                cinline_datos = cinline_datos.."\n*Usuario*: @"..no_markdown(cinline.de.usuario)
         fin
-        enviarMensaje(cinline->de->id, "¿Me consultaste?".cinline_datos, md)
+        enviarMensaje(cinline.de.id, "¿Me consultaste?"..cinline_datos, md)
 fin
 
 retornar {

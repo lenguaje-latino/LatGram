@@ -1,71 +1,71 @@
 funcion mensajes()
     si blocks[1] == "copiar"
-        si respuesta->id
-            hash = "plus:".msg->de->id.":json"
-            si respuesta->sticker->id
-                redis->asignar(com, hash, '{"tipo": "sticker", "contenido":"'.respuesta->sticker->id.'"}')
-                enviarMensaje(msg->chat->id, "*Sticker copiado en el portapapeles*.", md)
-            osi respuesta->voz->id
-                redis->asignar(com, hash, '{"tipo": "voz", "contenido":"'.respuesta->voz->id.'", "accion": "grabar_audio"}')
-                enviarMensaje(msg->chat->id, "*Audio copiado en el portapapeles*.", md)
-            osi respuesta->foto->id
-                redis->asignar(com, hash, '{"tipo": "foto", "contenido":"'.respuesta->foto->id.'", "accion": "subir_foto"}')
-                enviarMensaje(msg->chat->id, "*Foto copiada en el portapapeles*.", md)
-            osi respuesta->archivo->id
-                redis->asignar(com, hash, '{"tipo": "archivo", "contenido":"'.respuesta->archivo->id.'", "accion": "subir_archivo"}')
-                enviarMensaje(msg->chat->id, "*Archivo copiado en el portapapeles*.", md)
-            osi respuesta->texto
-                si cadena->longitud(respuesta->texto) > 200
-                    enviarMensaje(msg->chat->id, "El texto a copiar *es demasiado largo*, intenta con un texto menor a 200\nPuedes responder con el comando /longitud a un texto para obtener su longitud.", md)
+        si respuesta.id
+            hash = "plus:"..msg.de.id..":json"
+            si respuesta.sticker.id
+                redis.asignar(com, hash, '{"tipo": "sticker", "contenido":"'..respuesta.sticker.id..'"}')
+                enviarMensaje(msg.chat.id, "*Sticker copiado en el portapapeles*.", md)
+            osi respuesta.voz.id
+                redis.asignar(com, hash, '{"tipo": "voz", "contenido":"'..respuesta.voz.id..'", "accion": "grabar_audio"}')
+                enviarMensaje(msg.chat.id, "*Audio copiado en el portapapeles*.", md)
+            osi respuesta.foto.id
+                redis.asignar(com, hash, '{"tipo": "foto", "contenido":"'..respuesta.foto.id..'", "accion": "subir_foto"}')
+                enviarMensaje(msg.chat.id, "*Foto copiada en el portapapeles*.", md)
+            osi respuesta.archivo.id
+                redis.asignar(com, hash, '{"tipo": "archivo", "contenido":"'..respuesta.archivo.id..'", "accion": "subir_archivo"}')
+                enviarMensaje(msg.chat.id, "*Archivo copiado en el portapapeles*.", md)
+            osi respuesta.texto
+                si cadena.longitud(respuesta.texto) > 200
+                    enviarMensaje(msg.chat.id, "El texto a copiar *es demasiado largo*, intenta con un texto menor a 200\nPuedes responder con el comando /longitud a un texto para obtener su longitud.", md)
                     retornar 0
                 fin
-                redis->asignar(com, hash, '{"tipo": "texto", "contenido":"'.unescape(respuesta->texto).'", "accion": "escribiendo"}')
-                enviarMensaje(msg->chat->id, "*Texto copiado en el portapapeles*.", md)
+                redis.asignar(com, hash, '{"tipo": "texto", "contenido":"'..unescape(respuesta.texto)..'", "accion": "escribiendo"}')
+                enviarMensaje(msg.chat.id, "*Texto copiado en el portapapeles*.", md)
             fin
         sino
-            enviarMensaje(msg->chat->id, "*Debes responder* a un _texto_, _archivo_, _sticker_, _nota de voz_ o a una _foto_ para guardarla a tu portapapeles.", md)
+            enviarMensaje(msg.chat.id, "*Debes responder* a un _texto_, _archivo_, _sticker_, _nota de voz_ o a una _foto_ para guardarla a tu portapapeles.", md)
         fin
     osi blocks[1] == "pegar"
-        hash = "plus:".msg->de->id.":json"
-        portapapeles = redis->obtener(com, hash)
+        hash = "plus:"..msg.de.id..":json"
+        portapapeles = redis.obtener(com, hash)
         si portapapeles
-            c = json->decodificar(portapapeles)
-        //    si c->accion enviarAccion(msg->chat->id, acadena(c->accion)) fin
-            si c->tipo == "sticker"
+            c = json.decodificar(portapapeles)
+        //    si c.accion enviarAccion(msg.chat.id, acadena(c.accion)) fin
+            si c.tipo == "sticker"
                 vvvvv = [[
                 {"text":"Programación Latino","callback_data":"!!!cb"},
                 {"text":"Repositorio del Bot","url":"https://github.com/lenguaje-latino/BotGram"}
                 ]]
-                enviarSticker(msg->chat->id, c->contenido, msg->id, vvvvv)
-            osi c->tipo == "foto"
-                enviarFoto(msg->chat->id, c->contenido, "Foto enviada desde el portapapeles")
-            osi c->tipo == "voz"
-                enviarVoz(msg->chat->id, c->contenido, "Nota de voz enviada desde el portapapeles")
-            osi c->tipo == "archivo"
-                enviarArchivo(msg->chat->id, c->contenido, "Archivo enviado desde el portapapeles")
-            osi c->tipo == "texto"
-                enviarMensaje(msg->chat->id, "Texto de portapapeles:\n".c->contenido)
+                enviarSticker(msg.chat.id, c.contenido, msg.id, vvvvv)
+            osi c.tipo == "foto"
+                enviarFoto(msg.chat.id, c.contenido, "Foto enviada desde el portapapeles")
+            osi c.tipo == "voz"
+                enviarVoz(msg.chat.id, c.contenido, "Nota de voz enviada desde el portapapeles")
+            osi c.tipo == "archivo"
+                enviarArchivo(msg.chat.id, c.contenido, "Archivo enviado desde el portapapeles")
+            osi c.tipo == "texto"
+                enviarMensaje(msg.chat.id, "Texto de portapapeles:\n"..c.contenido)
             fin
         sino
-            enviarMensaje(msg->chat->id, "*No hay nada pegado en tu portapapeles*.", md)
+            enviarMensaje(msg.chat.id, "*No hay nada pegado en tu portapapeles*.", md)
         fin
     osi blocks[1] == "vaciar"
-        hash = "plus:".msg->de->id.":json"
-        portapapeles = redis->obtener(com, hash)
+        hash = "plus:"..msg.de.id..":json"
+        portapapeles = redis.obtener(com, hash)
         si portapapeles
-            c = json->decodificar(portapapeles)
-            enviarMensaje(msg->chat->id, "*¿Está seguro de vacíar su papelera?* tiene un ".c->tipo." en su portapapeles \[S/n].", md)
-            iniciarLeer(msg->de->id, msg->texto)
+            c = json.decodificar(portapapeles)
+            enviarMensaje(msg.chat.id, "*¿Está seguro de vacíar su papelera?* tiene un "..c.tipo.." en su portapapeles \[S/n].", md)
+            iniciarLeer(msg.de.id, msg.texto)
             retorno 1
         fin
-        enviarMensaje(msg->chat->id, "*No tienes nada en el portapapeles*.", md)
+        enviarMensaje(msg.chat.id, "*No tienes nada en el portapapeles*.", md)
     osi blocks[1] == "longitud"
-        si respuesta->texto
-            enviarMensaje(msg->chat->id, "Este texto mide *".cadena->longitud(respuesta->texto)."* \[texto respondido]", md)
+        si respuesta.texto
+            enviarMensaje(msg.chat.id, "Este texto mide *"..cadena.longitud(respuesta.texto).."* \[texto respondido]", md)
             retornar 1
         sino
             si matches[2]
-                enviarMensaje(msg->chat->id, "Este texto mide *".cadena->longitud(matches[2])."*", md)
+                enviarMensaje(msg.chat.id, "Este texto mide *"..cadena.longitud(matches[2]).."*", md)
             fin
         fin
     fin

@@ -1,67 +1,67 @@
 funcion mensajes()
         si matches[1] == "spam"
-                hash = "ajustes:".msg->chat->id.":spam"
+                hash = "ajustes:"..msg.chat.id..":spam"
                 si matches[2] == "on"
-                        status = redis->obtener(com, hash)
+                        status = redis.obtener(com, hash)
                         si status == "on"
-                                enviarMensaje(msg->chat->id, "El spam *ya está permitido*.", md)
+                                enviarMensaje(msg.chat.id, "El spam *ya está permitido*.", md)
                                 retornar 0
                         fin
-                        redis->asignar(com, hash, matches[2])
-                        enviarMensaje(msg->chat->id, "Spam *permitido* en este chat.", md)
+                        redis.asignar(com, hash, matches[2])
+                        enviarMensaje(msg.chat.id, "Spam *permitido* en este chat.", md)
                         retornar 1
                 osi matches[2] == "off"
-                        status = redis->obtener(com, hash)
+                        status = redis.obtener(com, hash)
                         si status == "off"
-                                enviarMensaje(msg->chat->id, "El spam *ya no está permitido*.", md)
+                                enviarMensaje(msg.chat.id, "El spam *ya no está permitido*.", md)
                                 retornar 0
                         fin
-                        redis->asignar(com, hash, matches[2])
-                        enviarMensaje(msg->chat->id, "Spam *no permitido* en este chat.", md)
+                        redis.asignar(com, hash, matches[2])
+                        enviarMensaje(msg.chat.id, "Spam *no permitido* en este chat.", md)
                         retornar 1
                 fin
         fin
         si matches[1] == "extras"
-                hash = "ajustes:".msg->chat->id.":extras"
+                hash = "ajustes:"..msg.chat.id..":extras"
                 si matches[2] == "on"
-                        status = redis->obtener(com, hash)
+                        status = redis.obtener(com, hash)
                         si status == "on"
-                                enviarMensaje(msg->chat->id, "Los extras *ya están activados*.", md)
+                                enviarMensaje(msg.chat.id, "Los extras *ya están activados*.", md)
                                 retornar 0
                         fin
-                        redis->asignar(com, hash, matches[2])
-                        enviarMensaje(msg->chat->id, "Extras *activados* en este chat.", md)
+                        redis.asignar(com, hash, matches[2])
+                        enviarMensaje(msg.chat.id, "Extras *activados* en este chat.", md)
                         retornar 1
                 osi matches[2] == "off"
-                        status = redis->obtener(com, hash)
+                        status = redis.obtener(com, hash)
                         si status == "off"
-                                enviarMensaje(msg->chat->id, "Los extras *ya están desactivados*.", md)
+                                enviarMensaje(msg.chat.id, "Los extras *ya están desactivados*.", md)
                                 retornar 0
                         fin
-                        redis->asignar(com, hash, matches[2])
-                        enviarMensaje(msg->chat->id, "Extras *desactivados* en este chat.", md)
+                        redis.asignar(com, hash, matches[2])
+                        enviarMensaje(msg.chat.id, "Extras *desactivados* en este chat.", md)
                         retornar 1
                 fin
         fin
         si matches[1] == "bienvenida"
-                hash = "ajustes:".msg->chat->id.":bienvenida"
+                hash = "ajustes:"..msg.chat.id..":bienvenida"
                 si matches[2] == "on"
-                        status = redis->obtener(com, hash)
+                        status = redis.obtener(com, hash)
                         si status == "on"
-                                enviarMensaje(msg->chat->id, "La bienvenida *ya está activada*.", md)
+                                enviarMensaje(msg.chat.id, "La bienvenida *ya está activada*.", md)
                                 retornar 0
                         fin
-                        redis->asignar(com, hash, matches[2])
-                        enviarMensaje(msg->chat->id, "Bienvenida *activada* en este chat.", md)
+                        redis.asignar(com, hash, matches[2])
+                        enviarMensaje(msg.chat.id, "Bienvenida *activada* en este chat.", md)
                         retornar 1
                 osi matches[2] == "off"
-                        status = redis->obtener(com, hash)
+                        status = redis.obtener(com, hash)
                         si status == "off"
-                                enviarMensaje(msg->chat->id, "La bienvenida *ya está desactivada*.", md)
+                                enviarMensaje(msg.chat.id, "La bienvenida *ya está desactivada*.", md)
                                 retornar 0
                         fin
-                        redis->asignar(com, hash, matches[2])
-                        enviarMensaje(msg->chat->id, "Bienvenida *desactivada* en este chat.", md)
+                        redis.asignar(com, hash, matches[2])
+                        enviarMensaje(msg.chat.id, "Bienvenida *desactivada* en este chat.", md)
                         retornar 1
                 fin
         fin

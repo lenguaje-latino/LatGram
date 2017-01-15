@@ -1,7 +1,7 @@
 #!/usr/bin/latino
 config = incluir ('config')
-URL = 'https://api.telegram.org/bot' . config->api_key . '/'
-aURL = 'https://api.telegram.org/file/bot' . config->api_key . '/'
+URL = 'https://api.telegram.org/bot' .. config.api_key .. '/'
+aURL = 'https://api.telegram.org/file/bot' .. config.api_key .. '/'
 html = "html"
 md = "markdown"
 
@@ -9,210 +9,210 @@ funcion parsear(teclado_inline)
 	si tipo(teclado_inline) == "lista"
 		inline = []
 		desde (i=0;i<teclado_inline;i++)
-			lista->agregar(inline, teclado_inline[i])
+			lista.agregar(inline, teclado_inline[i])
 		fin
-		retornar curl->escape('{"inline_keyboard":'.teclado_inline.'}')
+		retornar curl.escape('{"inline_keyboard":'..teclado_inline..'}')
    fin
-   imprimir("Elemento inesperado, el elemento debe ser lista, no ".tipo(teclado_inline))
+   imprimir("Elemento inesperado, el elemento debe ser lista, no "..tipo(teclado_inline)..".")
 fin
 
-funcion variables()
+funcion incluir_variables()
 	foto_tabla = 0
-	res = res->result[0]
-	msj = res->message
+	res = res.result[0]
+	msj = res.message
 	msg = {
-		"id": msj->message_id,
-		"texto": msj->text,
-		"fecha": msj->date,
-		"capcion": msj->caption,
+		"id": msj.message_id,
+		"texto": msj.text,
+		"fecha": msj.date,
+		"capcion": msj.caption,
 		"de": {
-			"id": msj->from->id,
-			"nombre": msj->from->first_name,
-			"apellido": msj->from->last_name,
-			"usuario": msj->from->username
+			"id": msj.from.id,
+			"nombre": msj.from.first_name,
+			"apellido": msj.from.last_name,
+			"usuario": msj.from.username
 		},
 		"chat": {
-			"id": msj->chat->id,
-			"titulo": msj->chat->title,
-			"nombre": msj->chat->first_name,
-			"apellido": msj->chat->last_name,
-			"usuario": msj->chat->username,
-			"tipo": msj->chat->type
+			"id": msj.chat.id,
+			"titulo": msj.chat.title,
+			"nombre": msj.chat.first_name,
+			"apellido": msj.chat.last_name,
+			"usuario": msj.chat.username,
+			"tipo": msj.chat.type
 		},
 		"agregado": {
-			"id": msj->new_chat_member->id,
-			"usuario": msj->new_chat_member->username,
-			"nombre": msj->new_chat_member->first_name,
-			"apellido": msj->new_chat_member->last_name
+			"id": msj.new_chat_member.id,
+			"usuario": msj.new_chat_member.username,
+			"nombre": msj.new_chat_member.first_name,
+			"apellido": msj.new_chat_member.last_name
 		},
 		"reenviado": {
 			"chat": {
-				"tipo": msj->forward_from_chat->type,
-				"titulo": msj->forward_from_chat->title,
-				"id": msj->forward_from_chat->id,
-				"usuario": msj->forward_from_chat->username
+				"tipo": msj.forward_from_chat.type,
+				"titulo": msj.forward_from_chat.title,
+				"id": msj.forward_from_chat.id,
+				"usuario": msj.forward_from_chat.username
 			},
 			"de": {
-				"tipo": msj->forward_from_chat->type,
-				"titulo": msj->forward_from_chat->title,
-				"id": msj->forward_from_chat->id,
-				"usuario": msj->forward_from_chat->username
+				"tipo": msj.forward_from_chat.type,
+				"titulo": msj.forward_from_chat.title,
+				"id": msj.forward_from_chat.id,
+				"usuario": msj.forward_from_chat.username
 			}
 		},
 		"eliminado": {
-			"id": msj->left_chat_member->id,
-			"usuario": msj->left_chat_member->username,
-			"nombre": msj->left_chat_member->first_name,
-			"apellido": msj->left_chat_member->last_name
+			"id": msj.left_chat_member.id,
+			"usuario": msj.left_chat_member.username,
+			"nombre": msj.left_chat_member.first_name,
+			"apellido": msj.left_chat_member.last_name
 		}
 	}
 
-	resp = msj->reply_to_message
+	resp = msj.reply_to_message
 	respuesta = {
-		"texto": resp->text,
-		"fecha": resp->date,
-		"id": resp->message_id,
+		"texto": resp.text,
+		"fecha": resp.date,
+		"id": resp.message_id,
 		"chat": {
-			"tipo": resp->chat->type,
-			"id": resp->chat->id,
-			"usuario": resp->chat->username,
-			"nombre": resp->chat->first_name,
-			"apellido": resp->chat->last_name
+			"tipo": resp.chat.type,
+			"id": resp.chat.id,
+			"usuario": resp.chat.username,
+			"nombre": resp.chat.first_name,
+			"apellido": resp.chat.last_name
 		},
 		"sticker": {
 			"thumb": {
-				"id": resp->sticker->thumb->file_id,
-				"peso": resp->sticker->thumb->file_size,
-				"anchura": resp->sticker->thumb->width,
-				"altura": resp->sticker->thumb->height
+				"id": resp.sticker.thumb.file_id,
+				"peso": resp.sticker.thumb.file_size,
+				"anchura": resp.sticker.thumb.width,
+				"altura": resp.sticker.thumb.height
 			},
-			"id": resp->sticker->file_id,
-			"peso": resp->sticker->file_size,
-			"emoji": resp->sticker->emoji,
-			"anchura": resp->sticker->width,
-			"altura": resp->sticker->height
+			"id": resp.sticker.file_id,
+			"peso": resp.sticker.file_size,
+			"emoji": resp.sticker.emoji,
+			"anchura": resp.sticker.width,
+			"altura": resp.sticker.height
 		},
 		"voz": {
-			"duracion": resp->voice->duration,
-			"formato": resp->voice->mime_type,
-			"id": resp->voice->file_id,
-			"peso": resp->voice->file_size
+			"duracion": resp.voice.duration,
+			"formato": resp.voice.mime_type,
+			"id": resp.voice.file_id,
+			"peso": resp.voice.file_size
 		},
 		"archivo": {
-			"nombre": resp->document->file_name,
-			"formato": resp->document->mime_type,
-			"id": resp->document->file_id,
-			"peso": resp->document->file_size
+			"nombre": resp.document.file_name,
+			"formato": resp.document.mime_type,
+			"id": resp.document.file_id,
+			"peso": resp.document.file_size
 		},
 		"de": {
-			"id": resp->from->id,
-			"usuario": resp->from->username,
-			"first_name": resp->from->first_name
+			"id": resp.from.id,
+			"usuario": resp.from.username,
+			"first_name": resp.from.first_name
 		}
 	}
-	si resp->photo
-		respuesta->foto = {
-			"id": resp->photo[0]->file_id,
-			"peso": resp->photo[0]->file_size,
-			"path": resp->photo[0]->file_path,
-			"anchura": resp->photo[0]->width,
-			"altura": resp->photo[0]->height
+	si resp.photo
+		respuesta.foto = {
+			"id": resp.photo[0].file_id,
+			"peso": resp.photo[0].file_size,
+			"path": resp.photo[0].file_path,
+			"anchura": resp.photo[0].width,
+			"altura": resp.photo[0].height
 		}
 	fin
 
-	sticker = msj->sticker
+	sticker = msj.sticker
 	sticker = {
-		"anchura": sticker->width,
-		"altura": sticker->height,
-		"emoji": sticker->emoji,
+		"anchura": sticker.width,
+		"altura": sticker.height,
+		"emoji": sticker.emoji,
 		"thumb": {
-			"id": sticker->thumb->file_id,
-			"peso": sticker->thumb->file_size,
-			"anchura": sticker->thumb->width,
-			"altura": sticker->thumb->height
+			"id": sticker.thumb.file_id,
+			"peso": sticker.thumb.file_size,
+			"anchura": sticker.thumb.width,
+			"altura": sticker.thumb.height
 		},
-		"id": sticker->file_id,
-		"peso": sticker->file_size
+		"id": sticker.file_id,
+		"peso": sticker.file_size
 	}
 
-	foto = msj->photo
+	foto = msj.photo
 	foto = {
-		"id": foto[foto_tabla]->file_id,
-		"peso": foto[foto_tabla]->file_size,
-		"path": foto[foto_tabla]->file_path,
-		"anchura": foto[foto_tabla]->width,
-		"altura": foto[foto_tabla]->height
+		"id": foto[foto_tabla].file_id,
+		"peso": foto[foto_tabla].file_size,
+		"path": foto[foto_tabla].file_path,
+		"anchura": foto[foto_tabla].width,
+		"altura": foto[foto_tabla].height
 	}
 
-	cinline = res->inline_query
+	cinline = res.inline_query
 	cinline = {
-		"id": cinline->id,
-		"texto": cinline->query,
-		"offset": cinline->offset,
+		"id": cinline.id,
+		"texto": cinline.query,
+		"offset": cinline.offset,
 		"de": {
-			"id": cinline->from->id,
-			"nombre": cinline->from->first_name,
-			"apellido": cinline->from->last_name,
-			"usuario": cinline->from->username
+			"id": cinline.from.id,
+			"nombre": cinline.from.first_name,
+			"apellido": cinline.from.last_name,
+			"usuario": cinline.from.username
 		}
 	}
 
-	cb = res->callback_query
+	cb = res.callback_query
 	cb = {
-		"id": cb->id,
-		"chat_instancia": cb->chat_instance,
-		"datos": cb->data,
+		"id": cb.id,
+		"chat_instancia": cb.chat_instance,
+		"datos": cb.data,
 		"de": {
-			"id": cb->from->id,
-			"usuario": cb->from->username,
-			"nombre": cb->from->first_name
+			"id": cb.from.id,
+			"usuario": cb.from.username,
+			"nombre": cb.from.first_name
 		},
 		"msg": {
-			"id": cb->message->message_id,
-			"fecha": cb->message->date,
+			"id": cb.message.message_id,
+			"fecha": cb.message.date,
 			"chat": {
-				"tipo": cb->message->chat->type,
-				"id": cb->message->chat->id,
-				"usuario": cb->message->chat->username,
-				"nombre": cb->message->chat->first_name
+				"tipo": cb.message.chat.type,
+				"id": cb.message.chat.id,
+				"usuario": cb.message.chat.username,
+				"nombre": cb.message.chat.first_name
 			},
 			"de": {
-				"id": cb->message->from->id,
-				"usuario": cb->message->from->username,
-				"nombre": cb->message->from->first_name
+				"id": cb.message.from.id,
+				"usuario": cb.message.from.username,
+				"nombre": cb.message.from.first_name
 			},
 			"sticker": {
-				"id": cb->message->sticker->file_id,
+				"id": cb.message.sticker.file_id,
 				"thumb": {
-					"id": cb->message->sticker->thumb->file_id,
-					"peso": cb->message->sticker->thumb->file_size,
-					"anchura": cb->message->sticker->thumb->width,
-					"altura": cb->message->sticker->thumb->height
+					"id": cb.message.sticker.thumb.file_id,
+					"peso": cb.message.sticker.thumb.file_size,
+					"anchura": cb.message.sticker.thumb.width,
+					"altura": cb.message.sticker.thumb.height
 				},
-				"peso": cb->message->sticker->file_size,
-				"emoji": cb->message->sticker->emoji,
-				"anchura": cb->message->sticker->width,
-				"altura": cb->message->sticker->height
+				"peso": cb.message.sticker.file_size,
+				"emoji": cb.message.sticker.emoji,
+				"anchura": cb.message.sticker.width,
+				"altura": cb.message.sticker.height
 			},
 			"respuesta": {
-				"texto": cb->message->reply_to_message->text,
-				"fecha": cb->message->reply_to_message->date,
-				"id": cb->message->reply_to_message->message_id,
+				"texto": cb.message.reply_to_message.text,
+				"fecha": cb.message.reply_to_message.date,
+				"id": cb.message.reply_to_message.message_id,
 				"chat": {
-					"tipo": cb->message->reply_to_message->chat->type,
-					"id": cb->message->reply_to_message->chat->id,
-					"usuario": cb->message->reply_to_message->chat->username,
-					"nombre": cb->message->reply_to_message->chat->first_name
+					"tipo": cb.message.reply_to_message.chat.type,
+					"id": cb.message.reply_to_message.chat.id,
+					"usuario": cb.message.reply_to_message.chat.username,
+					"nombre": cb.message.reply_to_message.chat.first_name
 				},
 				/*	"entidad": {
-				"tipo": cb->message->reply_to_message->entities->type,
+				"tipo": cb.message.reply_to_message.entities.type,
 				"offset": 0,
 				"longitud": 6
 			},*/
 			"de": {
-				"id": cb->message->reply_to_message->from->id,
-				"usuario": cb->message->reply_to_message->from->username,
-				"nombre": cb->message->reply_to_message->from->first_name
+				"id": cb.message.reply_to_message.from.id,
+				"usuario": cb.message.reply_to_message.from.username,
+				"nombre": cb.message.reply_to_message.from.first_name
 			}
 		}
 	}
@@ -221,69 +221,69 @@ fin
 
 funcion iniciar_bot()
 	desde (num_plugin=0; num_plugin<plugins; num_plugin++)
-		si acadena(plugins[num_plugin]->subproceso) == "funcion" // convertimos a cadena y obligamos al usuario a usar una función
-			retorna = plugins[num_plugin]->subproceso()
+		si acadena(plugins[num_plugin].subproceso) == "funcion" // convertimos a cadena y obligamos al usuario a usar una función
+			retorna = plugins[num_plugin].subproceso()
 			si (retorna && tipo(retorna) != "logico" && !json_res)
-				imprimir(color->r_azul.color->marcado."\n ".retorna." ".color->reset
-				.color->r_rojo."\nPlugin: ".color->blanco.color->subrayado.config->plugins[num_plugin].".lat"
-				.color->reset, 1)
+				imprimir(color.r_azul..color.marcado.."\n "..retorna.." "..color.reset
+				..color.r_rojo.."\nPlugin: "..color.blanco..color.subrayado..plugins_montados[num_plugin]
+				..color.reset, 1)
 				retornar 0
 			fin
 		fin
-		si plugins[num_plugin]->comandos
-			desde (num_comando=0; num_comando<(plugins[num_plugin]->comandos); num_comando++)
-				si msg->texto
-					matches = cadena->match(msg->texto, plugins[num_plugin]->comandos[num_comando])
+		si plugins[num_plugin].comandos
+			desde (num_comando=0; num_comando<(plugins[num_plugin].comandos); num_comando++)
+				si msg.texto
+					matches = cadena.match(msg.texto, plugins[num_plugin].comandos[num_comando])
 					si matches
 						matches = matches[0]
 						blocks = matches
-						si convertir->cadena(plugins[num_plugin]->accion) == "funcion" && !json_res
-							plugins[num_plugin]->accion()
-							imprimir(color->marcado.color->r_verde."\n ".matches[0]." ".color->reset
-							.color->r_verde."\nUsuario: ".color->reset.msg->de->nombre
-							.color->r_verde."\nID: ".color->amarillo.msg->de->id
-							.color->r_rojo."\nPlugin: ".color->blanco.color->subrayado.config->plugins[num_plugin].".lat"
-							.color->reset, 1)
+						si convertir.cadena(plugins[num_plugin].accion) == "funcion" && !json_res
+							plugins[num_plugin].accion()
+							imprimir(color.marcado..color.r_verde.."\n "..matches[0].." "..color.reset
+							..color.r_verde.."\nUsuario: "..color.reset..msg.de.nombre
+							..color.r_verde.."\nID: "..color.amarillo..msg.de.id
+							..color.r_rojo.."\nPlugin: "..color.blanco..color.subrayado..plugins_montados[num_plugin]
+							..color.reset, 1)
 							retornar 0
 						fin
 					fin
 				fin
 			fin
 		fin
-		si plugins[num_plugin]->callbacks
-			desde (cb_num=0; cb_num<(plugins[num_plugin]->callbacks); cb_num++)
-				si cb->datos
-					cmatches = cadena->match(cb->datos, plugins[num_plugin]->callbacks[cb_num])
+		si plugins[num_plugin].callbacks
+			desde (cb_num=0; cb_num<(plugins[num_plugin].callbacks); cb_num++)
+				si cb.datos
+					cmatches = cadena.match(cb.datos, plugins[num_plugin].callbacks[cb_num])
 					si cmatches
 						cmatches = cmatches[0]
 						cblocks = cmatches
-						si convertir->cadena(plugins[num_plugin]->callback) == "funcion" && !json_res
-							plugins[num_plugin]->callback()
-							imprimir(color->marcado.color->blanco."\n ".cmatches[0]." ".color->reset
-							.color->r_verde."\nUsuario: ".color->reset.cb->de->nombre
-							.color->r_verde."\nID: ".color->amarillo.cb->de->id
-							.color->r_rojo."\nPlugin: ".color->blanco.color->subrayado.config->plugins[num_plugin].".lat"
-							.color->reset, 1)
+						si convertir.cadena(plugins[num_plugin].callback) == "funcion" && !json_res
+							plugins[num_plugin].callback()
+							imprimir(color.marcado..color.blanco.."\n "..cmatches[0].." "..color.reset
+							..color.r_verde.."\nUsuario: "..color.reset..cb.de.nombre
+							..color.r_verde.."\nID: "..color.amarillo..cb.de.id
+							..color.r_rojo.."\nPlugin: "..color.blanco..color.subrayado..plugins_montados[num_plugin]
+							..color.reset, 1)
 							retornar 0
 						fin
 					fin
 				fin
 			fin
 		fin
-		si plugins[num_plugin]->icomandos
-			desde (num_icomando=0; num_icomando<(plugins[num_plugin]->icomandos); num_icomando++)
-				si cinline->texto
-					imatches = cadena->match(cinline->texto, plugins[num_plugin]->icomandos[num_icomando])
+		si plugins[num_plugin].icomandos
+			desde (num_icomando=0; num_icomando<(plugins[num_plugin].icomandos); num_icomando++)
+				si cinline.texto
+					imatches = cadena.match(cinline.texto, plugins[num_plugin].icomandos[num_icomando])
 					si imatches
 						imatches = imatches[0]
 						iblocks = imatches
-						si convertir->cadena(plugins[num_plugin]->inline) == "funcion" && !json_res
-							plugins[num_plugin]->inline()
-							imprimir(color->marcado.color->r_purpura."\n ".imatches[0]." ".color->reset
-							.color->r_verde."\nUsuario: ".color->reset.cinline->de->nombre
-							.color->r_verde."\nID: ".color->amarillo.cinline->de->id
-							.color->r_rojo."\nPlugin: ".color->blanco.color->subrayado.config->plugins[num_plugin].".lat"
-							.color->reset, 1)
+						si convertir.cadena(plugins[num_plugin].inline) == "funcion" && !json_res
+							plugins[num_plugin].inline()
+							imprimir(color.marcado..color.r_purpura.."\n "..imatches[0].." "..color.reset
+							..color.r_verde.."\nUsuario: "..color.reset..cinline.de.nombre
+							..color.r_verde.."\nID: "..color.amarillo..cinline.de.id
+							..color.r_rojo.."\nPlugin: "..color.blanco..color.subrayado..plugins_montados[num_plugin]
+							..color.reset, 1)
 							retornar 0
 						fin
 					fin
@@ -304,34 +304,34 @@ funcion menu(argc, argv)
 	limpiar()
 
 	bot = ObtenerBot()
-	bot = bot->result
+	bot = bot.result
 	bot = {
-		"id": bot->id,
-		"nombre": bot->first_name,
-		"usuario": bot->username
+		"id": bot.id,
+		"nombre": bot.first_name,
+		"usuario": bot.username
 	}
 
-	bot_shash = "bot:".bot->id.":schats"
+	bot_shash = "bot:"..bot.id..":schats"
 	verificacion = verificar_apikey()
-	si ! verificacion->ok
-		imprimir("\aERROR (".verificacion->error_code." - ".verificacion->description.")\n\nVerifica la apikey en ajustes.lat", 1)
+	si ! verificacion.ok
+		imprimir("\aERROR ("..verificacion.error_code.." - "..verificacion.description..")\n\nVerifica la apikey en ajustes.lat", 1)
 		retorno 0
 	fin
 
-	com = redis->conectar(config->redis_ip, config->redis_puerto)
+	com = redis.conectar(config.redis_ip, config.redis_puerto)
 
-	inicio = enviarMensaje(config->admin, "<b>Bot iniciado</b>", html, falso)
-	imprimir(color->azul)
+	inicio = enviarMensaje(config.admin, "<b>Bot iniciado</b>", html, falso)
+	imprimir(color.azul)
 	si inicio
-		imprimir("\tConfirmación enviada a " . config->admin . ".\n\tBot @".bot->usuario.".", 1)
+		imprimir("\tConfirmación enviada a " .. config.admin .. ".\n\tBot @"..bot.usuario..".", 1)
 	sino
-		imprimir("\tError en confirmación.\n\tBot @".bot->usuario, 1)
+		imprimir("\tError en confirmación.\n\tBot @"..bot.usuario, 1)
 	fin
-	imprimir(color->reset."\n", 1)
-	si config->limpiar_updates_al_iniciar
+	imprimir(color.reset.."\n", 1)
+	si config.limpiar_updates_al_iniciar
 		updates = limpiar_updates()
 		si updates
-			imprimir(color->cafe."Actualizaciones limpias con un total de ".updates.color->reset."\n", 1)
+			imprimir(color.cafe.."Actualizaciones limpias con un total de "..updates.color.reset.."\n", 1)
 		fin
 	fin
 
@@ -340,10 +340,10 @@ funcion menu(argc, argv)
 	mientras verdadero
 		res = actualizaciones()
 		si res
-			variables()
+			incluir_variables()
 			si json_res ires() fin
 			iniciar_bot()
 		fin
 	fin
-	redis->desconectar(com)
+	redis.desconectar(com)
 fin
