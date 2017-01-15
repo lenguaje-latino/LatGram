@@ -104,6 +104,32 @@ funcion enviarAccion(chatId, tipo)
 	retornar falso
 fin
 
+funcion editarMensaje(chatId, msgId, texto, formato, teclado, inlineMsgId, chatId, webvista)
+    enlace = URL. "editMessageText?chat_id=".chatId."&message_id=".msgId."&text=".cod(texto)
+    si formato
+        elegir(formato)
+            caso "markdown": enlace = enlace."&parse_mode=".formato
+            caso "html": enlace = enlace."&parse_mode=".formato
+        fin
+    fin
+    si teclado
+        enlace = enlace."&reply_markup=".parsear(teclado)
+    fin
+
+    si inlineMsgId
+        enlace = enlace."&inline_message_id=".inlineMsgId
+    fin
+
+    si webvista
+        enlace = enlace."&disable_web_page_preview=true"
+    fin
+    raw = curl->peticion(enlace)
+    estado = json->decodificar(raw)
+    si estado->ok
+        retornar estado
+    fin
+    retornar falso
+fin
 
 funcion reenviarMensaje(chatId, userId, msgId)
 	raw = curl->peticion(URL . "forwardMessage?chat_id=" . chatId . "&from_chat_id=" . userId . "&message_id=" . msgId)
@@ -236,7 +262,6 @@ fin
 
 funcion enviarArchivo(chatId, documento, capcion, notificar, msgId)
 	enlace = URL . "sendDocument?chat_id=".chatId."&document=".curl->escape(documento)
-
 	si capcion
 		enlace = enlace . "&caption=" . curl->escape(capcion)
 	fin
@@ -258,19 +283,18 @@ funcion enviarArchivo(chatId, documento, capcion, notificar, msgId)
 fin
 
 
-funcion enviarSticker(chatId, sticker, capcion, notificar, msgId)
+funcion enviarSticker(chatId, sticker, msgId, teclado, notificar)
 	enlace = URL . "sendSticker?chat_id=".chatId."&sticker=".curl->escape(sticker)
-
-	si capcion
-		enlace = enlace . "&caption=" . curl->escape(capcion)
-	fin
-
-	si notificar
-		enlace = enlace . "&disable_notification=true"
-	fin
-
-	si msgId
+    si msgId
 		enlace = enlace . "&reply_to_message_id=" . msgId
+	fin
+
+    si teclado
+        enlace = enlace . "&reply_markup=".parsear(teclado)
+    fin
+
+    si notificar
+		enlace = enlace . "&disable_notification=true"
 	fin
 
 	raw = curl->peticion(enlace)

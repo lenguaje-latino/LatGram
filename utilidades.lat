@@ -94,21 +94,11 @@ funcion cargar_plugins()
         fin
     fin
     imprimir(color->bold.color->blanco."\n\tSubproceso ".color->marcado.color->r_azul."  ".color->reset
-    .color->bold.color->blanco."   Match ".color->marcado.color->r_verde."  ".color->reset
-    .color->bold.color->blanco."   Inline ".color->marcado.color->r_purpura."  "
+    .color->bold.color->blanco."  Match ".color->marcado.color->r_verde."  ".color->reset
+    .color->bold.color->blanco."  Inline ".color->marcado.color->r_purpura."  ".color->reset
+    .color->bold.color->blanco."  Callback ".color->marcado.color->blanco."  "
     .color->reset,1)
     retornar plugins
-fin
-
-funcion parsear(teclado_inline)
-    si tipo(teclado_inline) == "lista"
-        inline = []
-        desde (teclado=0;teclado<teclado_inline;teclado++)
-            lista->agregar(inline, teclado_inline[teclado])
-        fin
-        retornar curl->escape('{"inline_keyboard":'.inline.'}')
-    fin
-    imprimir("Elemento inesperado, el elemento debe ser lista, no ".tipo(teclado_inline))
 fin
 
 funcion unescape(a)
@@ -117,4 +107,26 @@ funcion unescape(a)
     b = cadena->reemplazar(b, "
 ", "\n")
     retornar b
+fin
+
+funcion obtenerLeer(id, condicion)
+    si condicion && condicion != nulo
+        variable = redis->obtener(com, "lat:".acadena(id).":leer")
+        si variable
+            retornar json->decodificar(variable)
+        fin
+    fin
+    retornar falso
+fin
+
+funcion detenerLeer(id)
+    redis->borrar(com, "lat:".acadena(id).":leer")
+fin
+
+funcion iniciarLeer(id, texto)
+    ok = redis->asignar(com, "lat:".acadena(id).":leer", '{"id": "'.acadena(id).'", "texto": "'.unescape(acadena(texto)).'"}')
+    si ok
+        retornar verdadero
+    fin
+    retornar falso
 fin

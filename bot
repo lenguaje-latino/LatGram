@@ -5,12 +5,23 @@ aURL = 'https://api.telegram.org/file/bot' . config->api_key . '/'
 html = "html"
 md = "markdown"
 
+funcion parsear(teclado_inline)
+	//    si tipo(teclado_inline) == "lista"
+	inline = []
+	desde (i=0;i<teclado_inline;i++)
+		lista->agregar(inline, teclado_inline[i])
+	fin
+	retornar curl->escape('{"inline_keyboard":'.teclado_inline.'}')
+	//    fin
+	//    imprimir("Elemento inesperado, el elemento debe ser lista, no ".tipo(teclado_inline))
+fin
+
 funcion variables()
 	foto_tabla = 0
 	res = res->result[0]
 	msj = res->message
 	msg = {
-		"id": msj->id,
+		"id": msj->message_id,
 		"texto": msj->text,
 		"fecha": msj->date,
 		"capcion": msj->caption,
@@ -145,6 +156,67 @@ funcion variables()
 			"usuario": cinline->from->username
 		}
 	}
+
+	cb = res->callback_query
+	cb = {
+		"id": cb->id,
+		"chat_instancia": cb->chat_instance,
+		"datos": cb->data,
+		"de": {
+			"id": cb->from->id,
+			"usuario": cb->from->username,
+			"nombre": cb->from->first_name
+		},
+		"msg": {
+			"id": cb->message->message_id,
+			"fecha": cb->message->date,
+			"chat": {
+				"tipo": cb->message->chat->type,
+				"id": cb->message->chat->id,
+				"usuario": cb->message->chat->username,
+				"nombre": cb->message->chat->first_name
+			},
+			"de": {
+				"id": cb->message->from->id,
+				"usuario": cb->message->from->username,
+				"nombre": cb->message->from->first_name
+			},
+			"sticker": {
+				"id": cb->message->sticker->file_id,
+				"thumb": {
+					"id": cb->message->sticker->thumb->file_id,
+					"peso": cb->message->sticker->thumb->file_size,
+					"anchura": cb->message->sticker->thumb->width,
+					"altura": cb->message->sticker->thumb->height
+				},
+				"peso": cb->message->sticker->file_size,
+				"emoji": cb->message->sticker->emoji,
+				"anchura": cb->message->sticker->width,
+				"altura": cb->message->sticker->height
+			},
+			"respuesta": {
+				"texto": cb->message->reply_to_message->text,
+				"fecha": cb->message->reply_to_message->date,
+				"id": cb->message->reply_to_message->message_id,
+				"chat": {
+					"tipo": cb->message->reply_to_message->chat->type,
+					"id": cb->message->reply_to_message->chat->id,
+					"usuario": cb->message->reply_to_message->chat->username,
+					"nombre": cb->message->reply_to_message->chat->first_name
+				},
+				/*	"entidad": {
+				"tipo": cb->message->reply_to_message->entities->type,
+				"offset": 0,
+				"longitud": 6
+			},*/
+			"de": {
+				"id": cb->message->reply_to_message->from->id,
+				"usuario": cb->message->reply_to_message->from->username,
+				"nombre": cb->message->reply_to_message->from->first_name
+			}
+		}
+	}
+}
 fin
 
 funcion iniciar_bot()
@@ -155,6 +227,7 @@ funcion iniciar_bot()
 				imprimir(color->r_azul.color->marcado."\n ".retorna." ".color->reset
 				.color->r_rojo."\nPlugin: ".color->blanco.color->subrayado.config->plugins[num_plugin].".lat"
 				.color->reset, 1)
+				retornar 0
 			fin
 		fin
 		si plugins[num_plugin]->comandos
@@ -171,6 +244,27 @@ funcion iniciar_bot()
 							.color->r_verde."\nID: ".color->amarillo.msg->de->id
 							.color->r_rojo."\nPlugin: ".color->blanco.color->subrayado.config->plugins[num_plugin].".lat"
 							.color->reset, 1)
+							retornar 0
+						fin
+					fin
+				fin
+			fin
+		fin
+		si plugins[num_plugin]->callbacks
+			desde (cb_num=0; cb_num<(plugins[num_plugin]->callbacks); cb_num++)
+				si cb->datos
+					cmatches = cadena->match(cb->datos, plugins[num_plugin]->callbacks[cb_num])
+					si cmatches
+						cmatches = cmatches[0]
+						cblocks = cmatches
+						si convertir->cadena(plugins[num_plugin]->callback) == "funcion" && !json_res
+							plugins[num_plugin]->callback()
+							imprimir(color->marcado.color->blanco."\n ".cmatches[0]." ".color->reset
+							.color->r_verde."\nUsuario: ".color->reset.cb->de->nombre
+							.color->r_verde."\nID: ".color->amarillo.cb->de->id
+							.color->r_rojo."\nPlugin: ".color->blanco.color->subrayado.config->plugins[num_plugin].".lat"
+							.color->reset, 1)
+							retornar 0
 						fin
 					fin
 				fin
@@ -190,6 +284,7 @@ funcion iniciar_bot()
 							.color->r_verde."\nID: ".color->amarillo.cinline->de->id
 							.color->r_rojo."\nPlugin: ".color->blanco.color->subrayado.config->plugins[num_plugin].".lat"
 							.color->reset, 1)
+							retornar 0
 						fin
 					fin
 				fin

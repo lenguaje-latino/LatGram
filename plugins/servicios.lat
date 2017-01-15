@@ -1,4 +1,19 @@
 funcion subproceso()
+    array = obtenerLeer(msg->de->id, msg->texto)
+    si array
+        si cadena->match(cadena->minusculas(msg->texto), "^(s|si)$")
+            redis->borrar(com, "plus:".msg->de->id.":json")
+            enviarMensaje(msg->de->id, "*Papelera vaciada*.", md)
+            detenerLeer(msg->de->id)
+        osi cadena->match(cadena->minusculas(msg->texto), "^(n|no)$")
+            enviarMensaje(msg->de->id, "*Proceso abortado.*.", md)
+            detenerLeer(msg->de->id)
+        sino
+            enviarMensaje(msg->de->id, "*Opción inválida* \[S/n]", md)
+        fin
+        retornar "Leyendo opción..."
+    fin
+
     funcion usuario_hace_spam()
         si msg->chat->tipo != "private"
             spam_match = falso

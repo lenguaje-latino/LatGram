@@ -1,11 +1,25 @@
+funcion callback()
+    si cmatches[1] == "latino"
+        link_teclado = [[
+        {"text":"Github","url":"https://github.com/lenguaje-latino/BotGram"}
+        ]]
+        editarMensaje(cb->msg->chat->id, cb->msg->id, "*Latino* es un lenguaje de programación en español interpretado hecho en C"
+        ."\n¿Puedo ayudar? Si así es, *Latino busca desarrolladores* para Latino."
+        ."\nCabe destacar que este bot *fué programado en Latino*.", md, link_teclado)
+    fin
+fin
+
 funcion mensajes()
   si matches[1] == "id"
-          enviarAccion(msg->chat->id, "grabar_audio")
           enviarMensaje(msg->chat->id, "*Chat ID*: ".msg->chat->id."\n*User ID*: ".msg->de->id, md)
+  fin
+  si matches[1] == "leer"
+          enviarMensaje(msg->chat->id, "Escribe un texto", md)
+          iniciarLeer(msg->de->id, matches[0])
   fin
   si matches[1] == "start"
           ayuda = [[
-          {"text":"Programación Latino","url":"https://github.com/primitivorm/latino"},
+          {"text":"Programación Latino","callback_data":"!!!latino"},
           {"text":"Repositorio del Bot","url":"https://github.com/lenguaje-latino/BotGram"}
           ]]
           enviarTeclado(msg->chat->id, "¡Hey! ".no_markdown(msg->de->nombre)."\n\nEstás probando el nuevo bot escrito completamente en la *programación Latino*. Por el momento faltan cosas. Pero de poco a poco irá mejorando 😄👍", ayuda, md)
@@ -17,7 +31,12 @@ retornar {
         "^/(id)$",
         "^/(id)@".bot->usuario."$",
         "^/(start)$",
-        "^/(start)@".bot->usuario."$"
+        "^/(start)@".bot->usuario."$",
+        "/(leer)"
  ],
- "accion": mensajes
+ "callbacks": [
+        "^!!!(latino)$"
+ ],
+ "accion": mensajes,
+ "callback": callback
 }

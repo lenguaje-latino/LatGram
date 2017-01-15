@@ -32,7 +32,11 @@ funcion mensajes()
             c = json->decodificar(portapapeles)
             enviarAccion(msg->chat->id, c->accion)
             si c->tipo == "sticker"
-                enviarSticker(msg->chat->id, c->contenido, "Sticker enviado desde el portapapeles")
+                vvvvv = [[
+                {"text":"Programación Latino","callback_data":"!!!cb"},
+                {"text":"Repositorio del Bot","url":"https://github.com/lenguaje-latino/BotGram"}
+                ]]
+                enviarSticker(msg->chat->id, c->contenido, msg->id, vvvvv)
             osi c->tipo == "foto"
                 enviarFoto(msg->chat->id, c->contenido, "Foto enviada desde el portapapeles")
             osi c->tipo == "voz"
@@ -49,8 +53,9 @@ funcion mensajes()
         hash = "plus:".msg->de->id.":json"
         portapapeles = redis->obtener(com, hash)
         si portapapeles
-            redis->borrar(com, hash)
-            enviarMensaje(msg->chat->id, "*Portapapeles vaciado*.", md)
+            c = json->decodificar(portapapeles)
+            enviarMensaje(msg->chat->id, "*¿Está seguro de vacíar su papelera?* tiene un ".c->tipo." en su portapapeles \[S/n].", md)
+            iniciarLeer(msg->de->id, msg->texto)
             retorno 1
         fin
         enviarMensaje(msg->chat->id, "*No tienes nada en el portapapeles*.", md)
