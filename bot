@@ -6,14 +6,14 @@ html = "html"
 md = "markdown"
 
 funcion parsear(teclado_inline)
-	//    si tipo(teclado_inline) == "lista"
-	inline = []
-	desde (i=0;i<teclado_inline;i++)
-		lista->agregar(inline, teclado_inline[i])
-	fin
-	retornar curl->escape('{"inline_keyboard":'.teclado_inline.'}')
-	//    fin
-	//    imprimir("Elemento inesperado, el elemento debe ser lista, no ".tipo(teclado_inline))
+	si tipo(teclado_inline) == "lista"
+		inline = []
+		desde (i=0;i<teclado_inline;i++)
+			lista->agregar(inline, teclado_inline[i])
+		fin
+		retornar curl->escape('{"inline_keyboard":'.teclado_inline.'}')
+   fin
+   imprimir("Elemento inesperado, el elemento debe ser lista, no ".tipo(teclado_inline))
 fin
 
 funcion variables()

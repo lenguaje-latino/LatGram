@@ -77,9 +77,9 @@ funcion enviarTeclado(chatId, texto, teclado, formato)
 fin
 
 funcion enviarAccion(chatId, tipo)
-	accion = falso
-    acc=verdadero
-	elegir(tipo)
+	accion = "escribiendo"
+    si tipo
+	    elegir(tipo)
 		caso "escribiendo": accion = "typing"
 		caso "subir_foto": accion = "upload_photo"
 		caso "subir_video": accion = "upload_video"
@@ -88,12 +88,10 @@ funcion enviarAccion(chatId, tipo)
 		caso "grabar_video": accion = "record_video"
 		caso "grabar_audio": accion = "record_audio"
 		caso "buscar_lugar": accion = "find_location"
-        caso "nula": acc=falso accion=verdadero
+        fin
 	fin
 	si !accion
-		imprimir("error: la acción '".tipo."' no existe.\nAcciones disponibles:\n\tescribiendo\n\tsubir_foto\n\tsubir_video\n\tsubir_audio\n\tsubir_archivo\n\tgrabar_video\n\tgrabar_audio\n\tbuscar_lugar", 1)
-        retornar falso
-    osi !acc
+        imprimir("error: la acción '".tipo."' no existe.\nAcciones disponibles:\n\tescribiendo\n\tsubir_foto\n\tsubir_video\n\tsubir_audio\n\tsubir_archivo\n\tgrabar_video\n\tgrabar_audio\n\tbuscar_lugar", 1)
         retornar falso
 	fin
 	raw = curl->peticion(URL . "sendChatAction?chat_id=" . chatId . "&action=" . accion)

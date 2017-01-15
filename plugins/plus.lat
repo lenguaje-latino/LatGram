@@ -3,23 +3,23 @@ funcion mensajes()
         si respuesta->id
             hash = "plus:".msg->de->id.":json"
             si respuesta->sticker->id
-                redis->asignar(com, hash, '{"tipo": "sticker", "contenido":"'.respuesta->sticker->id.'", "accion": "nula"}')
+                redis->asignar(com, hash, '{"tipo": "sticker", "contenido":"'.respuesta->sticker->id.'"}')
                 enviarMensaje(msg->chat->id, "*Sticker copiado en el portapapeles*.", md)
             osi respuesta->voz->id
-                redis->asignar(com, hash, '{"tipo": "voz", "contenido":"'.respuesta->voz->id.'", "accion": "grabar_audio"}')
+                redis->asignar(com, hash, '{"tipo": "voz", "contenido":"'.respuesta->voz->id.'"}')
                 enviarMensaje(msg->chat->id, "*Audio copiado en el portapapeles*.", md)
             osi respuesta->foto->id
-                redis->asignar(com, hash, '{"tipo": "foto", "contenido":"'.respuesta->foto->id.'", "accion": "subir_foto"}')
+                redis->asignar(com, hash, '{"tipo": "foto", "contenido":"'.respuesta->foto->id.'"}')
                 enviarMensaje(msg->chat->id, "*Foto copiada en el portapapeles*.", md)
             osi respuesta->archivo->id
-                redis->asignar(com, hash, '{"tipo": "archivo", "contenido":"'.respuesta->archivo->id.'", "accion": "subir_archivo"}')
+                redis->asignar(com, hash, '{"tipo": "archivo", "contenido":"'.respuesta->archivo->id.'"}')
                 enviarMensaje(msg->chat->id, "*Archivo copiado en el portapapeles*.", md)
             osi respuesta->texto
                 si cadena->longitud(respuesta->texto) > 200
                     enviarMensaje(msg->chat->id, "El texto a copiar *es demasiado largo*, intenta con un texto menor a 200\nPuedes responder con el comando /longitud a un texto para obtener su longitud.", md)
                     retornar 0
                 fin
-                redis->asignar(com, hash, '{"tipo": "texto", "contenido":"'.unescape(respuesta->texto).'", "accion": "escribiendo"}')
+                redis->asignar(com, hash, '{"tipo": "texto", "contenido":"'.unescape(respuesta->texto).'"}')
                 enviarMensaje(msg->chat->id, "*Texto copiado en el portapapeles*.", md)
             fin
         sino
@@ -30,7 +30,6 @@ funcion mensajes()
         portapapeles = redis->obtener(com, hash)
         si portapapeles
             c = json->decodificar(portapapeles)
-            enviarAccion(msg->chat->id, c->accion)
             si c->tipo == "sticker"
                 vvvvv = [[
                 {"text":"Programación Latino","callback_data":"!!!cb"},
@@ -38,12 +37,16 @@ funcion mensajes()
                 ]]
                 enviarSticker(msg->chat->id, c->contenido, msg->id, vvvvv)
             osi c->tipo == "foto"
+                //enviarAccion(msg->chat->id, "subir_foto")
                 enviarFoto(msg->chat->id, c->contenido, "Foto enviada desde el portapapeles")
             osi c->tipo == "voz"
+                //enviarAccion(msg->chat->id, "grabar_audio")
                 enviarVoz(msg->chat->id, c->contenido, "Nota de voz enviada desde el portapapeles")
             osi c->tipo == "archivo"
+                //enviarAccion(msg->chat->id, "subir_archivo")
                 enviarArchivo(msg->chat->id, c->contenido, "Archivo enviado desde el portapapeles")
             osi c->tipo == "texto"
+                //enviarAccion(msg->chat->id, "escribiendo")
                 enviarMensaje(msg->chat->id, "Texto de portapapeles:\n".c->contenido)
             fin
         sino
