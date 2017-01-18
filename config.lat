@@ -15,9 +15,23 @@ retornar {
                 "plus"
         ],
 
+        "ajustes_globales": [ // estos ajustes los activará/permitirá cuando metan al bot a un grupo
+                "spam",
+                "extras",
+                "bienvenida",
+                "reglas",
+                "stickers",
+                "voz",
+                "fotos",
+                "arabes",
+                "links"
+        ],
+
         "dir": "plugins/",
 
         "limpiar_updates_al_iniciar": verdadero,
+
+        "consultas_inline": verdadero,
 
         "max_updates": 3, // indicamos un valor como máximo de updates que pueden quedar al iniciar.
 

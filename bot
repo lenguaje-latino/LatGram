@@ -1,7 +1,7 @@
 #!/usr/bin/latino
 config = incluir ('config')
 URL = 'https://api.telegram.org/bot' .. config.api_key .. '/'
-aURL = 'https://api.telegram.org/file/bot' .. config.api_key .. '/'
+AURL = 'https://api.telegram.org/file/bot' .. config.api_key .. '/'
 html = "html"
 md = "markdown"
 
@@ -11,16 +11,16 @@ funcion parsear(teclado_inline)
 		desde (i=0;i<teclado_inline;i++)
 			lista.agregar(inline, teclado_inline[i])
 		fin
-		retornar curl.escape('{"inline_keyboard":'..teclado_inline..'}')
-   fin
-   imprimir("Elemento inesperado, el elemento debe ser lista, no "..tipo(teclado_inline)..".")
+		retornar acadena('{"inline_keyboard":'..inline..'}')
+	fin
+	imprimir("Elemento inesperado, el elemento debe ser lista, no "..tipo(teclado_inline)..".")
 fin
 
 funcion incluir_variables()
 	foto_tabla = 0
 	res = res.result[0]
 	msj = res.message
-	msg = {
+	global msg = {
 		"id": msj.message_id,
 		"texto": msj.text,
 		"fecha": msj.date,
@@ -68,7 +68,7 @@ funcion incluir_variables()
 	}
 
 	resp = msj.reply_to_message
-	respuesta = {
+	global respuesta = {
 		"texto": resp.text,
 		"fecha": resp.date,
 		"id": resp.message_id,
@@ -121,7 +121,7 @@ funcion incluir_variables()
 	fin
 
 	sticker = msj.sticker
-	sticker = {
+	global sticker = {
 		"anchura": sticker.width,
 		"altura": sticker.height,
 		"emoji": sticker.emoji,
@@ -136,7 +136,7 @@ funcion incluir_variables()
 	}
 
 	foto = msj.photo
-	foto = {
+	global foto = {
 		"id": foto[foto_tabla].file_id,
 		"peso": foto[foto_tabla].file_size,
 		"path": foto[foto_tabla].file_path,
@@ -145,7 +145,7 @@ funcion incluir_variables()
 	}
 
 	cinline = res.inline_query
-	cinline = {
+	global cinline = {
 		"id": cinline.id,
 		"texto": cinline.query,
 		"offset": cinline.offset,
@@ -154,11 +154,17 @@ funcion incluir_variables()
 			"nombre": cinline.from.first_name,
 			"apellido": cinline.from.last_name,
 			"usuario": cinline.from.username
+		},
+		"chat": {
+			"id": cinline.chat.id,
+			"nombre": cinline.chat.first_name,
+			"apellido": cinline.chat.last_name,
+			"usuario": cinline.chat.username
 		}
 	}
 
 	cb = res.callback_query
-	cb = {
+	global cb = {
 		"id": cb.id,
 		"chat_instancia": cb.chat_instance,
 		"datos": cb.data,
@@ -270,21 +276,23 @@ funcion iniciar_bot()
 				fin
 			fin
 		fin
-		si plugins[num_plugin].icomandos
-			desde (num_icomando=0; num_icomando<(plugins[num_plugin].icomandos); num_icomando++)
-				si cinline.texto
-					imatches = cadena.match(cinline.texto, plugins[num_plugin].icomandos[num_icomando])
-					si imatches
-						imatches = imatches[0]
-						iblocks = imatches
-						si convertir.cadena(plugins[num_plugin].inline) == "funcion" && !json_res
-							plugins[num_plugin].inline()
-							imprimir(color.marcado..color.r_purpura.."\n "..imatches[0].." "..color.reset
-							..color.r_verde.."\nUsuario: "..color.reset..cinline.de.nombre
-							..color.r_verde.."\nID: "..color.amarillo..cinline.de.id
-							..color.r_rojo.."\nPlugin: "..color.blanco..color.subrayado..plugins_montados[num_plugin]
-							..color.reset, 1)
-							retornar 0
+		si config.consultas_inline
+			si plugins[num_plugin].icomandos
+				desde (num_icomando=0; num_icomando<(plugins[num_plugin].icomandos); num_icomando++)
+					si cinline.texto
+						imatches = cadena.match(cinline.texto, plugins[num_plugin].icomandos[num_icomando])
+						si imatches
+							imatches = imatches[0]
+							iblocks = imatches
+							si convertir.cadena(plugins[num_plugin].inline) == "funcion" && !json_res
+								plugins[num_plugin].inline()
+								imprimir(color.marcado..color.r_purpura.."\n "..imatches[0].." "..color.reset
+								..color.r_verde.."\nUsuario: "..color.reset..cinline.de.nombre
+								..color.r_verde.."\nID: "..color.amarillo..cinline.de.id
+								..color.r_rojo.."\nPlugin: "..color.blanco..color.subrayado..plugins_montados[num_plugin]
+								..color.reset, 1)
+								retornar 0
+							fin
 						fin
 					fin
 				fin
@@ -299,8 +307,15 @@ funcion menu(argc, argv)
 	incluir ('utilidades')
 
 	json_res=falso
-	si argv[0] == "--json" || argv[0] == "-j" json_res=verdadero fin
-	si argv[0] == "-h" || argv[0] == "--help" imprimir("Help ./bot [opción]\n\t[--json ][-j]: imprimir en formato json",1) retornar 0 fin
+	si argv[1] == "--json" || argv[1] == "-j" json_res=verdadero fin
+	si argv[1] == "-h"
+		si cadena.contiene(argv[0], "./")
+			imprimir("Ayuda "..color.cyan..argv[0].." [opción]"..color.reset.."\n\t"..color.bold.."[--json ][-j]"..color.reset..": imprimir en formato json",1)
+		sino
+			imprimir("Ayuda "..color.cyan.."latino "..argv[0].." [opción]"..color.reset.."\n\t"..color.bold.."[--json ][-j]"..color.reset..": imprimir en formato json",1)
+		fin
+		retornar 0
+	fin
 	limpiar()
 
 	bot = ObtenerBot()
@@ -311,7 +326,7 @@ funcion menu(argc, argv)
 		"usuario": bot.username
 	}
 
-	bot_shash = "bot:"..bot.id..":schats"
+	BOT_SHASH = "bot:"..bot.id..":schats"
 	verificacion = verificar_apikey()
 	si ! verificacion.ok
 		imprimir("\aERROR ("..verificacion.error_code.." - "..verificacion.description..")\n\nVerifica la apikey en ajustes.lat", 1)
@@ -331,7 +346,7 @@ funcion menu(argc, argv)
 	si config.limpiar_updates_al_iniciar
 		updates = limpiar_updates()
 		si updates
-			imprimir(color.cafe.."Actualizaciones limpias con un total de "..updates.color.reset.."\n", 1)
+			imprimir(color.cafe.."Actualizaciones limpias con un total de "..updates..color.reset.."\n", 1)
 		fin
 	fin
 
@@ -343,6 +358,10 @@ funcion menu(argc, argv)
 			incluir_variables()
 			si json_res ires() fin
 			iniciar_bot()
+		fin
+		si sis.avisar(2) || sis.avisar(20)
+			imprimir("\nBot detenido (@"..bot.usuario..")",1)
+			sis.salir()
 		fin
 	fin
 	redis.desconectar(com)

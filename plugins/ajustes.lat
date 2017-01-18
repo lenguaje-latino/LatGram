@@ -1,82 +1,243 @@
 funcion mensajes()
-        si matches[1] == "spam"
-                hash = "ajustes:"..msg.chat.id..":spam"
-                si matches[2] == "on"
-                        status = redis.obtener(com, hash)
-                        si status == "on"
-                                enviarMensaje(msg.chat.id, "El spam *ya está permitido*.", md)
-                                retornar 0
-                        fin
-                        redis.asignar(com, hash, matches[2])
-                        enviarMensaje(msg.chat.id, "Spam *permitido* en este chat.", md)
-                        retornar 1
-                osi matches[2] == "off"
-                        status = redis.obtener(com, hash)
-                        si status == "off"
-                                enviarMensaje(msg.chat.id, "El spam *ya no está permitido*.", md)
-                                retornar 0
-                        fin
-                        redis.asignar(com, hash, matches[2])
-                        enviarMensaje(msg.chat.id, "Spam *no permitido* en este chat.", md)
-                        retornar 1
-                fin
-        fin
-        si matches[1] == "extras"
-                hash = "ajustes:"..msg.chat.id..":extras"
-                si matches[2] == "on"
-                        status = redis.obtener(com, hash)
-                        si status == "on"
-                                enviarMensaje(msg.chat.id, "Los extras *ya están activados*.", md)
-                                retornar 0
-                        fin
-                        redis.asignar(com, hash, matches[2])
-                        enviarMensaje(msg.chat.id, "Extras *activados* en este chat.", md)
-                        retornar 1
-                osi matches[2] == "off"
-                        status = redis.obtener(com, hash)
-                        si status == "off"
-                                enviarMensaje(msg.chat.id, "Los extras *ya están desactivados*.", md)
-                                retornar 0
-                        fin
-                        redis.asignar(com, hash, matches[2])
-                        enviarMensaje(msg.chat.id, "Extras *desactivados* en este chat.", md)
-                        retornar 1
-                fin
-        fin
-        si matches[1] == "bienvenida"
-                hash = "ajustes:"..msg.chat.id..":bienvenida"
-                si matches[2] == "on"
-                        status = redis.obtener(com, hash)
-                        si status == "on"
-                                enviarMensaje(msg.chat.id, "La bienvenida *ya está activada*.", md)
-                                retornar 0
-                        fin
-                        redis.asignar(com, hash, matches[2])
-                        enviarMensaje(msg.chat.id, "Bienvenida *activada* en este chat.", md)
-                        retornar 1
-                osi matches[2] == "off"
-                        status = redis.obtener(com, hash)
-                        si status == "off"
-                                enviarMensaje(msg.chat.id, "La bienvenida *ya está desactivada*.", md)
-                                retornar 0
-                        fin
-                        redis.asignar(com, hash, matches[2])
-                        enviarMensaje(msg.chat.id, "Bienvenida *desactivada* en este chat.", md)
-                        retornar 1
-                fin
-        fin
+   si msg.chat.tipo == "private"
+      enviarMensaje(msg.chat.id, "Este comando *solo funciona en grupos*.", md)
+      retornar 0
+   fin
+   si usuario_es_admin(msg.chat.id, msg.de.id) || msg.de.id == config.admin
+      hash = "ajustes:"..msg.chat.id
+      chash = "ajustes:"..msg.chat.id..":customs"
+      si matches[1] == "spam"
+         si matches[2] == "on"
+            lo_agrega = redis.sagregar(com, hash, "spam")
+            si lo_agrega
+               enviarMensaje(msg.chat.id, "Spam *permitido* en este chat.", md)
+               retornar 0
+            fin
+            enviarMensaje(msg.chat.id, "El spam *ya está permitido*.", md)
+         osi matches[2] == "off"
+            lo_borra = redis.sborrar(com, hash, "spam")
+            si lo_borra
+               enviarMensaje(msg.chat.id, "Spam *no permitido* en este chat.", md)
+               retornar 0
+            fin
+            enviarMensaje(msg.chat.id, "El spam *ya no está permitido*.", md)
+         fin
+      fin
 
+      si matches[1] == "extras"
+         si matches[2] == "on"
+            lo_agrega = redis.sagregar(com, hash, "extras")
+            si lo_agrega
+               enviarMensaje(msg.chat.id, "Extras *activados* en este chat.", md)
+               retornar 0
+            fin
+            enviarMensaje(msg.chat.id, "Los extras *ya están activados*.", md)
+
+         osi matches[2] == "off"
+            lo_borra = redis.sborrar(com, hash, "extras")
+            si lo_borra
+               enviarMensaje(msg.chat.id, "Extras *desactivados* en este chat.", md)
+               retornar 0
+            fin
+            enviarMensaje(msg.chat.id, "Los extras *ya están desactivados*.", md)
+         fin
+      fin
+
+      si matches[1] == "bienvenida"
+         si matches[2] ~= "^on$"
+            lo_agrega = redis.sagregar(com, hash, "bienvenida")
+            si lo_agrega
+               enviarMensaje(msg.chat.id, "Bienvenida *activada* en este chat.", md)
+               retornar 0
+            fin
+            enviarMensaje(msg.chat.id, "La bienvenida *ya está activada*.", md)
+
+         osi matches[2] ~= "^off$"
+            lo_borra = redis.sborrar(com, hash, "bienvenida")
+            si lo_borra
+               enviarMensaje(msg.chat.id, "Bienvenida *desactivada* en este chat.", md)
+               retornar 0
+            fin
+            enviarMensaje(msg.chat.id, "La bienvenida *ya está desactivada*.", md)
+
+         osi matches[2] ~= "^\[del]$"
+            bienvenida = redis.hobtener(com, chash, "bienvenida")
+            si bienvenida
+               redis.hborrar(com, chash, "bienvenida")
+               enviarMensaje(msg.chat.id, "Bienvenida *eliminada* del chat.", md)
+               retornar 0
+            fin
+            enviarMensaje(msg.chat.id, "La bienvenida *ya está eliminada*, la puedes desactivar con `/bienvenida off`.", md)
+
+         sino
+            ok = enviarMensaje(msg.chat.id, "*Nueva bienvenida asignada*:\n"..matches[2], md)
+            si ! ok
+               enviarMensaje(msg.chat.id, "*Verifica el markdown*.", md)
+            sino
+               redis.hasignar(com, chash, "bienvenida", matches[2])
+            fin
+         fin
+      fin
+
+      si matches[1] == "reglas"
+         si !matches[2]
+            reglas_activadas = redis.sesmiembro(com, hash, "reglas")
+            si reglas_activadas
+               reglas_asignadas = redis.hobtener(com, chash, "reglas")
+               si reglas_asignadas
+                  enviarMensaje(msg.chat.id, reglas_asignadas, md)
+               sino
+                  enviarMensaje(msg.chat.id, "*No hay reglas asignadas en este grupo*.", md)
+               fin
+            fin
+            retornar 0
+         fin
+         si matches[2] ~= "^on$"
+            lo_agrega = redis.sagregar(com, hash, "reglas")
+            si lo_agrega
+               enviarMensaje(msg.chat.id, "Reglas *activadas* en este chat.", md)
+               retornar 0
+            fin
+            enviarMensaje(msg.chat.id, "Las reglas *ya está activadas*.", md)
+
+         osi matches[2] ~= "^off$"
+            lo_borra = redis.sborrar(com, hash, "reglas")
+            si lo_borra
+               enviarMensaje(msg.chat.id, "Reglas *desactivadas* en este chat.", md)
+               retornar 0
+            fin
+            enviarMensaje(msg.chat.id, "Las reglas *ya está desactivadas*.", md)
+
+         osi matches[2] ~= "^\[del]$"
+            bienvenida = redis.hobtener(com, chash, "reglas")
+            si bienvenida
+               redis.hborrar(com, chash, "reglas")
+               enviarMensaje(msg.chat.id, "Reglas *eliminadas* del chat.", md)
+               retornar 0
+            fin
+            enviarMensaje(msg.chat.id, "Las reglas *ya están eliminadas*, la puedes desactivar con `/reglas off`.", md)
+
+         sino
+            ok = enviarMensaje(msg.chat.id, "*Nuevas reglas asignadas*:\n"..matches[2], md)
+            si ! ok
+               enviarMensaje(msg.chat.id, "*Verifica el markdown*.", md)
+            sino
+               redis.hasignar(com, chash, "reglas", matches[2])
+            fin
+         fin
+      fin
+
+      si matches[1] == "stickers"
+         si matches[2] == "on"
+            lo_agrega = redis.sagregar(com, hash, "stickers")
+            si lo_agrega
+               enviarMensaje(msg.chat.id, "Stickers *permitidos* en este chat.", md)
+               retornar 0
+            fin
+            enviarMensaje(msg.chat.id, "Los stickers *ya están permitidos*.", md)
+
+         osi matches[2] == "off"
+            lo_borra = redis.sborrar(com, hash, "stickers")
+            si lo_borra
+               enviarMensaje(msg.chat.id, "Stickers *no permitidos* en este chat.", md)
+               retornar 0
+            fin
+            enviarMensaje(msg.chat.id, "Los stickers *ya no están permitidos*.", md)
+         fin
+      fin
+
+      si matches[1] == "voz"
+         si matches[2] == "on"
+            lo_agrega = redis.sagregar(com, hash, "voz")
+            si lo_agrega
+               enviarMensaje(msg.chat.id, "Mensajes de voz *permitidos* en este chat.", md)
+               retornar 0
+            fin
+            enviarMensaje(msg.chat.id, "Los mensajes de voz *ya están permitidos*.", md)
+
+         osi matches[2] == "off"
+            lo_borra = redis.sborrar(com, hash, "voz")
+            si lo_borra
+               enviarMensaje(msg.chat.id, "Mensajes de voz *no permitidos* en este chat.", md)
+               retornar 0
+            fin
+            enviarMensaje(msg.chat.id, "Los mensajes de voz *ya no están permitidos*.", md)
+         fin
+      fin
+
+      si matches[1] == "fotos"
+         si matches[2] == "on"
+            lo_agrega = redis.sagregar(com, hash, "fotos")
+            si lo_agrega
+               enviarMensaje(msg.chat.id, "Fotos *permitidas* en este chat.", md)
+               retornar 0
+            fin
+            enviarMensaje(msg.chat.id, "Las fotos *ya están permitidas*.", md)
+
+         osi matches[2] == "off"
+            lo_borra = redis.sborrar(com, hash, "fotos")
+            si lo_borra
+               enviarMensaje(msg.chat.id, "Fotos *no permitidas* en este chat.", md)
+               retornar 0
+            fin
+            enviarMensaje(msg.chat.id, "Las fotos *ya no están permitidas*.", md)
+         fin
+      fin
+
+      si matches[1] == "arabes"
+         si matches[2] == "on"
+            lo_agrega = redis.sagregar(com, hash, "arabes")
+            si lo_agrega
+               enviarMensaje(msg.chat.id, "Arabes *permitidos* en este chat.", md)
+               retornar 0
+            fin
+            enviarMensaje(msg.chat.id, "Los arabes *ya están permitidos*.", md)
+
+         osi matches[2] == "off"
+            lo_borra = redis.sborrar(com, hash, "arabes")
+            si lo_borra
+               enviarMensaje(msg.chat.id, "Arabes *no permitidos* en este chat.", md)
+               retornar 0
+            fin
+            enviarMensaje(msg.chat.id, "Los arabes *ya no están permitidos*.", md)
+         fin
+      fin
+
+      si matches[1] == "links"
+         si matches[2] == "on"
+            lo_agrega = redis.sagregar(com, hash, "links")
+            si lo_agrega
+               enviarMensaje(msg.chat.id, "Links *permitidos* en este chat.", md)
+               retornar 0
+            fin
+            enviarMensaje(msg.chat.id, "Los links *ya están permitidos*.", md)
+
+         osi matches[2] == "off"
+            lo_borra = redis.sborrar(com, hash, "links")
+            si lo_borra
+               enviarMensaje(msg.chat.id, "Links *no permitidos* en este chat.", md)
+               retornar 0
+            fin
+            enviarMensaje(msg.chat.id, "Los links *ya no están permitidos*.", md)
+         fin
+      fin
+   sino
+      enviarMensaje(msg.chat.id, "*Debes ser administrador* para usar este comando.", md)
+   fin
 fin
 
-
 retornar {
-        "comandos": [
-                "^/(spam) (on|off)$",
-                "^/(extras) (on|off)$",
-                "^/(bienvenida) (on|off)$",
-                "^/(stickers) (on|off)",
-                "^/(notas) (on|off)",
-                "^/(fotos) (on|off)"
-        ],
-        "accion": mensajes
+   "comandos": [
+   "^/(reglas)$",
+   "^/(spam) (on|off)$",
+   "^/(extras) (on|off)$",
+   "^/(bienvenida) (.*)$",
+   "^/(reglas) (.*)$",
+   "^/(stickers) (on|off)",
+   "^/(voz) (on|off)",
+   "^/(fotos) (on|off)",
+   "^/(arabes) (on|off)",
+   "^/(links) (on|off)"
+   ],
+   "accion": mensajes
 }

@@ -204,7 +204,7 @@ funcion obtenerArchivo(Id)
 	datos = curl.peticion(URL .. "getFile?file_id=" .. Id)
 	status = json.decodificar(datos)
 	si status.ok
-		sistema('wget --no-check-certificate '..aURL..status.result.file_path)
+		sistema('wget --no-check-certificate '..AURL..status.result.file_path)
 		retornar status
 	fin
 	retornar falso
@@ -493,19 +493,27 @@ fin
 
 // consultas inline
 
-funcion enviarConsultaInline(IdConsulta, resultado)
-	raw = curl.peticion(URL .. "answerInlineQuery?inline_query_id="..IdConsulta.."&results="..resultado)
+funcion enviarConsultaInline(IdConsulta, resultado, limite)
+    si tipo(resultado) != "lista"
+        imprimir("Error: enviarConsultaInline parametro 2 debe ser una lista")
+        retornar 0
+    fin
+	enlace = URL .. "answerInlineQuery?inline_query_id="..IdConsulta.."&results="..resultado
+    si limite
+        enlace = enlace.."&cache_time="..anumero(limite)
+    fin
+    raw = curl.peticion(enlace)
 	status = json.decodificar(raw)
 	si status.ok
 		retornar status
 	fin
-    imprimir(status)
+    imprimir(status.description)
 	retornar falso
 fin
 
 
-funcion textoInline(consultaId, titulo, texto, descripcion, formato, url)
-	articulo = '[{"type":"article","id":"'..consultaId..'","title":"'..titulo..'","message_text":"'..texto..'"'
+funcion textoInline(consultaId, titulo, texto, descripcion, formato, teclado, url, esconder_url, thumb_url, thumb_anchura, thumb_altura)
+	articulo = '{"type":"article","id":"'..consultaId..'","title":"'..cod(titulo)..'","message_text":"'..cod(texto)..'"'
 
 	si descripcion
 		articulo = articulo..',"description":"'..descripcion..'"'
@@ -520,14 +528,29 @@ funcion textoInline(consultaId, titulo, texto, descripcion, formato, url)
 		fin
 	fin
 
-	si url
-		articulo = articulo..',"url":"'..url..'"'
-	fin
-	retornar articulo..'}]'
+    si teclado
+        articulo = articulo..',"reply_markup":'..parsear(teclado)
+    fin
+    si url
+        articulo = articulo..',"url":"'..url..'"'
+    fin
+    si esconder_url
+        articulo = articulo..',"hide_url":true'
+    fin
+    si thumb_url
+        articulo = articulo..',"thumb_url":"'..thumb_url..'"'
+    fin
+    si thumb_anchura
+        articulo = articulo..',"thumb_width":'..anumero(thumb_anchura)
+    fin
+    si thumb_altura
+        articulo = articulo..',"thumb_height":'..anumero(thumb_altura)
+    fin
+	retornar json.decodificar(articulo..'}')
 fin
 
 funcion fotoInline(consultaId, foto, descripcion)
-	articulo = '[{"type":"photo","id":"'..consultaId..'","photo_url":"'..foto..'"'
+	articulo = '{"type":"photo","id":"'..consultaId..'","photo_url":"'..foto..'"'
 
 	si foto
 		articulo = articulo..',"thumb_url":"'..foto..'"'
@@ -536,17 +559,5 @@ funcion fotoInline(consultaId, foto, descripcion)
 	si descripcion
 		articulo = articulo..',"description":"'..descripcion..'"'
 	fin
-	retornar articulo..'}]'
-fin
-
-funcion limpiar_updates()
-	update = actualizaciones()
-	si update
-		update = update.result
-		si lista.longitud(update) > config.max_updates
-			curl.peticion(URL.."getUpdates?offset="..update[update-1].update_id+1)
-			retornar anumero(update)
-		fin
-	fin
-	retornar falso
+	retornar json.decodificar(articulo..'}')
 fin

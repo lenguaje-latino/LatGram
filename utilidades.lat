@@ -28,16 +28,16 @@ fin
 
 color = colores()
 
-funcion no_markdown(texto, reemplazo)
-    si ! reemplazo
-        texto = cadena.reemplazar(texto, "*", "\*")
-        texto = cadena.reemplazar(texto, "_", "\_")
-        texto = cadena.reemplazar(texto, "`", "\`")
-        retornar texto
+funcion no_markdown(texto, eliminar)
+    si eliminar
+      texto = cadena.eliminar(texto, "*")
+      texto = cadena.eliminar(texto, "_")
+      texto = cadena.eliminar(texto, "`")
+      retornar texto
     fin
-    texto = cadena.reemplazar(texto, "*", reemplazo)
-    texto = cadena.reemplazar(texto, "_", reemplazo)
-    texto = cadena.reemplazar(texto, "`", reemplazo)
+    texto = cadena.reemplazar(texto, "*", "\*")
+    texto = cadena.reemplazar(texto, "_", "\_")
+    texto = cadena.reemplazar(texto, "`", "\`")
     retornar texto
 fin
 
@@ -66,7 +66,7 @@ fin
 funcion usuario_es_admin(chatId, userId)
     res = curl.peticion(URL .. "getChatAdministrators?chat_id="..chatId)
     j = json.decodificar(res)
-    desde (i=0; i<lista.longitud(j.result);i++)
+    desde (i=0; i<j.result;i++)
         si j.result[i].user.id == userId
             retornar verdadero
         fin
@@ -160,4 +160,16 @@ funcion iniciarLeer(id, texto, proceso_id)
         retornar verdadero
     fin
     retornar falso
+fin
+
+funcion limpiar_updates()
+	update = actualizaciones()
+	si update
+		update = update.result
+		si lista.longitud(update) > config.max_updates
+			curl.peticion(URL.."getUpdates?offset="..update[update-1].update_id+1)
+			retornar anumero(update)
+		fin
+	fin
+	retornar falso
 fin
