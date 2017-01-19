@@ -54,6 +54,7 @@ funcion enviarMensaje(chatId, texto, formato, responder)
 	si estado.ok
 		retornar estado
 	fin
+   imprimir(estado.description)
 	retornar falso
 fin
 
@@ -164,8 +165,9 @@ funcion banearUsuario(chatId, userId)
 	raw = curl.peticion(URL .. "kickChatMember?chat_id=" .. chatId .. "&user_id=" .. userId)
 	estado = json.decodificar(raw)
 	si estado.ok
-		retornar estado
+		retornar verdadero
 	fin
+   imprimir(estado.description)
 	retornar falso
 fin
 

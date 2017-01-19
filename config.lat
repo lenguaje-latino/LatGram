@@ -1,40 +1,40 @@
 retornar {
-        "admin": 189041244,
+   "admins": [
+      189041244
+   ],
 
-        "api_key": "270233092:AAFfrK7qrqLXmhh9W3nC0qD3ufk7jZLPIKs",
+   "api_key": "270233092:AAFfrK7qrqLXmhh9W3nC0qD3ufk7jZLPIKs",
 
-    //    "lenguaje": "en", # aún no los termino xd
+   "plugins": [
+      "servicios",
+      "usuarios",
+      "extras",
+      "ban",
+      "inline",
+      "ajustes",
+      "portapapeles"
+   ],
 
-        "plugins": [
-                "servicios",
-                "usuarios",
-                "extras",
-                "ban",
-                "inline",
-                "ajustes",
-                "plus"
-        ],
+   "ajustes_globales": [ // estos ajustes los activará/permitirá cuando metan al bot a un grupo
+      "spam",
+      "extras",
+      "bienvenida",
+      "reglas",
+      "stickers",
+      "voz",
+      "fotos",
+      "arabes",
+      "links"
+   ],
 
-        "ajustes_globales": [ // estos ajustes los activará/permitirá cuando metan al bot a un grupo
-                "spam",
-                "extras",
-                "bienvenida",
-                "reglas",
-                "stickers",
-                "voz",
-                "fotos",
-                "arabes",
-                "links"
-        ],
+   "dir": "plugins/",
 
-        "dir": "plugins/",
+   "limpiar_updates_al_iniciar": verdadero,
 
-        "limpiar_updates_al_iniciar": verdadero,
+   "consultas_inline": verdadero,
 
-        "consultas_inline": verdadero,
+   "max_updates": 3, // indicamos un valor como máximo de updates que pueden quedar al iniciar.
 
-        "max_updates": 3, // indicamos un valor como máximo de updates que pueden quedar al iniciar.
-
-        "redis_ip": "127.0.0.1",
-        "redis_puerto": 6379
+   "redis_ip": "127.0.0.1",
+   "redis_puerto": 6379
 }

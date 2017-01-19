@@ -1,168 +1,173 @@
 global funcion configurar_grupo()
-    si config.ajustes_globales
-        shash = "ajustes:"..msg.chat.id
-        desde (i=0; i<config.ajustes_globales; i++)
-            redis.sagregar(com, shash, config.ajustes_globales[i])
-        fin
-    fin
+   si config.ajustes_globales
+      shash = "ajustes:"..msg.chat.id
+      desde (i=0; i<config.ajustes_globales; i++)
+         redis.sagregar(com, shash, config.ajustes_globales[i])
+      fin
+   fin
 fin
 
 global funcion desconfigurar_grupo()
-    imprimir(redis.borrar(com, "ajustes:"..msg.chat.id..":customs"))
-    imprimir(redis.borrar(com, "ajustes:"..msg.chat.id))
-    imprimir(redis.borrar(com, "extras:"..msg.chat.id))
-    imprimir(redis.borrar(com, "extras:"..msg.chat.id..":customs"))
+   imprimir(redis.borrar(com, "ajustes:"..msg.chat.id..":customs"))
+   imprimir(redis.borrar(com, "ajustes:"..msg.chat.id))
+   imprimir(redis.borrar(com, "extras:"..msg.chat.id))
+   imprimir(redis.borrar(com, "extras:"..msg.chat.id..":customs"))
 fin
 
 global funcion usuario_hace_spam()
-    si msg.chat.tipo != "private"
-        spam_match = falso
-        spam_match_texto = cadena.match(msg.texto, "@[a-Z_0-9]+")
-        spam_match_capcion = cadena.match(msg.capcion, "@[a-Z_0-9]+")
-        si spam_match_texto
-            spam_match = spam_match_texto
-        osi spam_match_capcion
-            spam_match = spam_match_capcion
-        fin
-        si spam_match
-            desde(i=0;i<spam_match;i++)
-                es_chat = obtenerChat(spam_match[i][0])
-                si es_chat
-                    retornar verdadero
-                fin
+   si msg.chat.tipo != "private"
+      spam_match = falso
+      spam_match_texto = cadena.match(msg.texto, "@[a-Z_0-9]+")
+      spam_match_capcion = cadena.match(msg.capcion, "@[a-Z_0-9]+")
+      si spam_match_texto
+         spam_match = spam_match_texto
+      osi spam_match_capcion
+         spam_match = spam_match_capcion
+      fin
+      si spam_match
+         desde(i=0;i<spam_match;i++)
+            es_chat = obtenerChat(spam_match[i][0])
+            si es_chat
+               retornar verdadero
             fin
-        osi msg.reenviado.chat.id
-            retornar verdadero
-        fin
-    fin
-    retornar falso
+         fin
+      osi msg.reenviado.chat.id
+         retornar verdadero
+      fin
+   fin
+   retornar falso
 fin
 
 global funcion nuevo_usuario()
-    bienvenida_custom = redis.hobtener(com, "ajustes:"..msg.chat.id..":customs", "bienvenida")
-    si msg.agregado.id
-        nombre_usuario = msg.agregado.usuario
-        si ! nombre_usuario
-            nombre_usuario = "(sin usuario)"
-        fin
-        si bienvenida_custom
-            mensaje = cadena.reemplazar(bienvenida_custom, "$usuario", nombre_usuario)
-            mensaje = cadena.reemplazar(mensaje, "$id", acadena(msg.agregado.id))
-            mensaje = cadena.reemplazar(mensaje, "$nombre", msg.agregado.nombre)
-            mensaje = cadena.reemplazar(mensaje, "$titulo", msg.chat.titulo)
-        sino
-            mensaje = "Bienvenido "..no_markdown(msg.agregado.nombre).." a "..no_markdown(msg.chat.titulo)
-        fin
-        retornar mensaje
-    fin
-    retornar falso
+   bienvenida_custom = redis.hobtener(com, "ajustes:"..msg.chat.id..":customs", "bienvenida")
+   si msg.agregado.id
+      nombre_usuario = msg.agregado.usuario
+      si ! nombre_usuario
+         nombre_usuario = "(sin usuario)"
+      fin
+      si bienvenida_custom
+         mensaje = cadena.reemplazar(bienvenida_custom, "$usuario", nombre_usuario)
+         mensaje = cadena.reemplazar(mensaje, "$id", acadena(msg.agregado.id))
+         mensaje = cadena.reemplazar(mensaje, "$nombre", msg.agregado.nombre)
+         mensaje = cadena.reemplazar(mensaje, "$titulo", msg.chat.titulo)
+      sino
+         mensaje = "Bienvenido "..no_markdown(msg.agregado.nombre).." a "..no_markdown(msg.chat.titulo)
+      fin
+      retornar mensaje
+   fin
+   retornar falso
 fin
 
 
 global funcion comando_personalizado()
-    hash = "extras:"..msg.chat.id..":customs"
-    comando_nuevo = redis.hobtener(com, hash, msg.texto)
-    si comando_nuevo
-        retornar comando_nuevo
-    fin
-    retornar falso
+   hash = "extras:"..msg.chat.id..":customs"
+   comando_nuevo = redis.hobtener(com, hash, msg.texto)
+   si comando_nuevo
+      retornar comando_nuevo
+   fin
+   retornar falso
 fin
 
 global funcion subproceso_papelera()
-    array = obtenerLeer(msg.de.id, msg.texto)
-    si array
-        si cadena.match(cadena.minusculas(msg.texto), "^(s|si)$")
-            redis.borrar(com, "plus:"..msg.de.id..":json")
-            enviarMensaje(msg.chat.id, "*Papelera vaciada*.", md)
-            detenerLeer(msg.de.id)
-        sino
-            enviarMensaje(msg.chat.id, "*Proceso abortado*.", md)
-            detenerLeer(msg.de.id)
-        fin
-        retornar verdadero
-    fin
-    retornar falso
+   array = obtenerLeer(msg.de.id, msg.texto)
+   si array
+      si cadena.match(cadena.minusculas(msg.texto), "^(s|si)$")
+         redis.borrar(com, "plus:"..msg.de.id..":json")
+         enviarMensaje(msg.chat.id, "*Papelera vaciada*.", md)
+         detenerLeer(msg.de.id)
+      sino
+         enviarMensaje(msg.chat.id, "*Proceso abortado*.", md)
+         detenerLeer(msg.de.id)
+      fin
+      retornar verdadero
+   fin
+   retornar falso
 fin
 
 global funcion arabe_detectado(cad)
-    si cadena.match(cad, "[ء-ي]+")
-        retornar verdadero
-    fin
-    retornar falso
+   si cadena.match(cad, "[ء-ي]+")
+      retornar verdadero
+   fin
+   retornar falso
 fin
 
 funcion subproceso()
 
-/*    funcion usuario_ingresa_link()
-        si msg.chat.tipo != "private"
-        cadena.match(msg.texto, "https?://[a-Z_-%.%?%.:/%+=&]+")*/
-    AHASH = "ajustes:"..msg.chat.id
+   /*    funcion usuario_ingresa_link()
+   si msg.chat.tipo != "private"
+   cadena.match(msg.texto, "https?://[a-Z_-%.%?%.:/%+=&]+")*/
+   AHASH = "ajustes:"..msg.chat.id
 
-    si bot_eliminado()
-        desconfigurar_grupo()
-        redis.sborrar(com, BOT_SHASH, acadena(msg.chat.id))
-        retornar "Bot eliminado de "..msg.chat.titulo
-    fin
+   si msg.agregado.usuario
+      redis.hasignar(com, BOT_HHASH, msg.agregado.usuario, acadena(msg.agregado.id))
+   osi msg.de.usuario
+      redis.hasignar(com, BOT_HHASH, msg.de.usuario, acadena(msg.de.id))
+   fin
 
-    si subproceso_papelera()
-        retornar "Opción de portapapeles de "..msg.de.nombre..": "..msg.texto
-    fin
+   si bot_eliminado()
+      desconfigurar_grupo()
+      redis.sborrar(com, BOT_SHASH, acadena(msg.chat.id))
+      retornar "Bot eliminado de "..msg.chat.titulo
+   fin
 
-    si bot_agregado()
-        configurar_grupo()
-        enviarMensaje(msg.chat.id, "¡Hola! soy "..bot.nombre..", gracias por añadirme a este chat.")
-        redis.sagregar(com, BOT_SHASH, acadena(msg.chat.id))
-        retornar "Bot añadido a "..msg.chat.titulo
-    fin
+   si subproceso_papelera()
+      retornar "Opción de portapapeles de "..msg.de.nombre..": "..msg.texto
+   fin
 
-    si comando_personalizado()
-        es_miembro = redis.sesmiembro(com, AHASH, "extras")
-        si es_miembro
-            enviarMensaje(msg.chat.id, comando_personalizado(), md)
-            retornar "comando personalizado ejecutado ("..msg.texto..")"
-        fin
-    fin
+   si bot_agregado()
+      configurar_grupo()
+      enviarMensaje(msg.chat.id, "¡Hola! soy "..bot.nombre..", gracias por añadirme a este chat.")
+      redis.sagregar(com, BOT_SHASH, acadena(msg.chat.id))
+      retornar "Bot añadido a "..msg.chat.titulo
+   fin
 
-    si arabe_detectado(msg.agregado.nombre)
-        es_miembro = !redis.sesmiembro(com, AHASH, "arabes")
-        si es_miembro
-            banearUsuario(msg.chat.id, msg.agregado.id)
-            retornar "ALLAHU AKBAR "..msg.agregado.id
-        fin
-    fin
+   si comando_personalizado()
+      es_miembro = redis.sesmiembro(com, AHASH, "extras")
+      si es_miembro
+         enviarMensaje(msg.chat.id, comando_personalizado(), md)
+         retornar "comando personalizado ejecutado ("..msg.texto..")"
+      fin
+   fin
 
-    si arabe_detectado(msg.agregado.apellido)
-        es_miembro = !redis.sesmiembro(com, AHASH, "arabes")
-        imprimir(es_miembro)
-        si es_miembro
-            imprimir("ALLAHU AKBAR "..msg.agregado.id)
-            banearUsuario(msg.chat.id, msg.agregado.id)
-        fin
-    fin
+   si arabe_detectado(msg.agregado.nombre)
+      es_miembro = !redis.sesmiembro(com, AHASH, "arabes")
+      si es_miembro
+         banearUsuario(msg.chat.id, msg.agregado.id)
+         retornar "ALLAHU AKBAR "..msg.agregado.id
+      fin
+   fin
 
-    si nuevo_usuario()
-        es_miembro = redis.sesmiembro(com, AHASH, "bienvenida")
-        si es_miembro
-            enviarMensaje(msg.chat.id, nuevo_usuario(), md)
-            retornar "Nuevo miembro en "..msg.chat.titulo.."\nMiembro: "..msg.agregado.nombre.." ("..msg.agregado.id..")"
-        fin
-    fin
+   si arabe_detectado(msg.agregado.apellido)
+      es_miembro = !redis.sesmiembro(com, AHASH, "arabes")
+      si es_miembro
+         banearUsuario(msg.chat.id, msg.agregado.id)
+         retornar "allahu akbar "..msg.agregado.id
+      fin
+   fin
 
-    si usuario_hace_spam()
-        es_miembro = redis.sesmiembro(com, AHASH, "spam")
-        si es_miembro
-            accion = banearUsuario(msg.chat.id, msg.de.id)
-            si ! accion
-                retornar "spam en chat en "..msg.chat.titulo.."\nDe: "..msg.de.nombre.."\nId: "..msg.de.id.."\nMensaje: "..msg.texto.."\nEstado: sin expulsar"
-            fin
-            enviarMensaje(msg.chat.id, no_markdown(msg.de.nombre).." *baneado por spam*.", md)
-            retornar "spam en chat en "..msg.chat.titulo.."\nDe: "..msg.de.nombre.."\nId: "..msg.de.id.."\nMensaje: "..msg.texto.."\nEstado: expulsado"
-        fin
-        retornar falso
-    fin
+   si nuevo_usuario()
+      es_miembro = redis.sesmiembro(com, AHASH, "bienvenida")
+      si es_miembro
+         enviarMensaje(msg.chat.id, nuevo_usuario(), md)
+         retornar "Nuevo miembro en "..msg.chat.titulo.."\nMiembro: "..msg.agregado.nombre.." ("..msg.agregado.id..")"
+      fin
+   fin
+
+   si usuario_hace_spam()
+      es_miembro = redis.sesmiembro(com, AHASH, "spam")
+      si es_miembro
+         accion = banearUsuario(msg.chat.id, msg.de.id)
+         si !accion
+            retornar "spam en chat en "..msg.chat.titulo.."\nDe: "..msg.de.nombre.."\nId: "..msg.de.id.."\nMensaje: "..msg.texto.."\nEstado: sin expulsar"
+         fin
+         enviarMensaje(msg.chat.id, no_markdown(msg.de.nombre).." *baneado por spam*.", md)
+         retornar "spam en chat en "..msg.chat.titulo.."\nDe: "..msg.de.nombre.."\nId: "..msg.de.id.."\nMensaje: "..msg.texto.."\nEstado: expulsado"
+      fin
+      retornar falso
+   fin
 
 fin
 
 retornar {
-    "subproceso": subproceso
+   "subproceso": subproceso
 }

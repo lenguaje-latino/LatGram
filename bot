@@ -17,7 +17,6 @@ funcion parsear(teclado_inline)
 fin
 
 funcion incluir_variables()
-	foto_tabla = 0
 	res = res.result[0]
 	msj = res.message
 	global msg = {
@@ -67,6 +66,28 @@ funcion incluir_variables()
 		}
 	}
 
+	si msj.photo
+		msg.foto = []
+		desde (i=0;i<msj.photo;i++)
+			si msj.photo[i].file_path
+				lista.agregar(msg.foto, {
+					"id": msj.photo[i].file_id,
+					"peso": msj.photo[i].file_size,
+					"path": msj.photo[i].file_path,
+					"anchura": msj.photo[i].width,
+					"altura": msj.photo[i].height
+				})
+			sino
+				lista.agregar(msg.foto, {
+					"id": msj.photo[i].file_id,
+					"peso": msj.photo[i].file_size,
+					"anchura": msj.photo[i].width,
+					"altura": msj.photo[i].height
+				})
+			fin
+		fin
+	fin
+
 	resp = msj.reply_to_message
 	global respuesta = {
 		"texto": resp.text,
@@ -107,17 +128,30 @@ funcion incluir_variables()
 		"de": {
 			"id": resp.from.id,
 			"usuario": resp.from.username,
-			"first_name": resp.from.first_name
+			"nombre": resp.from.first_name,
+			"apellido": resp.from.last_name
 		}
 	}
 	si resp.photo
-		respuesta.foto = {
-			"id": resp.photo[0].file_id,
-			"peso": resp.photo[0].file_size,
-			"path": resp.photo[0].file_path,
-			"anchura": resp.photo[0].width,
-			"altura": resp.photo[0].height
-		}
+		respuesta.foto = []
+		desde (i=0;i<resp.photo;i++)
+			si resp.photo[i].file_path
+				lista.agregar(respuesta.foto, {
+					"id": resp.photo[i].file_id,
+					"peso": resp.photo[i].file_size,
+					"path": resp.photo[i].file_path,
+					"anchura": resp.photo[i].width,
+					"altura": resp.photo[i].height
+				})
+			sino
+				lista.agregar(respuesta.foto, {
+					"id": resp.photo[i].file_id,
+					"peso": resp.photo[i].file_size,
+					"anchura": resp.photo[i].width,
+					"altura": resp.photo[i].height
+				})
+			fin
+		fin
 	fin
 
 	sticker = msj.sticker
@@ -133,15 +167,6 @@ funcion incluir_variables()
 		},
 		"id": sticker.file_id,
 		"peso": sticker.file_size
-	}
-
-	foto = msj.photo
-	global foto = {
-		"id": foto[foto_tabla].file_id,
-		"peso": foto[foto_tabla].file_size,
-		"path": foto[foto_tabla].file_path,
-		"anchura": foto[foto_tabla].width,
-		"altura": foto[foto_tabla].height
 	}
 
 	cinline = res.inline_query
@@ -327,6 +352,7 @@ funcion menu(argc, argv)
 	}
 
 	BOT_SHASH = "bot:"..bot.id..":schats"
+	BOT_HHASH = "bot:"..bot.id..":usuarios"
 	verificacion = verificar_apikey()
 	si ! verificacion.ok
 		imprimir("\aERROR ("..verificacion.error_code.." - "..verificacion.description..")\n\nVerifica la apikey en ajustes.lat", 1)
@@ -335,10 +361,10 @@ funcion menu(argc, argv)
 
 	com = redis.conectar(config.redis_ip, config.redis_puerto)
 
-	inicio = enviarMensaje(config.admin, "<b>Bot iniciado</b>", html, falso)
+	inicio = enviarMensaje(config.admins[0], "<b>Bot iniciado</b>", html, falso)
 	imprimir(color.azul)
 	si inicio
-		imprimir("\tConfirmación enviada a " .. config.admin .. ".\n\tBot @"..bot.usuario..".", 1)
+		imprimir("\tConfirmación enviada a " .. config.admins[0] .. ".\n\tBot @"..bot.usuario..".", 1)
 	sino
 		imprimir("\tError en confirmación.\n\tBot @"..bot.usuario, 1)
 	fin

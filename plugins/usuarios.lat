@@ -1,63 +1,73 @@
 funcion callback()
-    si cmatches[1] == "latino"
-        link_teclado = [[
-        {"text":"Github","url":"https://github.com/lenguaje-latino/BotGram"}
-        ]]
-        editarMensaje(cb.msg.chat.id, cb.msg.id, "*Latino* es un lenguaje de programación en español interpretado hecho en C"
-        .."\n¿Puedo ayudar? Si así es, *Latino busca desarrolladores* para Latino."
-        .."\nCabe destacar que este bot *fué programado en Latino*.", md, link_teclado)
-    fin
+   si cmatches[1] == "latino"
+      link_teclado = [[
+      {"text":"Github","url":"https://github.com/lenguaje-latino/BotGram"}
+      ]]
+      editarMensaje(cb.msg.chat.id, cb.msg.id, "*Latino* es un lenguaje de programación en español interpretado hecho en C"
+      .."\n¿Puedo ayudar? Si así es, *Latino busca desarrolladores* para Latino."
+      .."\nCabe destacar que este bot *fué programado en Latino*.", md, link_teclado)
+   fin
 fin
 
 funcion mensajes()
-    funcion crear_imagen(texto1, texto2)
-        en = "https://cdn.meme.am/Instance/Preview?imageID=14821613&generatorTypeID=&panels=&text0="..curl.escape(texto1)
-        si texto2
-            en = en.."&text1="..curl.escape(texto2)
-        fin
-        retornar en
-    fin
-  si matches[1] == "id"
-          enviarMensaje(msg.chat.id, "*Chat ID*: "..msg.chat.id.."\n*User ID*: "..msg.de.id, md)
-  fin
-  si matches[1] == "leer"
-          enviarMensaje(msg.chat.id, "Escribe un texto", md)
-          iniciarLeer(msg.de.id, matches[0])
-  fin
-  si matches[1] == "start"
-          ayuda = [[
-          {"text":"Programación Latino","callback_data":"!!!latino"},
-          {"text":"Repositorio del Bot","url":"https://github.com/lenguaje-latino/BotGram"}
-          ]]
-          enviarTeclado(msg.chat.id, "¡Hey! "..no_markdown(msg.de.nombre).."\n\nEstás probando el nuevo bot escrito completamente en la *programación Latino*. Por el momento faltan cosas. Pero de poco a poco irá mejorando 😄👍", ayuda, md)
-  fin
-  si matches[1] == "linus"
-      si ! matches[3]
-          b = cadena.reemplazar(matches[2], "/", " ")
-          a = crear_imagen(b)
+   funcion crear_imagen(texto1, texto2)
+      en = "https://cdn.meme.am/Instance/Preview?imageID=14821613&generatorTypeID=&panels=&text0="..curl.escape(texto1)
+      si texto2
+         en = en.."&text1="..curl.escape(texto2)
+      fin
+      retornar en
+   fin
+   si matches[1] == "id"
+      si !matches[2]
+         enviarMensaje(msg.chat.id, "*Chat ID*: "..msg.chat.id.."\n*User ID*: "..msg.de.id, md)
+         retornar 0
+      fin
+      id_obtenida = redis.hobtener(com, BOT_HHASH, matches[2])
+      si id_obtenida
+         enviarMensaje(msg.chat.id, "`"..id_obtenida.."`", md)
       sino
-          b = cadena.reemplazar(matches[2], "/", " ")
-          c = cadena.reemplazar(matches[3], "/", " ")
-          a = crear_imagen(b, c)
+         enviarMensaje(msg.chat.id, "*El usuario no está registrado en la base de datos*.", md)
+      fin
+   fin
+   si matches[1] == "leer"
+      enviarMensaje(msg.chat.id, "Escribe un texto", md)
+      iniciarLeer(msg.de.id, matches[0])
+   fin
+   si matches[1] == "start"
+      ayuda = [[
+      {"text":"Programación Latino","callback_data":"!!!latino"},
+      {"text":"Repositorio del Bot","url":"https://github.com/lenguaje-latino/BotGram"}
+      ]]
+      enviarTeclado(msg.chat.id, "¡Hey! "..no_markdown(msg.de.nombre).."\n\nEstás probando el nuevo bot escrito completamente en la *programación Latino*. Por el momento faltan cosas. Pero de poco a poco irá mejorando 😄👍", ayuda, md)
+   fin
+   si matches[1] == "linus"
+      si ! matches[3]
+         b = cadena.reemplazar(matches[2], "/", " ")
+         a = crear_imagen(b)
+      sino
+         b = cadena.reemplazar(matches[2], "/", " ")
+         c = cadena.reemplazar(matches[3], "/", " ")
+         a = crear_imagen(b, c)
       fin
       enviarFoto(msg.chat.id, a)
-  fin
+   fin
 
 fin
 
 retornar {
-  "comandos": [
-        "^/(id)$",
-        "^/(id)@"..bot.usuario.."$",
-        "^/(start)$",
-        "^/(start)@"..bot.usuario.."$",
-        "/(leer)",
-        "^/(linus) ([a-Z@_\(\)\/]+)$",
-        "^/(linus) ([a-Z@_\(\)\/]+) ([a-Z_\(\)\/]+)$"
- ],
- "callbacks": [
-        "^!!!(latino)$"
- ],
- "accion": mensajes,
- "callback": callback
+   "comandos": [
+      "^/(id)$",
+      "^/(id) @([[:alnum:]_]+)$",
+      "^/(id)@"..bot.usuario.."$",
+      "^/(start)$",
+      "^/(start)@"..bot.usuario.."$",
+      "/(leer)",
+      "^/(linus) ([a-Z@_\(\)\/]+)$",
+      "^/(linus) ([a-Z@_\(\)\/]+) ([a-Z_\(\)\/]+)$"
+   ],
+   "callbacks": [
+      "^!!!(latino)$"
+   ],
+   "accion": mensajes,
+   "callback": callback
 }

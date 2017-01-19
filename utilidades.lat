@@ -1,175 +1,188 @@
 plugins_montados = []
 
 funcion colores()
-    colores = {
-        "amarillo": sis.pipe('echo "\033[1;33m"'),
-        "blanco": sis.pipe('echo "\033[1;37m"'),
-        "gris": sis.pipe('echo "\033[0;37m"'),
-        "marcado": sis.pipe('echo "\033[7m"'),
-        "r_gris": sis.pipe('echo "\033[1;30m"'),
-        "cafe": sis.pipe('echo "\033[0;33m"'),
-        "purpura": sis.pipe('echo "\033[0;35m"'),
-        "bold": sis.pipe('echo "\033[1m"'),
-        "subrayado": sis.pipe('echo "\033[4m"'),
-        "r_purpura": sis.pipe('echo "\033[1;35m"'),
-        "rojo": sis.pipe('echo "\033[0;31m"'),
-        "r_rojo": sis.pipe('echo "\033[1;31m"'),
-        "cyan": sis.pipe('echo "\033[0;36m"'),
-        "r_cyan": sis.pipe('echo "\033[1;36m"'),
-        "verde": sis.pipe('echo "\033[0;32m"'),
-        "r_verde": sis.pipe('echo "\033[1;32m"'),
-        "azul": sis.pipe('echo "\033[0;34m"'),
-        "r_azul": sis.pipe('echo "\033[1;34m"'),
-        "reset": sis.pipe('echo "\033[0m"'),
-        "negro": sis.pipe('echo "\033[0;30m"')
-    }
-    retornar colores
+   colores = {
+      "amarillo": sis.pipe('echo "\033[1;33m"'),
+      "blanco": sis.pipe('echo "\033[1;37m"'),
+      "gris": sis.pipe('echo "\033[0;37m"'),
+      "marcado": sis.pipe('echo "\033[7m"'),
+      "r_gris": sis.pipe('echo "\033[1;30m"'),
+      "cafe": sis.pipe('echo "\033[0;33m"'),
+      "purpura": sis.pipe('echo "\033[0;35m"'),
+      "bold": sis.pipe('echo "\033[1m"'),
+      "subrayado": sis.pipe('echo "\033[4m"'),
+      "r_purpura": sis.pipe('echo "\033[1;35m"'),
+      "rojo": sis.pipe('echo "\033[0;31m"'),
+      "r_rojo": sis.pipe('echo "\033[1;31m"'),
+      "cyan": sis.pipe('echo "\033[0;36m"'),
+      "r_cyan": sis.pipe('echo "\033[1;36m"'),
+      "verde": sis.pipe('echo "\033[0;32m"'),
+      "r_verde": sis.pipe('echo "\033[1;32m"'),
+      "azul": sis.pipe('echo "\033[0;34m"'),
+      "r_azul": sis.pipe('echo "\033[1;34m"'),
+      "reset": sis.pipe('echo "\033[0m"'),
+      "negro": sis.pipe('echo "\033[0;30m"')
+   }
+   retornar colores
 fin
 
 color = colores()
 
 funcion no_markdown(texto, eliminar)
-    si eliminar
+   si eliminar
       texto = cadena.eliminar(texto, "*")
       texto = cadena.eliminar(texto, "_")
       texto = cadena.eliminar(texto, "`")
       retornar texto
-    fin
-    texto = cadena.reemplazar(texto, "*", "\*")
-    texto = cadena.reemplazar(texto, "_", "\_")
-    texto = cadena.reemplazar(texto, "`", "\`")
-    retornar texto
+   fin
+   texto = cadena.reemplazar(texto, "*", "\*")
+   texto = cadena.reemplazar(texto, "_", "\_")
+   texto = cadena.reemplazar(texto, "`", "\`")
+   retornar texto
 fin
 
 funcion bot_agregado()
-    si bot.id
-        si msg.agregado.id
-            si msg.agregado.id == bot.id
-                retornar verdadero
-            fin
-        fin
-    fin
-    retornar falso
+   si bot.id
+      si msg.agregado.id
+         si msg.agregado.id == bot.id
+            retornar verdadero
+         fin
+      fin
+   fin
+   retornar falso
 fin
 
 funcion bot_eliminado()
-    si bot.id
-        si msg.eliminado.id
-            si msg.eliminado.id == bot.id
-                retornar verdadero
-            fin
-        fin
-    fin
-    retornar falso
+   si bot.id
+      si msg.eliminado.id
+         si msg.eliminado.id == bot.id
+            retornar verdadero
+         fin
+      fin
+   fin
+   retornar falso
 fin
 
 funcion usuario_es_admin(chatId, userId)
-    res = curl.peticion(URL .. "getChatAdministrators?chat_id="..chatId)
-    j = json.decodificar(res)
-    desde (i=0; i<j.result;i++)
-        si j.result[i].user.id == userId
-            retornar verdadero
-        fin
-    fin
-    retornar falso
+   res = curl.peticion(URL .. "getChatAdministrators?chat_id="..chatId)
+   j = json.decodificar(res)
+   desde (i=0; i<j.result;i++)
+      si j.result[i].user.id == userId
+         retornar verdadero
+      fin
+   fin
+   retornar falso
 fin
 
 funcion ires()
-    si res
-        imprimir(color.color..color.bold..res..color.reset)
-        retornar res
-    fin
-    imprimir("Variable res no encontrada", 1)
-    retornar falso
+   si res
+      imprimir(color.color..color.bold..res..color.reset)
+      retornar res
+   fin
+   imprimir("Variable res no encontrada", 1)
+   retornar falso
 fin
 
 funcion cargar_plugins()
-    plugins = []
-    desde (plugin_cargado=0; plugin_cargado<(config.plugins); plugin_cargado++)
-        existe = archivo.leer(config.dir..config.plugins[plugin_cargado]..".lat")
-        si ! existe
-            imprimir(color.r_rojo.."\tError al leer plugin "..color.blanco.."'"..config.plugins[plugin_cargado]..".lat'."..color.reset,1)
-        sino
-            plugin = incluir(config.dir..config.plugins[plugin_cargado])
-            lista.agregar(plugins_montados, config.plugins[plugin_cargado]..".lat")
-            lista.agregar(plugins, plugin)
-            imprimir(color.verde.."\tPlugin:\t"..color.cyan..config.plugins[plugin_cargado].."\t"..color.amarillo.."["..(plugin_cargado+1).."/"..(config.plugins+0).."] "..color.r_cyan.."...iniciado."..color.reset,1)
-        fin
-    fin
-    imprimir(color.bold..color.blanco.."\n\tSubproceso "..color.marcado..color.r_azul.."  "..color.reset
-    ..color.bold..color.blanco.."  Match "..color.marcado..color.r_verde.."  "..color.reset
-    ..color.bold..color.blanco.."  Inline "..color.marcado..color.r_purpura.."  "..color.reset
-    ..color.bold..color.blanco.."  Callback "..color.marcado..color.blanco.."  "
-    ..color.reset,1)
-    retornar plugins
+   plugins = []
+   desde (plugin_cargado=0; plugin_cargado<config.plugins; plugin_cargado++)
+      existe = archivo.leer(config.dir..config.plugins[plugin_cargado]..".lat")
+      si ! existe
+         imprimir(color.r_rojo.."\tError al leer plugin "..color.blanco.."'"..config.plugins[plugin_cargado]..".lat'."..color.reset,1)
+      sino
+         plugin = incluir(config.dir..config.plugins[plugin_cargado])
+         lista.agregar(plugins_montados, config.plugins[plugin_cargado]..".lat")
+         lista.agregar(plugins, plugin)
+         imprimir(color.verde.."\tPlugin:\t"..color.cyan..config.plugins[plugin_cargado].."\t"..color.amarillo.."["..(plugin_cargado+1).."/"..(config.plugins+0).."] "..color.r_cyan.."...iniciado."..color.reset,1)
+      fin
+   fin
+   si plugins_montados < config.plugins
+      imprimir(color.purpura.."\taviso: "..color.rojo
+      .."verifica config.lat, se montaron "..lista.longitud(plugins_montados).." plugins de "..lista.longitud(config.plugins)..color.reset, 1)
+   fin
+   imprimir(color.bold..color.blanco.."\n\tSubproceso "..color.marcado..color.r_azul.."  "..color.reset
+   ..color.bold..color.blanco.."  Match "..color.marcado..color.r_verde.."  "..color.reset
+   ..color.bold..color.blanco.."  Inline "..color.marcado..color.r_purpura.."  "..color.reset
+   ..color.bold..color.blanco.."  Callback "..color.marcado..color.blanco.."  "
+   ..color.reset,1)
+   retornar plugins
 fin
 
 funcion unescape(a)
-    b = cadena.reemplazar(a, '"', '\"')
-    b = cadena.reemplazar(b, "'", "\'")
-    b = cadena.reemplazar(b, "
-", "\n")
-    retornar b
+   b = cadena.reemplazar(a, '"', '\"')
+   b = cadena.reemplazar(b, "'", "\'")
+   b = cadena.reemplazar(b, "
+   ", "\n")
+   retornar b
 fin
 
 funcion obtenerLeer(id, condicion, proceso_id)
-    si condicion && condicion != nulo
-        si proceso_id
-            si cadena.es_numero(proceso_id)
-                variable = redis.obtener(com, "lat:"..acadena(id)..":leer:"..proceso_id)
-            sino
-                imprimir("El proceso debe ser un númerico.")
-                retornar falso
-            fin
-        sino
-            variable = redis.obtener(com, "lat:"..acadena(id)..":leer")
-        fin
-        si variable
-            retornar json.decodificar(variable)
-        fin
-    fin
-    retornar falso
+   si condicion && condicion != nulo
+      si proceso_id
+         si cadena.es_numero(proceso_id)
+            variable = redis.obtener(com, "lat:"..acadena(id)..":leer:"..proceso_id)
+         sino
+            imprimir("El proceso debe ser un númerico.")
+            retornar falso
+         fin
+      sino
+         variable = redis.obtener(com, "lat:"..acadena(id)..":leer")
+      fin
+      si variable
+         retornar json.decodificar(variable)
+      fin
+   fin
+   retornar falso
 fin
 
 funcion detenerLeer(id, proceso_id)
-    si proceso_id
-        si cadena.es_numero(proceso_id)
-            redis.borrar(com, "lat:"..acadena(id)..":leer:"..proceso_id)
-            retornar verdadero
-        fin
-        imprimir("El proceso debe ser un númerico.")
-        retornar falso
-    sino
-        redis.borrar(com, "lat:"..acadena(id)..":leer")
-        retornar verdadero
-    fin
+   si proceso_id
+      si cadena.es_numero(proceso_id)
+         redis.borrar(com, "lat:"..acadena(id)..":leer:"..proceso_id)
+         retornar verdadero
+      fin
+      imprimir("El proceso debe ser un númerico.")
+      retornar falso
+   sino
+      redis.borrar(com, "lat:"..acadena(id)..":leer")
+      retornar verdadero
+   fin
 fin
 
 funcion iniciarLeer(id, texto, proceso_id)
-    si proceso_id
-        si cadena.es_numero(proceso_id)
-            ok = redis.asignar(com, "lat:"..acadena(id)..":leer:"..proceso_id, '{"id": "'..acadena(id)..'", "texto": "'..unescape(acadena(texto))..'"}')
-        sino
-            imprimir("El proceso debe ser un númerico.")
-            retornar falso
-        fin
-    sino
-        ok = redis.asignar(com, "lat:"..acadena(id)..":leer", '{"id": "'..acadena(id)..'", "texto": "'..unescape(acadena(texto))..'"}')
-    fin
-    si ok
-        retornar verdadero
-    fin
-    retornar falso
+   si proceso_id
+      si cadena.es_numero(proceso_id)
+         ok = redis.asignar(com, "lat:"..acadena(id)..":leer:"..proceso_id, '{"id": "'..acadena(id)..'", "texto": "'..unescape(acadena(texto))..'"}')
+      sino
+         imprimir("El proceso debe ser un númerico.")
+         retornar falso
+      fin
+   sino
+      ok = redis.asignar(com, "lat:"..acadena(id)..":leer", '{"id": "'..acadena(id)..'", "texto": "'..unescape(acadena(texto))..'"}')
+   fin
+   si ok
+      retornar verdadero
+   fin
+   retornar falso
 fin
 
 funcion limpiar_updates()
-	update = actualizaciones()
-	si update
-		update = update.result
-		si lista.longitud(update) > config.max_updates
-			curl.peticion(URL.."getUpdates?offset="..update[update-1].update_id+1)
-			retornar anumero(update)
-		fin
-	fin
-	retornar falso
+   update = actualizaciones()
+   si update
+      update = update.result
+      si lista.longitud(update) > config.max_updates
+         curl.peticion(URL.."getUpdates?offset="..update[update-1].update_id+1)
+         retornar anumero(update)
+      fin
+   fin
+   retornar falso
+fin
+
+funcion es_gadmin(id)
+   desde (i=0;i<config.admins;i++)
+      si id == config.admins[i]
+         retornar verdadero
+      fin
+   fin
+   retornar falso
 fin
