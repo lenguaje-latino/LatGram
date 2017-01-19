@@ -4,9 +4,9 @@
 ## Formas de ejecutar
 Primero debes tener instalado [Latino](https://github.com/primitivorm/latino) y sus dependencias (leer más arriba)
 
-1 - Clona el repositorio con `git clone https://github.com/jarriztg/telegram-bot-latino`
+1 - Clona el repositorio con `git clone https://github.com/lenguaje-latino/BotGram`
 
-2 - Escribe en la consola `cd telegram-bot-latino; nano ajustes.lat`
+2 - Escribe en la consola `cd BotGram; nano ajustes.lat`
 
 3 - Si no tienes un bot ve a [@BotFather](https://telegram.me/botfather) y crea un bot escribiendole `/newbot`, asignas su nombre, despúes su usuario y te generará algo llamado Token o apikey. `ingresas tu ID (si no la sabes brinca este paso) y pega el apikey que te dió botfather.`
 
