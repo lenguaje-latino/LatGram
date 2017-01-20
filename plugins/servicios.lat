@@ -1,9 +1,9 @@
 global funcion configurar_grupo()
-   si config.ajustes_globales
+   si config.ajustes_globales[0].permitidos
       shash = "ajustes:"..msg.chat.id
-      desde (i=0; i<config.ajustes_globales; i++)
-         redis.sagregar(com, shash, config.ajustes_globales[i])
-         imprimir("Configurando "..config.ajustes_globales[i].."...")
+      desde (i=0; i<config.ajustes_globales[0].permitidos; i++)
+         redis.sagregar(com, shash, config.ajustes_globales[0].permitidos[i])
+         imprimir("Configurando "..config.ajustes_globales[0].permitidos[i].."...")
       fin
    fin
 fin
@@ -85,6 +85,23 @@ global funcion subproceso_papelera()
    retornar falso
 fin
 
+global funcion flood(id, max_mensajes, max_tiempo)
+   si id
+      hash = "tmp:"..id..":flood"
+      tiempo = redis.tiempo(com, hash)
+      si tiempo
+         a = redis.aumentar(com, hash)
+         si a > max_mensajes
+            redis.borrar(com, hash)
+            retornar verdadero
+         fin
+      sino
+         redis.setex(com, hash, "0", max_tiempo)
+      fin
+   fin
+   retornar falso
+fin
+
 global funcion arabe_detectado(cad)
    si cadena.match(cad, "[ء-ي]+")
       retornar verdadero
@@ -97,24 +114,29 @@ funcion subproceso()
    /*    funcion usuario_ingresa_link()
    si msg.chat.tipo != "private"
    cadena.match(msg.texto, "https?://[a-Z_-%.%?%.:/%+=&]+")*/
+
+   si msg.chat.tipo == "private"
+      retornar 0
+   fin
    AHASH = "ajustes:"..msg.chat.id
+   CHASH = "ajustes:"..msg.chat.id..":customs"
 
    si msg.de.id
-      tiempo = redis.tiempo(com, "hola")
-      imprimir(tiempo)
-      si tiempo
-         a = redis.aumentar(com, "hola")
-         imprimir(a)
-         si a == 5
-            enviarMensaje(msg.de.id, "test flood")
-         fin
-      sino
-         redis.setex(com, "hola", "0", 10)
+      si msg.de.usuario registrar_id_usuario(msg.de.usuario, msg.de.id) fin
+      tim = redis.hobtener(com, CHASH, "maxfloodm")
+      tit = redis.hobtener(com, CHASH, "maxfloodt")
+      max_mensajes = config.ajustes_globales[0].max_mensajes_flood
+      max_tiempo = config.ajustes_globales[0].max_tiempo_flood
+      si tim
+         max_mensajes = tim
+         imprimir("EL MAXIMO DE MENSAJES ES "..tim)
       fin
-   fin
-
-   si msg.de.usuario
-      registrar_id_usuario(msg.de.usuario, msg.de.id)
+      si tit
+         max_tiempo = tit
+         imprimir("EL MAXIMO DE TIEMPO ES "..tit)
+      fin
+      flood_ = flood(msg.de.id, anumero(max_mensajes), anumero(max_tiempo))
+      si flood_ imprimir("FLOOOD") fin
    fin
 
    si bot_eliminado()

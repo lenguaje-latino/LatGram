@@ -69,7 +69,6 @@ funcion usuario_es_admin(chatId, userId)
    j = json.decodificar(res)
    desde (i=0; i<j.result;i++)
       si j.result[i].user.id == userId
-         imprimir(j.result[i].user.id)
          retornar verdadero
       fin
    fin
@@ -199,13 +198,10 @@ fin
 funcion es_gadmin(id)
    archivo_ = archivo.leer(config.admins)
    lista_ = json.decodificar(archivo_)
-   imprimir(lista_)
    desde (i=0;i<lista_.admins;i++)
       si anumero(id) == lista_.admins[i]
-         imprimir("ok")
          retornar verdadero
       fin
-      imprimir(lista_.admins[i])
    fin
    retornar falso
 fin

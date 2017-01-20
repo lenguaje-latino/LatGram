@@ -100,7 +100,7 @@ funcion mensajes()
             enviarMensaje(msg.chat.id, "Reglas *activadas* en este chat.", md)
             retornar 0
          fin
-         enviarMensaje(msg.chat.id, "Las reglas *ya está activadas*.", md)
+         enviarMensaje(msg.chat.id, "Las reglas *ya están activadas*.", md)
 
       osi matches[2] ~= "^off$"
          lo_borra = redis.sborrar(com, hash, "reglas")
@@ -108,7 +108,7 @@ funcion mensajes()
             enviarMensaje(msg.chat.id, "Reglas *desactivadas* en este chat.", md)
             retornar 0
          fin
-         enviarMensaje(msg.chat.id, "Las reglas *ya está desactivadas*.", md)
+         enviarMensaje(msg.chat.id, "Las reglas *ya están desactivadas*.", md)
 
       osi matches[2] ~= "^\[del]$"
          bienvenida = redis.hobtener(com, chash, "reglas")
@@ -127,6 +127,60 @@ funcion mensajes()
             redis.hasignar(com, chash, "reglas", matches[2])
          fin
       fin
+   fin
+
+   si matches[1] == "flood"
+      si matches[2] ~= "^on$"
+         lo_agrega = redis.sagregar(com, hash, "flood")
+         si lo_agrega
+            enviarMensaje(msg.chat.id, "Flood *permitido* en este chat.", md)
+            retornar 0
+         fin
+         enviarMensaje(msg.chat.id, "El flood *ya está permitido*.", md)
+
+      osi matches[2] ~= "^off$"
+         lo_borra = redis.sborrar(com, hash, "flood")
+         si lo_borra
+            enviarMensaje(msg.chat.id, "Flood *no permitido* en este chat.", md)
+            retornar 0
+         fin
+         enviarMensaje(msg.chat.id, "El flood *ya no está permitido*.", md)
+
+      osi matches[2] ~= "^\[reset]$"
+         flood = redis.hobtener(com, chash, "flood")
+         si flood
+            redis.hborrar(com, chash, "flood")
+            enviarMensaje(msg.chat.id, "Ajustes de *flood* restaurados en este chat.", md)
+            retornar 0
+         fin
+         enviarMensaje(msg.chat.id, "El flood *ya tiene los ajustes predeterminados*, lo puedes permitir con `/flood on`.", md)
+
+      sino
+         si !anumero(matches[2])
+            enviarMensaje(msg.chat.id, "Opción `"..no_markdown(matches[2]).."` *desconocida*.", md)
+            retornar 0
+         osi anumero(matches[2]) < config.ajustes_globales[0].min_ajuste_mflood
+            enviarMensaje(msg.chat.id, "El número máximo de mensajes por flood *debe ser mayor a "..(config.ajustes_globales[0].min_ajuste_mflood-1).."*.", md)
+            retornar 0
+         osi anumero(matches[2]) > config.ajustes_globales[0].max_ajuste_mflood
+            enviarMensaje(msg.chat.id, "El número máximo de mensajes por flood *debe ser menor a "..(config.ajustes_globales[0].max_ajuste_mflood+1).."*.", md)
+            retornar 0
+         fin
+         enviarMensaje(msg.chat.id, "*Nuevo número máximo de mensajes por flood establecido*:\n"..matches[2], md)
+         redis.hasignar(com, chash, "maxfloodm", matches[2])
+      fin
+   fin
+
+   si matches[1] == "tflood"
+      si anumero(matches[2]) < config.ajustes_globales[0].min_ajuste_tflood
+         enviarMensaje(msg.chat.id, "El número máximo de tiempo por flood *debe ser mayor a "..(config.ajustes_globales[0].min_ajuste_tflood-1).."*.", md)
+         retornar 0
+      osi anumero(matches[2]) > config.ajustes_globales[0].max_ajuste_tflood
+         enviarMensaje(msg.chat.id, "El número máximo de tiempo por flood *debe ser menor a "..(config.ajustes_globales[0].max_ajuste_tflood+1).."*.", md)
+         retornar 0
+      fin
+      enviarMensaje(msg.chat.id, "*Nuevo número máximo de tiempo por flood establecido*:\n"..matches[2], md)
+      redis.hasignar(com, chash, "maxfloodt", matches[2])
    fin
 
    si matches[1] == "stickers"
@@ -232,11 +286,13 @@ retornar {
    "^/(extras) (on|off)$",
    "^/(bienvenida) (.*)$",
    "^/(reglas) (.*)$",
-   "^/(stickers) (on|off)",
-   "^/(voz) (on|off)",
-   "^/(fotos) (on|off)",
-   "^/(arabes) (on|off)",
-   "^/(links) (on|off)"
+   "^/(flood) (.*)$",
+   "^/(tflood) ([0-9]+)$",
+   "^/(stickers) (on|off)$",
+   "^/(voz) (on|off)$",
+   "^/(fotos) (on|off)$",
+   "^/(arabes) (on|off)$",
+   "^/(links) (on|off)$"
    ],
    "accion": mensajes
 }

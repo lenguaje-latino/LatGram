@@ -18,16 +18,28 @@ retornar {
       "exportar"
    ],
 
-   "ajustes_globales": [ // estos ajustes los activará/permitirá cuando metan al bot a un grupo
-      "spam",
-      "extras",
-      "bienvenida",
-      "reglas",
-      "stickers",
-      "voz",
-      "fotos",
-      "arabes",
-      "links"
+   "ajustes_globales":[ // estos ajustes los activará/permitirá cuando metan al bot a un grupo
+      {
+         "permitidos":[
+            "spam",
+            "extras",
+            "bienvenida",
+            "reglas",
+            "stickers",
+            "voz",
+            "fotos",
+            "arabes",
+            "links"
+            ],
+         "max_mensajes_flood": 5, // si un grupo no configura el máximo de mensajes de flood y está 'off' este será el máximo.
+         "max_tiempo_flood": 12, // en mismo caso de arriba, pero con el tiempo máximo por mensaje.
+
+         "min_ajuste_mflood": 5, // minimo del ajuste de mensajes por flood del plugin 'ajustes.lat'.
+         "max_ajuste_mflood": 30, // máximo del ajuste de mensajes por flood del plugin 'ajustes.lat'.
+
+         "min_ajuste_tflood": 12, // minimo del ajuste de tiempo por mensaje por flood del plugin 'ajustes.lat'.
+         "max_ajuste_tflood": 50 // máximo del ajuste de tiempo por mensaje por flood del plugin 'ajustes.lat'.
+      }
    ],
 
    "tmp_lista_usuarios": "usuarios.json",
