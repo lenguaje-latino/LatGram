@@ -279,9 +279,11 @@ fin
 
 funcion obtener_id_usuario(usuario)
    usuario_ = redis.hllaves(com, BOT_HHASH)
-   desde(i=0;i<usuario_;i++)
-      si cadena.minusculas(usuario_[i]) == cadena.minusculas(usuario)
-         retornar anumero(redis.hobtener(com, BOT_HHASH, usuario_[i]))
+   si usuario_
+      desde(i=0;i<usuario_;i++)
+         si cadena.minusculas(usuario_[i]) == cadena.minusculas(usuario)
+            retornar anumero(redis.hobtener(com, BOT_HHASH, usuario_[i]))
+         fin
       fin
    fin
    retornar falso

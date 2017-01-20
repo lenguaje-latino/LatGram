@@ -3,7 +3,7 @@ funcion mensajes()
       enviarMensaje(msg.chat.id, "Este comando *solo funciona en grupos*.", md)
       retornar 0
    fin
-   si !usuario_es_admin(msg.chat.id, msg.de.id) && !es_creador(msg.de.id) && !es_gmod(id)
+   si !usuario_es_admin(msg.chat.id, msg.de.id) && !es_creador(msg.de.id) && !es_gmod(msg.de.id)
       enviarMensaje(msg.chat.id, "*Debes ser administrador* ó *moderador global* para usar este comando.", md)
       retornar 0
    fin
