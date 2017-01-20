@@ -1,9 +1,9 @@
 global funcion configurar_grupo()
-   si config.ajustes_globales[0].permitidos
+   si config.grupos[0].permitidos
       shash = "ajustes:"..msg.chat.id
-      desde (i=0; i<config.ajustes_globales[0].permitidos; i++)
-         redis.sagregar(com, shash, config.ajustes_globales[0].permitidos[i])
-         imprimir("Configurando "..config.ajustes_globales[0].permitidos[i].."...")
+      desde (i=0; i<config.grupos[0].permitidos; i++)
+         redis.sagregar(com, shash, config.grupos[0].permitidos[i])
+         imprimir("Configurando "..config.grupos[0].permitidos[i].."...")
       fin
    fin
 fin
@@ -116,6 +116,9 @@ funcion subproceso()
    cadena.match(msg.texto, "https?://[a-Z_-%.%?%.:/%+=&]+")*/
 
    si msg.chat.tipo == "private"
+      si msg.de.usuario
+         registrar_id_usuario(msg.de.usuario, msg.de.id)
+      fin
       retornar 0
    fin
    AHASH = "ajustes:"..msg.chat.id
@@ -123,20 +126,28 @@ funcion subproceso()
 
    si msg.de.id
       si msg.de.usuario registrar_id_usuario(msg.de.usuario, msg.de.id) fin
+      si !usuario_es_admin(msg.chat.id, msg.de.id) && !es_creador(msg.de.id) && !es_gadmin(msg.de.id) && !es_gmod(msg.de.id) && !es_mod(msg.chat.id, msg.de.id)
+         retornar 0
+      osi redis.sesmiembro(com, AHASH, "flood")
+         retornar 0
+      fin
       tim = redis.hobtener(com, CHASH, "maxfloodm")
       tit = redis.hobtener(com, CHASH, "maxfloodt")
-      max_mensajes = config.ajustes_globales[0].max_mensajes_flood
-      max_tiempo = config.ajustes_globales[0].max_tiempo_flood
+      max_mensajes = config.grupos[0].max_mensajes_flood
+      max_tiempo = config.grupos[0].max_tiempo_flood
       si tim
          max_mensajes = tim
-         imprimir("EL MAXIMO DE MENSAJES ES "..tim)
       fin
       si tit
          max_tiempo = tit
-         imprimir("EL MAXIMO DE TIEMPO ES "..tit)
       fin
       flood_ = flood(msg.de.id, anumero(max_mensajes), anumero(max_tiempo))
-      si flood_ imprimir("FLOOOD") fin
+      si flood_
+         ban = banearUsuario(msg.chat.id, msg.de.id)
+         si ban
+            enviarMensaje(msg.chat.id, "El miembro "..no_markdown(msg.de.nombre).." *ha sido baneado por flood*.", md)
+         fin
+      fin
    fin
 
    si bot_eliminado()
@@ -192,7 +203,7 @@ funcion subproceso()
    fin
 
    si usuario_hace_spam()
-      es_miembro = redis.sesmiembro(com, AHASH, "spam")
+      es_miembro = !redis.sesmiembro(com, AHASH, "spam")
       si es_miembro
          accion = banearUsuario(msg.chat.id, msg.de.id)
          si !accion

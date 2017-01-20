@@ -356,6 +356,7 @@ funcion menu(argc, argv)
 	fin
 	limpiar()
 
+	com = redis.conectar(config.redis[0].ip, config.redis[0].puerto)
 	bot = ObtenerBot()
 	bot = bot.result
 	bot = {
@@ -365,16 +366,22 @@ funcion menu(argc, argv)
 	}
 
 	BOT_SHASH = "bot:"..bot.id..":schats"
-	BOT_HHASH = "bot:"..bot.id..":usuarios"
+	BOT_HHASH = "latgram:usuarios"
+	BOT_GMODS = "bot:"..bot.id..":gmods"
+	BOT_GADMINS = "bot:"..bot.id..":gadmins"
+	GMODS = redis.smiembros(com, BOT_GMODS)
+	GADMINS = redis.smiembros(com, BOT_GADMINS)
+
+
 	verificacion = verificar_apikey()
 	si ! verificacion.ok
-		imprimir("\aERROR ("..verificacion.error_code.." - "..verificacion.description..")\n\nVerifica la apikey en ajustes.lat", 1)
+		imprimir("\aERROR ("..verificacion.error_code.." - "..verificacion.description..")"
+		.."\nVerifica la apikey en ajustes.lat", 1)
+		redis.desconectar(com)
 		retorno 0
 	fin
 
-	com = redis.conectar(config.redis_ip, config.redis_puerto)
-
-	iadmins = json.decodificar(archivo.leer(config.admins))
+	iadmins = json.decodificar(archivo.leer(config.datos[0].admins))
 	inicio = enviarMensaje(acadena(iadmins.admins[0]), "<b>Bot iniciado</b>", html, falso)
 	imprimir(color.azul)
 	si inicio
@@ -383,7 +390,7 @@ funcion menu(argc, argv)
 		imprimir("\tError en confirmación.\n\tBot @"..bot.usuario..", ID: "..bot.id, 1)
 	fin
 	imprimir(color.reset.."\n", 1)
-	si config.limpiar_updates_al_iniciar
+	si config.updates[0].limpiar_al_iniciar
 		updates = limpiar_updates()
 		si updates
 			imprimir(color.cafe.."Actualizaciones limpias con un total de "..updates..color.reset.."\n", 1)

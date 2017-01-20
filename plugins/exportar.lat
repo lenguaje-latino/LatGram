@@ -1,7 +1,7 @@
 funcion mensajes()
    si matches[1] == "exportar"
       si matches[2] == "gbans"
-         enviariArchivo(msg.chat.id, config.gbans)
+         enviariArchivo(msg.chat.id, config.datos[0].gbans)
       osi matches[2] ==  "usuarios"
          ids = crear_archivo_ids_usuarios()
          si ids

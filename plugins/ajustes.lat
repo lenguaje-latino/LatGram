@@ -2,7 +2,7 @@ funcion mensajes()
    si msg.chat.tipo == "private"
       enviarMensaje(msg.chat.id, "Este comando *solo funciona en grupos*.", md)
       retornar 0
-   osi !usuario_es_admin(msg.chat.id, msg.de.id) && !es_gadmin(msg.de.id)
+   osi !usuario_es_admin(msg.chat.id, msg.de.id) && !es_creador(msg.de.id) && !es_gadmin(msg.de.id)
       enviarMensaje(msg.chat.id, "*Debes ser administrador* para usar este comando.", md)
       retornar 0
    fin
@@ -159,11 +159,11 @@ funcion mensajes()
          si !anumero(matches[2])
             enviarMensaje(msg.chat.id, "Opción `"..no_markdown(matches[2]).."` *desconocida*.", md)
             retornar 0
-         osi anumero(matches[2]) < config.ajustes_globales[0].min_ajuste_mflood
-            enviarMensaje(msg.chat.id, "El número máximo de mensajes por flood *debe ser mayor a "..(config.ajustes_globales[0].min_ajuste_mflood-1).."*.", md)
+         osi anumero(matches[2]) < config.grupos[0].min_ajuste_mflood
+            enviarMensaje(msg.chat.id, "El número máximo de mensajes por flood *debe ser mayor a "..(config.grupos[0].min_ajuste_mflood-1).."*.", md)
             retornar 0
-         osi anumero(matches[2]) > config.ajustes_globales[0].max_ajuste_mflood
-            enviarMensaje(msg.chat.id, "El número máximo de mensajes por flood *debe ser menor a "..(config.ajustes_globales[0].max_ajuste_mflood+1).."*.", md)
+         osi anumero(matches[2]) > config.grupos[0].max_ajuste_mflood
+            enviarMensaje(msg.chat.id, "El número máximo de mensajes por flood *debe ser menor a "..(config.grupos[0].max_ajuste_mflood+1).."*.", md)
             retornar 0
          fin
          enviarMensaje(msg.chat.id, "*Nuevo número máximo de mensajes por flood establecido*:\n"..matches[2], md)
@@ -172,11 +172,11 @@ funcion mensajes()
    fin
 
    si matches[1] == "tflood"
-      si anumero(matches[2]) < config.ajustes_globales[0].min_ajuste_tflood
-         enviarMensaje(msg.chat.id, "El número máximo de tiempo por flood *debe ser mayor a "..(config.ajustes_globales[0].min_ajuste_tflood-1).."*.", md)
+      si anumero(matches[2]) < config.grupos[0].min_ajuste_tflood
+         enviarMensaje(msg.chat.id, "El número máximo de tiempo por flood *debe ser mayor a "..(config.grupos[0].min_ajuste_tflood-1).."*.", md)
          retornar 0
-      osi anumero(matches[2]) > config.ajustes_globales[0].max_ajuste_tflood
-         enviarMensaje(msg.chat.id, "El número máximo de tiempo por flood *debe ser menor a "..(config.ajustes_globales[0].max_ajuste_tflood+1).."*.", md)
+      osi anumero(matches[2]) > config.grupos[0].max_ajuste_tflood
+         enviarMensaje(msg.chat.id, "El número máximo de tiempo por flood *debe ser menor a "..(config.grupos[0].max_ajuste_tflood+1).."*.", md)
          retornar 0
       fin
       enviarMensaje(msg.chat.id, "*Nuevo número máximo de tiempo por flood establecido*:\n"..matches[2], md)

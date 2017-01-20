@@ -187,7 +187,7 @@ funcion limpiar_updates()
    update = actualizaciones()
    si update
       update = update.result
-      si lista.longitud(update) > config.max_updates
+      si lista.longitud(update) > config.updates[0].max
          curl.peticion(URL.."getUpdates?offset="..update[update-1].update_id+1)
          retornar anumero(update)
       fin
@@ -195,8 +195,8 @@ funcion limpiar_updates()
    retornar falso
 fin
 
-funcion es_gadmin(id)
-   archivo_ = archivo.leer(config.admins)
+funcion es_creador(id)
+   archivo_ = archivo.leer(config.datos[0].admins)
    lista_ = json.decodificar(archivo_)
    desde (i=0;i<lista_.admins;i++)
       si anumero(id) == lista_.admins[i]
@@ -206,8 +206,38 @@ funcion es_gadmin(id)
    retornar falso
 fin
 
+funcion nuevo_creador(id)
+   archivo_ = archivo.leer(config.datos[0].admins)
+   lista_ = json.decodificar(archivo_)
+   desde (i=0;i<lista_.admins;i++)
+      si anumero(id) == lista_.admins[i]
+         retornar falso
+      fin
+   fin
+   lista.agregar(lista_.admins, anumero(id))
+   archivo.escribir(config.datos[0].admins, acadena(json.formato(lista_)))
+   retornar verdadero
+fin
+
+funcion eliminar_creador(id)
+   archivo_ = archivo.leer(config.datos[0].admins)
+   lista_ = json.decodificar(archivo_)
+   global valor = verdadero
+   desde (i=0;i<lista_.admins;i++)
+      si anumero(id) == lista_.admins[i]
+         valor = verdadero
+      fin
+   fin
+   si valor
+      lista.eliminar(lista_.admins, anumero(id))
+      archivo.escribir(config.datos[0].admins, acadena(json.formato(lista_)))
+      retornar verdadero
+   fin
+   retornar falso
+fin
+
 funcion gban(id)
-   archivo_ = archivo.leer(config.gbans)
+   archivo_ = archivo.leer(config.datos[0].gbans)
    lista_ = json.decodificar(archivo_)
    desde (i=0;i<lista_.gbans;i++)
       si anumero(id) == lista_.gbans[i]
@@ -215,12 +245,12 @@ funcion gban(id)
       fin
    fin
    lista.agregar(lista_.gbans, anumero(id))
-   archivo.escribir(config.gbans, acadena(json.formato(lista_)))
+   archivo.escribir(config.datos[0].gbans, acadena(json.formato(lista_)))
    retornar verdadero
 fin
 
 funcion es_gban(id)
-   archivo_ = archivo.leer(config.gbans)
+   archivo_ = archivo.leer(config.datos[0].gbans)
    lista_ = json.decodificar(archivo_)
    desde (i=0;i<lista_.gbans;i++)
       si anumero(id) == lista_.gbans[i]
@@ -231,7 +261,7 @@ funcion es_gban(id)
 fin
 
 funcion desgban(id)
-   archivo_ = archivo.leer(config.gbans)
+   archivo_ = archivo.leer(config.datos[0].gbans)
    lista_ = json.decodificar(archivo_)
    valor = falso
    desde (i=0;i<lista_.gbans;i++)
@@ -241,7 +271,7 @@ funcion desgban(id)
    fin
    si valor
       lista.eliminar(lista_.gbans, anumero(id))
-      archivo.escribir(config.gbans, acadena(json.formato(lista_)))
+      archivo.escribir(config.datos[0].gbans, acadena(json.formato(lista_)))
       retornar verdadero
    fin
    retornar falso
@@ -272,15 +302,47 @@ fin
 funcion crear_archivo_ids_usuarios()
    llave = redis.hllaves(com, BOT_HHASH)
    si llave
-      archivo.crear(config.tmp_lista_usuarios)
+      archivo.crear(config.tmp[0].usuarios)
       json_ = {"usuarios": []}
       desde(i=0; i<llave; i++)
          lista.agregar(json_.usuarios, {
             llave[i]: anumero(redis.hobtener(com, BOT_HHASH, llave[i]))
          })
       fin
-      archivo.escribir(config.tmp_lista_usuarios, acadena(json.formato(json_)))
-      retornar config.tmp_lista_usuarios
+      archivo.escribir(config.tmp[0].usuarios, acadena(json.formato(json_)))
+      retornar config.tmp[0].usuarios
    fin
+   retornar falso
+fin
+
+funcion es_gmod(id)
+   si id
+      si GMODS
+         desde(y=0;y<GMODS;y++)
+            si anumero(id) == anumero(GMODS[y])
+               retornar verdadero
+            fin
+         fin
+      fin
+   fin
+   retornar falso
+fin
+
+funcion es_gadmin(id)
+   si id
+      si GADMINS
+         desde(y=0;y<GADMINS;y++)
+            si anumero(id) == anumero(GADMINS[y])
+               retornar verdadero
+            fin
+         fin
+      fin
+   fin
+   retornar falso
+fin
+
+funcion es_mod(chatid,id)
+   mod = redis.sesmiembro(com, "moderadores:"..chatid, acadena(id))
+   si mod retornar verdadero fin
    retornar falso
 fin

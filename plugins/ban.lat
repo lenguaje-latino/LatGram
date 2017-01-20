@@ -3,8 +3,8 @@ funcion mensajes()
       enviarMensaje(msg.chat.id, "Este comando *solo funciona en grupos*.", md)
       retornar 0
    fin
-   si !usuario_es_admin(msg.chat.id, msg.de.id) && !es_gadmin(msg.de.id)
-      enviarMensaje(msg.chat.id, "*Debes ser administrador* para usar este comando.", md)
+   si !usuario_es_admin(msg.chat.id, msg.de.id) && !es_creador(msg.de.id) && !es_gmod(id)
+      enviarMensaje(msg.chat.id, "*Debes ser administrador* ó *moderador global* para usar este comando.", md)
       retornar 0
    fin
    si matches[1] == "ban"
@@ -13,35 +13,57 @@ funcion mensajes()
          si respuesta.de.id == bot.id imprimir("Subproceso: bot eliminado de") fin
          si miembro_baneado
             enviarMensaje(msg.chat.id, "El usuario "..no_markdown(respuesta.de.nombre).." *ha sido baneado*.", md)
-            retornar 1
+            retornar 0
          fin
          enviarMensaje(msg.chat.id, "*No puedo banear a este miembro*\nPosiblemente no soy administrador o intentas banear a un administrador.", md)
-      sino
-         enviarMensaje(msg.chat.id, "Este comando *solo funciona por respuesta*.", md)
       fin
    osi matches[1] == "expulsar"
-      si respuesta.de.id
+      si matches[2]
+         id_usuario = obtener_id_usuario(matches[2])
+         si !id_usuario
+            enviarMensaje(msg.chat.id, "*El usuario no está registrado en la base de datos*.", md)
+         sino
+            miembro_expulsado = expulsarUsuario(msg.chat.id, id_usuario)
+            si miembro_expulsado
+               enviarMensaje(msg.chat.id, "El usuario @"..no_markdown(matches[2]).." ("..id_usuario..") *ha sido expulsado*.", md)
+               retornar 0
+            fin
+            enviarMensaje(msg.chat.id, "*No puedo expulsar a este miembro*\nPosiblemente no soy administrador o intentas banear a un administrador.", md)
+         fin
+      osi respuesta.de.id
          miembro_expulsado = expulsarUsuario(msg.chat.id, respuesta.de.id)
          si miembro_expulsado
             enviarMensaje(msg.chat.id, "El usuario "..no_markdown(respuesta.de.nombre).." *ha sido expulsado*.", md)
-            retornar 1
+            retornar 0
          fin
          enviarMensaje(msg.chat.id, "*No puedo expulsar a este miembro*\nPosiblemente no soy administrador o intentas banear a un administrador.", md)
-      sino
-         enviarMensaje(msg.chat.id, "Este comando *solo funciona por respuesta*.", md)
       fin
    osi matches[1] == "desban"
-      si respuesta.de.id
+      si matches[2]
+         id_usuario = obtener_id_usuario(matches[2])
+         si !id_usuario
+            enviarMensaje(msg.chat.id, "*El usuario no está registrado en la base de datos*.", md)
+         sino
+            ok = desbanearUsuario(msg.chat.id, id_usuario)
+            si ok
+               enviarMensaje(msg.chat.id, "El usuario @"..no_markdown(matches[2]).." ("..id_usuario..") *ha sido desbaneado*.", md)
+               retornar 0
+            fin
+            enviarMensaje(msg.chat.id, "*No puedo desbanear a este miembro*\nPosiblemente no soy administrador.", md)
+         fin
+      osi respuesta.de.id
          ok = desbanearUsuario(msg.chat.id, respuesta.de.id)
          si ok
             enviarMensaje(msg.chat.id, "El usuario "..no_markdown(respuesta.de.nombre).." *ha sido desbaneado*.", md)
          sino
             enviarMensaje(msg.chat.id, "*No puedo desbanear a este miembro*\nPosiblemente no soy administrador o intentas banear a un administrador.", md)
          fin
-      sino
-         enviarMensaje(msg.chat.id, "Este comando *solo funciona por respuesta*.", md)
       fin
    osi matches[1] == "gban"
+      si !es_creador(msg.de.id)
+         enviarMensaje(msg.chat.id, "*Debes ser creador del bot para usar este comando*.", md)
+         retorno 0
+      fin
       si matches[2]
          id_usuario = obtener_id_usuario(matches[2])
          si !id_usuario
@@ -49,9 +71,9 @@ funcion mensajes()
          sino
             ok = gban(id_usuario)
             si ok
-               enviarMensaje(msg.chat.id, "El ID "..id_usuario.." *ha sido globalmente baneada*.", md)
+               enviarMensaje(msg.chat.id, "El ID "..id_usuario.." *ha sido globalmente baneado*.", md)
             sino
-               enviarMensaje(msg.chat.id, "Esta ID *ya fué globalmente baneada* anteriormente.", md)
+               enviarMensaje(msg.chat.id, "Esta ID *ya fué globalmente baneado* anteriormente.", md)
             fin
          fin
       osi respuesta.de.id
@@ -61,10 +83,12 @@ funcion mensajes()
          sino
             enviarMensaje(msg.chat.id, "Este usuario *ya fué globalmente baneado* anteriormente.", md)
          fin
-      sino
-         enviarMensaje(msg.chat.id, "Este comando *solo funciona por respuesta*.", md)
       fin
    osi matches[1] == "desgban"
+      si !es_creador(msg.de.id)
+         enviarMensaje(msg.chat.id, "*Debes ser creador del bot para usar este comando*.", md)
+         retorno 0
+      fin
       si matches[2]
          id_usuario = obtener_id_usuario(matches[2])
          si !id_usuario
@@ -72,9 +96,9 @@ funcion mensajes()
          sino
             ok = desgban(id_usuario)
             si ok
-               enviarMensaje(msg.chat.id, "El ID "..id_usuario.." *ha sido globalmente desbaneada*.", md)
+               enviarMensaje(msg.chat.id, "El ID "..id_usuario.." *ha sido globalmente desbaneado*.", md)
             sino
-               enviarMensaje(msg.chat.id, "Esta ID *ya fué globalmente desbaneada* anteriormente.", md)
+               enviarMensaje(msg.chat.id, "Esta ID *ya fué globalmente desbaneado* anteriormente.", md)
             fin
          fin
       osi respuesta.de.id
@@ -84,8 +108,6 @@ funcion mensajes()
          sino
             enviarMensaje(msg.chat.id, "*Este usuario ya fué globalmente desbaneado anteriormente*.", md)
          fin
-      sino
-         enviarMensaje(msg.chat.id, "Este comando *solo funciona por respuesta*.", md)
       fin
    fin
 fin
@@ -93,15 +115,15 @@ fin
 retornar {
    "comandos": [
       "^/(ban)$",
-      "^/(expulsar)$",
-      "^/(desban)$",
-      "^/(gban)$",
-      "^/(desgban)$",
       "^/(ban) @([[:alnum:]_]+)$",
+      "^/(expulsar)$",
       "^/(expulsar) @([[:alnum:]_]+)$",
+      "^/(desban)$",
       "^/(desban) @([[:alnum:]_]+)$",
+      "^/(gban)$",
       "^/(gban) @([[:alnum:]_]+)$",
+      "^/(desgban)$",
       "^/(desgban) @([[:alnum:]_]+)$"
-],
-"accion": mensajes
+   ],
+   "accion": mensajes
 }

@@ -1,3 +1,18 @@
+funcion inline()
+    cinline_datos = "\nID: "..cinline.de.id.."\nNombre: "..cinline.de.nombre
+    si cinline.de.apellido
+        cinline_datos = cinline_datos.."\nApellido: "..cinline.de.apellido
+    fin
+    si cinline.de.usuario
+        cinline_datos = cinline_datos.."\nUsuario: @"..cinline.de.usuario
+    fin
+    array = [
+      textoInline(1, "Tu información de usuario", cinline_datos),
+      textoInline(2, "Tu ID", "`"..cinline.de.id.."`", falso, md)
+      ]
+    enviarConsultaInline(cinline.id, array, 1)
+fin
+
 funcion callback()
    si cmatches[1] == "latino"
       link_teclado = [[
@@ -60,9 +75,16 @@ retornar {
       "^/(linus) ([[:alnum:]@_\)\(\/]+)$",
       "^/(linus) ([[:alnum:]@_\)\(\/]+) ([[:alnum:]@_\)\(\/]+)$"
    ],
+
+   "icomandos": [
+      "^id$"
+   ],
+
    "callbacks": [
       "^!!!(latino)$"
    ],
+
    "accion": mensajes,
+   "inline": inline,
    "callback": callback
 }

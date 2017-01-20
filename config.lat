@@ -1,26 +1,23 @@
 retornar {
-   "api_key": "270233092:AAFfrK7qrqLXmhh9W3nC0qD3ufk7jZLPIKs",
+   "api_key": "293072192:AAEWVjztMuXICPM_TrSifFA0aV167g7bEmA",
 
-   "admins": "datos/admins.json",
-
-   "gbans": "datos/gbans.json",
+   "consultas_inline": verdadero,
 
    "dir": "plugins/",
-
-   "plugins": [
+   "plugins":[
       "servicios",
       "usuarios",
       "extras",
       "ban",
-      "inline",
       "ajustes",
       "portapapeles",
-      "exportar"
+      "exportar",
+      "promover"
    ],
 
-   "ajustes_globales":[ // estos ajustes los activará/permitirá cuando metan al bot a un grupo
+   "grupos":[ // ajustes para todos los grupos en caso de que no haya un registro
       {
-         "permitidos":[
+         "permitidos":[ // estos ajustes los activará/permitirá cuando metan al bot a un grupo
             "spam",
             "extras",
             "bienvenida",
@@ -31,25 +28,33 @@ retornar {
             "arabes",
             "links"
             ],
-         "max_mensajes_flood": 5, // si un grupo no configura el máximo de mensajes de flood y está 'off' este será el máximo.
-         "max_tiempo_flood": 12, // en mismo caso de arriba, pero con el tiempo máximo por mensaje.
+         "max_mensajes_flood": 10, // si un grupo no configura el máximo de mensajes de flood y está 'off' este será el máximo.
+         "max_tiempo_flood": 15, // en mismo caso de arriba, pero con el tiempo máximo por mensaje.
 
          "min_ajuste_mflood": 5, // minimo del ajuste de mensajes por flood del plugin 'ajustes.lat'.
          "max_ajuste_mflood": 30, // máximo del ajuste de mensajes por flood del plugin 'ajustes.lat'.
 
-         "min_ajuste_tflood": 12, // minimo del ajuste de tiempo por mensaje por flood del plugin 'ajustes.lat'.
-         "max_ajuste_tflood": 50 // máximo del ajuste de tiempo por mensaje por flood del plugin 'ajustes.lat'.
+         "min_ajuste_tflood": 10, // minimo del ajuste de tiempo por mensaje por flood del plugin 'ajustes.lat'.
+         "max_ajuste_tflood": 60 // máximo del ajuste de tiempo por mensaje por flood del plugin 'ajustes.lat'.
       }
    ],
 
-   "tmp_lista_usuarios": "usuarios.json",
+   "datos":[{
+      "admins": "datos/admins.json",
+      "gbans": "datos/gbans.json"
+   }],
 
-   "limpiar_updates_al_iniciar": verdadero,
+   "tmp":[{ // lista de archivos que envia el bot para exportar, puedes usarlo para cambiar el nombre del archivo a enviar
+      "usuarios": "usuarios.json"
+   }],
 
-   "consultas_inline": verdadero,
+   "updates":[{
+      "limpiar_al_iniciar": verdadero,
+      "max": 3
+   }],
 
-   "max_updates": 3, // indicamos un valor como máximo de updates que pueden quedar al iniciar.
-
-   "redis_ip": "127.0.0.1",
-   "redis_puerto": 6379
+   "redis":[{
+      "ip": "127.0.0.1",
+      "puerto": 6379
+   }]
 }
