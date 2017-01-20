@@ -1,9 +1,11 @@
 retornar {
-   "admins": [
-      189041244
-   ],
-
    "api_key": "270233092:AAFfrK7qrqLXmhh9W3nC0qD3ufk7jZLPIKs",
+
+   "admins": "datos/admins.json",
+
+   "gbans": "datos/gbans.json",
+
+   "dir": "plugins/",
 
    "plugins": [
       "servicios",
@@ -12,7 +14,8 @@ retornar {
       "ban",
       "inline",
       "ajustes",
-      "portapapeles"
+      "portapapeles",
+      "exportar"
    ],
 
    "ajustes_globales": [ // estos ajustes los activará/permitirá cuando metan al bot a un grupo
@@ -27,7 +30,7 @@ retornar {
       "links"
    ],
 
-   "dir": "plugins/",
+   "tmp_lista_usuarios": "usuarios.json",
 
    "limpiar_updates_al_iniciar": verdadero,
 

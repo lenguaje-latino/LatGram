@@ -11,6 +11,7 @@ funcion colores()
       "purpura": sis.pipe('echo "\033[0;35m"'),
       "bold": sis.pipe('echo "\033[1m"'),
       "subrayado": sis.pipe('echo "\033[4m"'),
+      "italicas": sis.pipe('echo "\033[7m"'),
       "r_purpura": sis.pipe('echo "\033[1;35m"'),
       "rojo": sis.pipe('echo "\033[0;31m"'),
       "r_rojo": sis.pipe('echo "\033[1;31m"'),
@@ -68,6 +69,7 @@ funcion usuario_es_admin(chatId, userId)
    j = json.decodificar(res)
    desde (i=0; i<j.result;i++)
       si j.result[i].user.id == userId
+         imprimir(j.result[i].user.id)
          retornar verdadero
       fin
    fin
@@ -76,7 +78,7 @@ fin
 
 funcion ires()
    si res
-      imprimir(color.color..color.bold..res..color.reset)
+      imprimir(color.italicas..json.formato(res)..color.reset)
       retornar res
    fin
    imprimir("Variable res no encontrada", 1)
@@ -119,8 +121,8 @@ fin
 funcion obtenerLeer(id, condicion, proceso_id)
    si condicion && condicion != nulo
       si proceso_id
-         si cadena.es_numero(proceso_id)
-            variable = redis.obtener(com, "lat:"..acadena(id)..":leer:"..proceso_id)
+         si anumero(proceso_id)
+            variable = redis.obtener(com, "lat:"..acadena(id)..":leer:"..anumero(proceso_id))
          sino
             imprimir("El proceso debe ser un númerico.")
             retornar falso
@@ -137,30 +139,46 @@ fin
 
 funcion detenerLeer(id, proceso_id)
    si proceso_id
-      si cadena.es_numero(proceso_id)
-         redis.borrar(com, "lat:"..acadena(id)..":leer:"..proceso_id)
-         retornar verdadero
+      si anumero(proceso_id)
+         ok = redis.borrar(com, "lat:"..acadena(id)..":leer:"..anumero(proceso_id))
+         si ok
+            retornar verdadero
+         fin
       fin
       imprimir("El proceso debe ser un númerico.")
       retornar falso
    sino
-      redis.borrar(com, "lat:"..acadena(id)..":leer")
-      retornar verdadero
+      ok = redis.borrar(com, "lat:"..acadena(id)..":leer")
+      si ok
+         retornar verdadero
+      fin
    fin
+   retornar falso
 fin
 
-funcion iniciarLeer(id, texto, proceso_id)
+funcion iniciarLeer(id, texto, proceso_id, expiracion)
+   hash = "lat:"..acadena(id)..":leer"
    si proceso_id
-      si cadena.es_numero(proceso_id)
-         ok = redis.asignar(com, "lat:"..acadena(id)..":leer:"..proceso_id, '{"id": "'..acadena(id)..'", "texto": "'..unescape(acadena(texto))..'"}')
+      si anumero(proceso_id)
+         hash = hash..':'..anumero(proceso_id)
+         llave = '{"id": "'..acadena(id)..'", "texto": "'..unescape(acadena(texto))..'"}'
       sino
          imprimir("El proceso debe ser un númerico.")
          retornar falso
       fin
    sino
-      ok = redis.asignar(com, "lat:"..acadena(id)..":leer", '{"id": "'..acadena(id)..'", "texto": "'..unescape(acadena(texto))..'"}')
+      hash = hash
+      llave = '{"id": "'..acadena(id)..'", "texto": "'..unescape(acadena(texto))..'"}'
    fin
+   ok = redis.asignar(com, hash, llave)
    si ok
+      si expiracion
+         si !anumero(expiracion)
+            imprimir("La expiración debe ser un númerico.")
+            retornar falso
+         fin
+         redis.expirar(com, hash, expiracion)
+      fin
       retornar verdadero
    fin
    retornar falso
@@ -179,10 +197,94 @@ funcion limpiar_updates()
 fin
 
 funcion es_gadmin(id)
-   desde (i=0;i<config.admins;i++)
-      si id == config.admins[i]
+   archivo_ = archivo.leer(config.admins)
+   lista_ = json.decodificar(archivo_)
+   imprimir(lista_)
+   desde (i=0;i<lista_.admins;i++)
+      si anumero(id) == lista_.admins[i]
+         imprimir("ok")
          retornar verdadero
       fin
+      imprimir(lista_.admins[i])
+   fin
+   retornar falso
+fin
+
+funcion gban(id)
+   archivo_ = archivo.leer(config.gbans)
+   lista_ = json.decodificar(archivo_)
+   desde (i=0;i<lista_.gbans;i++)
+      si anumero(id) == lista_.gbans[i]
+         retornar falso
+      fin
+   fin
+   lista.agregar(lista_.gbans, anumero(id))
+   archivo.escribir(config.gbans, acadena(json.formato(lista_)))
+   retornar verdadero
+fin
+
+funcion es_gban(id)
+   archivo_ = archivo.leer(config.gbans)
+   lista_ = json.decodificar(archivo_)
+   desde (i=0;i<lista_.gbans;i++)
+      si anumero(id) == lista_.gbans[i]
+         retornar verdadero
+      fin
+   fin
+   retornar falso
+fin
+
+funcion desgban(id)
+   archivo_ = archivo.leer(config.gbans)
+   lista_ = json.decodificar(archivo_)
+   valor = falso
+   desde (i=0;i<lista_.gbans;i++)
+      si anumero(id) == lista_.gbans[i]
+         valor = verdadero
+      fin
+   fin
+   si valor
+      lista.eliminar(lista_.gbans, anumero(id))
+      archivo.escribir(config.gbans, acadena(json.formato(lista_)))
+      retornar verdadero
+   fin
+   retornar falso
+fin
+
+funcion obtener_id_usuario(usuario)
+   usuario_ = redis.hllaves(com, BOT_HHASH)
+   desde(i=0;i<usuario_;i++)
+      si cadena.minusculas(usuario_[i]) == cadena.minusculas(usuario)
+         retornar anumero(redis.hobtener(com, BOT_HHASH, usuario_[i]))
+      fin
+   fin
+   retornar falso
+fin
+
+funcion registrar_id_usuario(usuario, id)
+   redis.hasignar(com, BOT_HHASH, acadena(usuario), acadena(id))
+fin
+
+funcion eliminar_id_usuario(usuario)
+   ok = redis.hborrar(com, BOT_HHASH, acadena(usuario))
+   si ok
+      retornar verdadero
+   fin
+   retornar falso
+fin
+
+funcion crear_archivo_ids_usuarios()
+   llave = redis.hllaves(com, BOT_HHASH)
+   si llave
+      archivo.crear(config.tmp_lista_usuarios)
+      json_ = {"usuarios": []}
+      desde(i=0; i<llave; i++)
+         lista.agregar(json_.usuarios, {
+            llave[i]: anumero(redis.hobtener(com, BOT_HHASH, llave[i]))
+         })
+      fin
+      archivo.escribir(config.tmp_lista_usuarios, acadena(json.formato(json_)))
+      retornar config.tmp_lista_usuarios
    fin
    retornar falso
 fin

@@ -2,7 +2,8 @@ funcion mensajes()
    si msg.chat.tipo == "private"
       enviarMensaje(msg.chat.id, "Este comando *solo funciona en grupos*.", md)
       retornar 0
-   osi (!usuario_es_admin(msg.chat.id, msg.de.id) || !es_gadmin(msg.de.id))
+   fin
+   si !usuario_es_admin(msg.chat.id, msg.de.id) && !es_gadmin(msg.de.id)
       enviarMensaje(msg.chat.id, "*Debes ser administrador* para usar este comando.", md)
       retornar 0
    fin
@@ -40,6 +41,52 @@ funcion mensajes()
       sino
          enviarMensaje(msg.chat.id, "Este comando *solo funciona por respuesta*.", md)
       fin
+   osi matches[1] == "gban"
+      si matches[2]
+         id_usuario = obtener_id_usuario(matches[2])
+         si !id_usuario
+            enviarMensaje(msg.chat.id, "*El usuario no está registrado en la base de datos*.", md)
+         sino
+            ok = gban(id_usuario)
+            si ok
+               enviarMensaje(msg.chat.id, "El ID "..id_usuario.." *ha sido globalmente baneada*.", md)
+            sino
+               enviarMensaje(msg.chat.id, "Esta ID *ya fué globalmente baneada* anteriormente.", md)
+            fin
+         fin
+      osi respuesta.de.id
+         ok = gban(respuesta.de.id)
+         si ok
+            enviarMensaje(msg.chat.id, "El usuario "..no_markdown(respuesta.de.nombre).." *ha sido globalmente baneado*.", md)
+         sino
+            enviarMensaje(msg.chat.id, "Este usuario *ya fué globalmente baneado* anteriormente.", md)
+         fin
+      sino
+         enviarMensaje(msg.chat.id, "Este comando *solo funciona por respuesta*.", md)
+      fin
+   osi matches[1] == "desgban"
+      si matches[2]
+         id_usuario = obtener_id_usuario(matches[2])
+         si !id_usuario
+            enviarMensaje(msg.chat.id, "*El usuario no está registrado en la base de datos*.", md)
+         sino
+            ok = desgban(id_usuario)
+            si ok
+               enviarMensaje(msg.chat.id, "El ID "..id_usuario.." *ha sido globalmente desbaneada*.", md)
+            sino
+               enviarMensaje(msg.chat.id, "Esta ID *ya fué globalmente desbaneada* anteriormente.", md)
+            fin
+         fin
+      osi respuesta.de.id
+         ok = desgban(respuesta.de.id)
+         si ok
+            enviarMensaje(msg.chat.id, "El usuario "..no_markdown(respuesta.de.nombre).." *ha sido globalmente desbaneado*.", md)
+         sino
+            enviarMensaje(msg.chat.id, "*Este usuario ya fué globalmente desbaneado anteriormente*.", md)
+         fin
+      sino
+         enviarMensaje(msg.chat.id, "Este comando *solo funciona por respuesta*.", md)
+      fin
    fin
 fin
 
@@ -47,7 +94,14 @@ retornar {
    "comandos": [
       "^/(ban)$",
       "^/(expulsar)$",
-      "^/(desban)$"
-   ],
-   "accion": mensajes
+      "^/(desban)$",
+      "^/(gban)$",
+      "^/(desgban)$",
+      "^/(ban) @([[:alnum:]_]+)$",
+      "^/(expulsar) @([[:alnum:]_]+)$",
+      "^/(desban) @([[:alnum:]_]+)$",
+      "^/(gban) @([[:alnum:]_]+)$",
+      "^/(desgban) @([[:alnum:]_]+)$"
+],
+"accion": mensajes
 }

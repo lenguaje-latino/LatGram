@@ -1,7 +1,0 @@
-retornar {
-        "spam":[
-                "[Tt][Ee][Ll][Ee][Gg][Rr][Aa][Mm].[Mm][Ee]/.*",
-                "[Tt].[Mm][Ee]/.*",
-                "[Tt][Ee][Ll][Ee][Gg][Rr][Aa][Mm].[Dd][Oo][Gg]/.*"
-        ]
-}

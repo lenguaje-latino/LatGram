@@ -22,16 +22,12 @@ funcion mensajes()
          enviarMensaje(msg.chat.id, "*Chat ID*: "..msg.chat.id.."\n*User ID*: "..msg.de.id, md)
          retornar 0
       fin
-      id_obtenida = redis.hobtener(com, BOT_HHASH, matches[2])
+      id_obtenida = obtener_id_usuario(matches[2])
       si id_obtenida
          enviarMensaje(msg.chat.id, "`"..id_obtenida.."`", md)
       sino
          enviarMensaje(msg.chat.id, "*El usuario no está registrado en la base de datos*.", md)
       fin
-   fin
-   si matches[1] == "leer"
-      enviarMensaje(msg.chat.id, "Escribe un texto", md)
-      iniciarLeer(msg.de.id, matches[0])
    fin
    si matches[1] == "start"
       ayuda = [[
@@ -61,9 +57,8 @@ retornar {
       "^/(id)@"..bot.usuario.."$",
       "^/(start)$",
       "^/(start)@"..bot.usuario.."$",
-      "/(leer)",
-      "^/(linus) ([a-Z@_\(\)\/]+)$",
-      "^/(linus) ([a-Z@_\(\)\/]+) ([a-Z_\(\)\/]+)$"
+      "^/(linus) ([[:alnum:]@_\)\(\/]+)$",
+      "^/(linus) ([[:alnum:]@_\)\(\/]+) ([[:alnum:]@_\)\(\/]+)$"
    ],
    "callbacks": [
       "^!!!(latino)$"

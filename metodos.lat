@@ -1,565 +1,565 @@
 // Actualizaciones
 
 funcion cod(texto)
-        x = cadena.reemplazar(texto, "\n", "
+   x = cadena.reemplazar(texto, "\n", "
 ")
-        retornar curl.escape(x)
+   retornar curl.escape(x)
 fin
 
 funcion actualizaciones()
-	consulta = curl.peticion(URL .. "getUpdates")
-	consulta = json.decodificar(consulta)
-	offset = consulta.result[0].update_id
-	si offset > 0
-		offset = offset + 1
-		curl.peticion(URL .. "getUpdates?offset=" .. offset)
-	fin
-	si consulta.result > 0
-		retornar consulta
-	fin
-	retornar falso
+   consulta = curl.peticion(URL .. "getUpdates")
+   consulta = json.decodificar(consulta)
+   offset = consulta.result[0].update_id
+   si offset > 0
+      offset = offset + 1
+      curl.peticion(URL .. "getUpdates?offset=" .. offset)
+   fin
+   si consulta.result > 0
+      retornar consulta
+   fin
+   retornar falso
 fin
 
 funcion verificar_apikey()
-	consulta = curl.peticion(URL .. "getUpdates")
-	status = json.decodificar(consulta)
-	retornar status
+   consulta = curl.peticion(URL .. "getUpdates")
+   status = json.decodificar(consulta)
+   retornar status
 fin
 
 // bot
 funcion ObtenerBot()
-	consulta = curl.peticion(URL .. "getMe")
-	status = json.decodificar(consulta)
-	retornar status
+   consulta = curl.peticion(URL .. "getMe")
+   status = json.decodificar(consulta)
+   retornar status
 fin
 
 // Mensajes
 funcion enviarMensaje(chatId, texto, formato, responder)
-	enlace = URL .. "sendMessage?chat_id=" .. chatId .. "&text=" .. cod(texto)
+   enlace = URL .. "sendMessage?chat_id=" .. chatId .. "&text=" .. cod(texto)
 
-	si formato
-		elegir(formato)
-			caso "markdown":
-			enlace = enlace .. "&parse_mode="..formato
-			caso "html":
-			enlace = enlace .. "&parse_mode="..formato
-		fin
-	fin
+   si formato
+      elegir(formato)
+         caso "markdown":
+         enlace = enlace .. "&parse_mode="..formato
+         caso "html":
+         enlace = enlace .. "&parse_mode="..formato
+      fin
+   fin
 
-	si responder
-		enlace = enlace .. "&reply_to_message_id=" .. responder
-	fin
-	raw = curl.peticion(enlace)
-	estado = json.decodificar(raw)
-	si estado.ok
-		retornar estado
-	fin
+   si responder
+      enlace = enlace .. "&reply_to_message_id=" .. responder
+   fin
+   raw = curl.peticion(enlace)
+   estado = json.decodificar(raw)
+   si estado.ok
+      retornar estado
+   fin
    imprimir(estado.description)
-	retornar falso
+   retornar falso
 fin
 
 funcion enviarTeclado(chatId, texto, teclado, formato)
-	enlace = URL .. "sendMessage?chat_id=" .. chatId .. "&text=" .. cod(texto) .. "&reply_markup="..parsear(teclado)
+   enlace = URL .. "sendMessage?chat_id=" .. chatId .. "&text=" .. cod(texto) .. "&reply_markup="..parsear(teclado)
 
-	si formato
-		elegir(formato)
-			caso "markdown":
-			enlace = enlace .. "&parse_mode=markdown"
-			caso "html":
-			enlace = enlace .. "&parse_mode=html"
-		fin
-	fin
-	raw = curl.peticion(enlace)
-	estado = json.decodificar(raw)
-	si estado.ok
-		retornar estado
-	fin
-	retornar falso
+   si formato
+      elegir(formato)
+         caso "markdown":
+         enlace = enlace .. "&parse_mode=markdown"
+         caso "html":
+         enlace = enlace .. "&parse_mode=html"
+      fin
+   fin
+   raw = curl.peticion(enlace)
+   estado = json.decodificar(raw)
+   si estado.ok
+      retornar estado
+   fin
+   retornar falso
 fin
 
 funcion enviarAccion(chatId, tipo)
-	accion = "escribiendo"
-    si tipo
-	    elegir(tipo)
-		caso "escribiendo": accion = "typing"
-		caso "subir_foto": accion = "upload_photo"
-		caso "subir_video": accion = "upload_video"
-		caso "subir_audio": accion = "upload_audio"
-		caso "subir_archivo": accion = "upload_document"
-		caso "grabar_video": accion = "record_video"
-		caso "grabar_audio": accion = "record_audio"
-		caso "buscar_lugar": accion = "find_location"
-        fin
-	fin
-	si !accion
-        imprimir("error: la acción '"..tipo.."' no existe.\nAcciones disponibles:\n\tescribiendo\n\tsubir_foto\n\tsubir_video\n\tsubir_audio\n\tsubir_archivo\n\tgrabar_video\n\tgrabar_audio\n\tbuscar_lugar", 1)
-        retornar falso
-	fin
-	raw = curl.peticion(URL .. "sendChatAction?chat_id=" .. chatId .. "&action=" .. accion)
-	estado = json.decodificar(raw)
-	si estado.ok
-		retornar estado
-	fin
-	retornar falso
+   accion = "escribiendo"
+   si tipo
+      elegir(tipo)
+         caso "escribiendo": accion = "typing"
+         caso "subir_foto": accion = "upload_photo"
+         caso "subir_video": accion = "upload_video"
+         caso "subir_audio": accion = "upload_audio"
+         caso "subir_archivo": accion = "upload_document"
+         caso "grabar_video": accion = "record_video"
+         caso "grabar_audio": accion = "record_audio"
+         caso "buscar_lugar": accion = "find_location"
+      fin
+   fin
+   si !accion
+      imprimir("error: la acción '"..tipo.."' no existe.\nAcciones disponibles:\n\tescribiendo\n\tsubir_foto\n\tsubir_video\n\tsubir_audio\n\tsubir_archivo\n\tgrabar_video\n\tgrabar_audio\n\tbuscar_lugar", 1)
+      retornar falso
+   fin
+   raw = curl.peticion(URL .. "sendChatAction?chat_id=" .. chatId .. "&action=" .. accion)
+   estado = json.decodificar(raw)
+   si estado.ok
+      retornar estado
+   fin
+   retornar falso
 fin
 
 funcion editarMensaje(chatId, msgId, texto, formato, teclado, inlineMsgId, chatId, webvista)
-    enlace = URL.. "editMessageText?chat_id="..chatId.."&message_id="..msgId.."&text="..cod(texto)
-    si formato
-        elegir(formato)
-            caso "markdown": enlace = enlace.."&parse_mode="..formato
-            caso "html": enlace = enlace.."&parse_mode="..formato
-        fin
-    fin
-    si teclado
-        enlace = enlace.."&reply_markup="..parsear(teclado)
-    fin
+   enlace = URL.. "editMessageText?chat_id="..chatId.."&message_id="..msgId.."&text="..cod(texto)
+   si formato
+      elegir(formato)
+         caso "markdown": enlace = enlace.."&parse_mode="..formato
+         caso "html": enlace = enlace.."&parse_mode="..formato
+      fin
+   fin
+   si teclado
+      enlace = enlace.."&reply_markup="..parsear(teclado)
+   fin
 
-    si inlineMsgId
-        enlace = enlace.."&inline_message_id="..inlineMsgId
-    fin
+   si inlineMsgId
+      enlace = enlace.."&inline_message_id="..inlineMsgId
+   fin
 
-    si webvista
-        enlace = enlace.."&disable_web_page_preview=true"
-    fin
-    raw = curl.peticion(enlace)
-    estado = json.decodificar(raw)
-    si estado.ok
-        retornar estado
-    fin
-    retornar falso
+   si webvista
+      enlace = enlace.."&disable_web_page_preview=true"
+   fin
+   raw = curl.peticion(enlace)
+   estado = json.decodificar(raw)
+   si estado.ok
+      retornar estado
+   fin
+   retornar falso
 fin
 
 funcion reenviarMensaje(chatId, userId, msgId)
-	raw = curl.peticion(URL .. "forwardMessage?chat_id=" .. chatId .. "&from_chat_id=" .. userId .. "&message_id=" .. msgId)
-	estado = json.decodificar(raw)
-	si estado.ok
-		retornar estado
-	fin
-	retornar falso
+   raw = curl.peticion(URL .. "forwardMessage?chat_id=" .. chatId .. "&from_chat_id=" .. userId .. "&message_id=" .. msgId)
+   estado = json.decodificar(raw)
+   si estado.ok
+      retornar estado
+   fin
+   retornar falso
 fin
 
 
 // Acciones de chat
 
 funcion abandonarChat(chatId)
-	raw = curl.peticion(URL .. "leaveChat?chat_id=" .. chatId)
-	estado = json.decodificar(raw)
-	si estado.ok
-		retornar estado
-	fin
-	retornar falso
+   raw = curl.peticion(URL .. "leaveChat?chat_id=" .. chatId)
+   estado = json.decodificar(raw)
+   si estado.ok
+      retornar estado
+   fin
+   retornar falso
 fin
 
 funcion expulsarUsuario(chatId, userId)
-	raw = curl.peticion(URL .. "kickChatMember?chat_id=" .. chatId .. "&user_id=" .. userId)
-	curl.peticion(URL .. "unbanChatMember?chat_id=" .. chatId .. "&user_id=" .. userId)
-	estado = json.decodificar(raw)
-	si estado.ok
-		retornar estado
-	fin
-	retornar falso
+   raw = curl.peticion(URL .. "kickChatMember?chat_id=" .. chatId .. "&user_id=" .. userId)
+   curl.peticion(URL .. "unbanChatMember?chat_id=" .. chatId .. "&user_id=" .. userId)
+   estado = json.decodificar(raw)
+   si estado.ok
+      retornar estado
+   fin
+   retornar falso
 fin
 
 funcion banearUsuario(chatId, userId)
-	raw = curl.peticion(URL .. "kickChatMember?chat_id=" .. chatId .. "&user_id=" .. userId)
-	estado = json.decodificar(raw)
-	si estado.ok
-		retornar verdadero
-	fin
+   raw = curl.peticion(URL .. "kickChatMember?chat_id=" .. chatId .. "&user_id=" .. userId)
+   estado = json.decodificar(raw)
+   si estado.ok
+      retornar verdadero
+   fin
    imprimir(estado.description)
-	retornar falso
+   retornar falso
 fin
 
 funcion desbanearUsuario(chatId, userId)
-	raw = curl.peticion(URL .. "unbanChatMember?chat_id=" .. chatId .. "&user_id=" .. userId)
-	estado = json.decodificar(raw)
-	si estado.ok
-		retornar estado
-	fin
-	retornar falso
+   raw = curl.peticion(URL .. "unbanChatMember?chat_id=" .. chatId .. "&user_id=" .. userId)
+   estado = json.decodificar(raw)
+   si estado.ok
+      retornar estado
+   fin
+   retornar falso
 fin
 
 // Juegos
 
 funcion enviarJuego(chatId, juego, notificacion, msgId)
-	enlace = URL .. "sendGame?chat_id="..chatId.."&game_short_name="..juego
+   enlace = URL .. "sendGame?chat_id="..chatId.."&game_short_name="..juego
 
-	si notificacion
-		enlace = enlace .. "&disable_notification=true"
-	fin
+   si notificacion
+      enlace = enlace .. "&disable_notification=true"
+   fin
 
-	si msgId
-		enlace = enlace .. "&reply_to_message_id="..msgId
-	fin
-	raw = curl.peticion(enlace)
-	estado = json.decodificar(raw)
-	si estado.ok
-		retornar estado
-	fin
-	retornar falso
+   si msgId
+      enlace = enlace .. "&reply_to_message_id="..msgId
+   fin
+   raw = curl.peticion(enlace)
+   estado = json.decodificar(raw)
+   si estado.ok
+      retornar estado
+   fin
+   retornar falso
 fin
 
 // Enviar x
 
 funcion obtenerArchivo(Id)
-	datos = curl.peticion(URL .. "getFile?file_id=" .. Id)
-	status = json.decodificar(datos)
-	si status.ok
-		sistema('wget --no-check-certificate '..AURL..status.result.file_path)
-		retornar status
-	fin
-	retornar falso
+   datos = curl.peticion(URL .. "getFile?file_id=" .. Id)
+   status = json.decodificar(datos)
+   si status.ok
+      sistema('wget --no-check-certificate '..AURL..status.result.file_path)
+      retornar status
+   fin
+   retornar falso
 fin
 
 
 funcion enviarFoto(chatId, foto, capcion, notificar, msgId)
-	enlace = URL .. "sendPhoto?chat_id="..chatId.."&photo="..curl.escape(foto)
+   enlace = URL .. "sendPhoto?chat_id="..chatId.."&photo="..curl.escape(foto)
 
-	si capcion
-		enlace = enlace .. "&caption=" .. curl.escape(capcion)
-	fin
+   si capcion
+      enlace = enlace .. "&caption=" .. curl.escape(capcion)
+   fin
 
-	si notificar
-		enlace = enlace .. "&disable_notification=true"
-	fin
+   si notificar
+      enlace = enlace .. "&disable_notification=true"
+   fin
 
-	si msgId
-		enlace = enlace .. "&reply_to_message_id=" .. msgId
-	fin
+   si msgId
+      enlace = enlace .. "&reply_to_message_id=" .. msgId
+   fin
 
-	raw = curl.peticion(enlace)
-	estado = json.decodificar(raw)
-	si estado.ok
-		retornar estado
-	fin
-	retornar falso
+   raw = curl.peticion(enlace)
+   estado = json.decodificar(raw)
+   si estado.ok
+      retornar estado
+   fin
+   retornar falso
 fin
 
 funcion enviarAudio(chatId, audio, capcion, notificar, msgId)
-	enlace = URL .. "sendAudio?chat_id="..chatId.."&audio="..curl.escape(audio)
+   enlace = URL .. "sendAudio?chat_id="..chatId.."&audio="..curl.escape(audio)
 
-	si capcion
-		enlace = enlace .. "&caption=" .. curl.escape(capcion)
-	fin
+   si capcion
+      enlace = enlace .. "&caption=" .. curl.escape(capcion)
+   fin
 
-	si notificar
-		enlace = enlace .. "&disable_notification=true"
-	fin
+   si notificar
+      enlace = enlace .. "&disable_notification=true"
+   fin
 
-	si msgId
-		enlace = enlace .. "&reply_to_message_id=" .. msgId
-	fin
+   si msgId
+      enlace = enlace .. "&reply_to_message_id=" .. msgId
+   fin
 
-	raw = curl.peticion(enlace)
-	estado = json.decodificar(raw)
-	si estado.ok
-		retornar estado
-	fin
-	retornar falso
+   raw = curl.peticion(enlace)
+   estado = json.decodificar(raw)
+   si estado.ok
+      retornar estado
+   fin
+   retornar falso
 fin
 
 
 funcion enviarArchivo(chatId, documento, capcion, notificar, msgId)
-	enlace = URL .. "sendDocument?chat_id="..chatId.."&document="..curl.escape(documento)
-	si capcion
-		enlace = enlace .. "&caption=" .. curl.escape(capcion)
-	fin
+   enlace = URL .. "sendDocument?chat_id="..chatId.."&document="..curl.escape(documento)
+   si capcion
+      enlace = enlace .. "&caption=" .. curl.escape(capcion)
+   fin
 
-	si notificar
-		enlace = enlace .. "&disable_notification=true"
-	fin
+   si notificar
+      enlace = enlace .. "&disable_notification=true"
+   fin
 
-	si msgId
-		enlace = enlace .. "&reply_to_message_id=" .. msgId
-	fin
+   si msgId
+      enlace = enlace .. "&reply_to_message_id=" .. msgId
+   fin
 
-	raw = curl.peticion(enlace)
-	estado = json.decodificar(raw)
-	si estado.ok
-		retornar estado
-	fin
-	retornar falso
+   raw = curl.peticion(enlace)
+   estado = json.decodificar(raw)
+   si estado.ok
+      retornar estado
+   fin
+   retornar falso
 fin
 
 
 funcion enviarSticker(chatId, sticker, msgId, teclado, notificar)
-	enlace = URL .. "sendSticker?chat_id="..chatId.."&sticker="..curl.escape(sticker)
-    si msgId
-		enlace = enlace .. "&reply_to_message_id=" .. msgId
-	fin
+   enlace = URL .. "sendSticker?chat_id="..chatId.."&sticker="..curl.escape(sticker)
+   si msgId
+      enlace = enlace .. "&reply_to_message_id=" .. msgId
+   fin
 
-    si teclado
-        enlace = enlace .. "&reply_markup="..parsear(teclado)
-    fin
+   si teclado
+      enlace = enlace .. "&reply_markup="..parsear(teclado)
+   fin
 
-    si notificar
-		enlace = enlace .. "&disable_notification=true"
-	fin
+   si notificar
+      enlace = enlace .. "&disable_notification=true"
+   fin
 
-	raw = curl.peticion(enlace)
-	estado = json.decodificar(raw)
-	si estado.ok
-		retornar estado
-	fin
-	retornar falso
+   raw = curl.peticion(enlace)
+   estado = json.decodificar(raw)
+   si estado.ok
+      retornar estado
+   fin
+   retornar falso
 fin
 
 funcion enviarVideo(chatId, video, capcion, notificar, msgId)
-	enlace = URL .. "sendVideo?chat_id="..chatId.."&video="..curl.escape(video)
+   enlace = URL .. "sendVideo?chat_id="..chatId.."&video="..curl.escape(video)
 
-	si capcion
-		enlace = enlace .. "&caption=" .. curl.escape(capcion)
-	fin
+   si capcion
+      enlace = enlace .. "&caption=" .. curl.escape(capcion)
+   fin
 
-	si notificar
-		enlace = enlace .. "&disable_notification=true"
-	fin
+   si notificar
+      enlace = enlace .. "&disable_notification=true"
+   fin
 
-	si msgId
-		enlace = enlace .. "&reply_to_message_id=" .. msgId
-	fin
+   si msgId
+      enlace = enlace .. "&reply_to_message_id=" .. msgId
+   fin
 
-	raw = curl.peticion(enlace)
-	estado = json.decodificar(raw)
-	si estado.ok
-		retornar estado
-	fin
-	retornar falso
+   raw = curl.peticion(enlace)
+   estado = json.decodificar(raw)
+   si estado.ok
+      retornar estado
+   fin
+   retornar falso
 fin
 
 
 funcion enviarVoz(chatId, voz, capcion, notificar, msgId)
-	enlace = URL .. "sendVoice?chat_id="..chatId.."&voice="..curl.escape(voz)
+   enlace = URL .. "sendVoice?chat_id="..chatId.."&voice="..curl.escape(voz)
 
-	si capcion
-		enlace = enlace .. "&caption=" .. curl.escape(capcion)
-	fin
+   si capcion
+      enlace = enlace .. "&caption=" .. curl.escape(capcion)
+   fin
 
-	si notificar
-		enlace = enlace .. "&disable_notification=true"
-	fin
+   si notificar
+      enlace = enlace .. "&disable_notification=true"
+   fin
 
-	si msgId
-		enlace = enlace .. "&reply_to_message_id=" .. msgId
-	fin
+   si msgId
+      enlace = enlace .. "&reply_to_message_id=" .. msgId
+   fin
 
-	raw = curl.peticion(enlace)
-	estado = json.decodificar(raw)
-	si estado.ok
-		retornar estado
-	fin
-	retornar falso
+   raw = curl.peticion(enlace)
+   estado = json.decodificar(raw)
+   si estado.ok
+      retornar estado
+   fin
+   retornar falso
 fin
 
 
 // Enviar archivos desde el servidor
 
 funcion enviariFoto(chatId, foto, capcion, notificar, msgId)
-	enlace = URL .. "sendPhoto?chat_id="..chatId
+   enlace = URL .. "sendPhoto?chat_id="..chatId
 
-	si capcion
-		enlace = enlace .. "&caption=" .. curl.escape(capcion)
-	fin
+   si capcion
+      enlace = enlace .. "&caption=" .. curl.escape(capcion)
+   fin
 
-	si notificar
-		enlace = enlace .. "&disable_notification=true"
-	fin
+   si notificar
+      enlace = enlace .. "&disable_notification=true"
+   fin
 
-	si msgId
-		enlace = enlace .. "&reply_to_message_id=" .. msgId
-	fin
+   si msgId
+      enlace = enlace .. "&reply_to_message_id=" .. msgId
+   fin
 
-	curl = ejecutar_pipe("curl -sk '" .. enlace .. "' -F 'photo=@"..foto.."'")
-	retornar curl
+   curl = sis.pipe("curl -sk '" .. enlace .. "' -F 'photo=@"..foto.."'")
+   retornar curl
 fin
 
 funcion enviariAudio(chatId, audio, capcion, notificar, msgId)
-	enlace = URL .. "sendAudio?chat_id="..chatId
+   enlace = URL .. "sendAudio?chat_id="..chatId
 
-	si capcion
-		enlace = enlace .. "&caption=" .. curl.escape(capcion)
-	fin
+   si capcion
+      enlace = enlace .. "&caption=" .. curl.escape(capcion)
+   fin
 
-	si notificar
-		enlace = enlace .. "&disable_notification=true"
-	fin
+   si notificar
+      enlace = enlace .. "&disable_notification=true"
+   fin
 
-	si msgId
-		enlace = enlace .. "&reply_to_message_id=" .. msgId
-	fin
+   si msgId
+      enlace = enlace .. "&reply_to_message_id=" .. msgId
+   fin
 
-	curl = ejecutar_pipe("curl -sk '" .. enlace .. "' -F 'audio=@"..audio.."'")
-	retornar curl
+   curl = sis.pipe("curl -sk '" .. enlace .. "' -F 'audio=@"..audio.."'")
+   retornar curl
 fin
 
 
 funcion enviariArchivo(chatId, documento, capcion, notificar, msgId)
-	enlace = URL .. "sendDocument?chat_id="..chatId
+   enlace = URL .. "sendDocument?chat_id="..chatId
 
-	si capcion
-		enlace = enlace .. "&caption=" .. curl.escape(capcion)
-	fin
+   si capcion
+      enlace = enlace .. "&caption=" .. curl.escape(capcion)
+   fin
 
-	si notificar
-		enlace = enlace .. "&disable_notification=true"
-	fin
+   si notificar
+      enlace = enlace .. "&disable_notification=true"
+   fin
 
-	si msgId
-		enlace = enlace .. "&reply_to_message_id=" .. msgId
-	fin
+   si msgId
+      enlace = enlace .. "&reply_to_message_id=" .. msgId
+   fin
 
-	curl = ejecutar_pipe("curl -sk '" .. enlace .. "' -F 'document=@"..documento.."'")
-	retornar curl
+   curl = sis.pipe("curl -sk '" .. enlace .. "' -F 'document=@"..documento.."'")
+   retornar curl
 fin
 
 
 funcion enviariSticker(chatId, sticker, capcion, notificar, msgId)
-	enlace = URL .. "sendSticker?chat_id="..chatId
+   enlace = URL .. "sendSticker?chat_id="..chatId
 
-	si capcion
-		enlace = enlace .. "&caption=" .. curl.escape(capcion)
-	fin
+   si capcion
+      enlace = enlace .. "&caption=" .. curl.escape(capcion)
+   fin
 
-	si notificar
-		enlace = enlace .. "&disable_notification=true"
-	fin
+   si notificar
+      enlace = enlace .. "&disable_notification=true"
+   fin
 
-	si msgId
-		enlace = enlace .. "&reply_to_message_id=" .. msgId
-	fin
+   si msgId
+      enlace = enlace .. "&reply_to_message_id=" .. msgId
+   fin
 
-	curl = ejecutar_pipe("curl -sk '" .. enlace .. "' -F 'sticker=@"..sticker.."'")
-	retornar curl
+   curl = sis.pipe("curl -sk '" .. enlace .. "' -F 'sticker=@"..sticker.."'")
+   retornar curl
 fin
 
 
 funcion enviariVideo(chatId, video, capcion, notificar, msgId)
-	enlace = URL .. "sendVideo?chat_id="..chatId
+   enlace = URL .. "sendVideo?chat_id="..chatId
 
-	si capcion
-		enlace = enlace .. "&caption=" .. curl.escape(capcion)
-	fin
+   si capcion
+      enlace = enlace .. "&caption=" .. curl.escape(capcion)
+   fin
 
-	si notificar
-		enlace = enlace .. "&disable_notification=true"
-	fin
+   si notificar
+      enlace = enlace .. "&disable_notification=true"
+   fin
 
-	si msgId
-		enlace = enlace .. "&reply_to_message_id=" .. msgId
-	fin
+   si msgId
+      enlace = enlace .. "&reply_to_message_id=" .. msgId
+   fin
 
-	curl = ejecutar_pipe("curl -sk '" .. enlace .. "' -F 'video=@"..video.."'")
-	retornar curl
+   curl = sis.pipe("curl -sk '" .. enlace .. "' -F 'video=@"..video.."'")
+   retornar curl
 fin
 
 
 funcion enviariVoz(chatId, voz, capcion, notificar, msgId)
-	enlace = URL .. "sendVoice?chat_id="..chatId
+   enlace = URL .. "sendVoice?chat_id="..chatId
 
-	si capcion
-		enlace = enlace .. "&caption=" .. curl.escape(capcion)
-	fin
+   si capcion
+      enlace = enlace .. "&caption=" .. curl.escape(capcion)
+   fin
 
-	si notificar
-		enlace = enlace .. "&disable_notification=true"
-	fin
+   si notificar
+      enlace = enlace .. "&disable_notification=true"
+   fin
 
-	si msgId
-		enlace = enlace .. "&reply_to_message_id=" .. msgId
-	fin
+   si msgId
+      enlace = enlace .. "&reply_to_message_id=" .. msgId
+   fin
 
-	curl = ejecutar_pipe("curl -sk '" .. enlace .. "' -F 'voice=@"..voz.."'")
-	retornar curl
+   curl = sis.pipe("curl -sk '" .. enlace .. "' -F 'voice=@"..voz.."'")
+   retornar curl
 fin
 
 // Utilidades de chat
 
 funcion obtenerChat(chatId)
-	raw = curl.peticion(URL .. "getChat?chat_id="..chatId)
-	status = json.decodificar(raw)
-	si status.ok
-		retornar status
-	fin
-	retornar falso
+   raw = curl.peticion(URL .. "getChat?chat_id="..chatId)
+   status = json.decodificar(raw)
+   si status.ok
+      retornar status
+   fin
+   retornar falso
 fin
 
 funcion obtenerCuentaMiembros(chatId)
-	raw = curl.peticion(URL .. "getChatMembersCount?chat_id="..chatId)
-	status = json.decodificar(raw)
-	si status.ok
-		retornar status
-	fin
-	retornar falso
+   raw = curl.peticion(URL .. "getChatMembersCount?chat_id="..chatId)
+   status = json.decodificar(raw)
+   si status.ok
+      retornar status
+   fin
+   retornar falso
 fin
 
 // consultas inline
 
 funcion enviarConsultaInline(IdConsulta, resultado, limite)
-    si tipo(resultado) != "lista"
-        imprimir("Error: enviarConsultaInline parametro 2 debe ser una lista")
-        retornar 0
-    fin
-	enlace = URL .. "answerInlineQuery?inline_query_id="..IdConsulta.."&results="..resultado
-    si limite
-        enlace = enlace.."&cache_time="..anumero(limite)
-    fin
-    raw = curl.peticion(enlace)
-	status = json.decodificar(raw)
-	si status.ok
-		retornar status
-	fin
-    imprimir(status.description)
-	retornar falso
+   si tipo(resultado) != "lista"
+      imprimir("Error: enviarConsultaInline parametro 2 debe ser una lista")
+      retornar 0
+   fin
+   enlace = URL .. "answerInlineQuery?inline_query_id="..IdConsulta.."&results="..resultado
+   si limite
+      enlace = enlace.."&cache_time="..anumero(limite)
+   fin
+   raw = curl.peticion(enlace)
+   status = json.decodificar(raw)
+   si status.ok
+      retornar status
+   fin
+   imprimir(status.description)
+   retornar falso
 fin
 
 
 funcion textoInline(consultaId, titulo, texto, descripcion, formato, teclado, url, esconder_url, thumb_url, thumb_anchura, thumb_altura)
-	articulo = '{"type":"article","id":"'..consultaId..'","title":"'..cod(titulo)..'","message_text":"'..cod(texto)..'"'
+   articulo = '{"type":"article","id":"'..consultaId..'","title":"'..cod(titulo)..'","message_text":"'..cod(texto)..'"'
 
-	si descripcion
-		articulo = articulo..',"description":"'..descripcion..'"'
-	fin
+   si descripcion
+      articulo = articulo..',"description":"'..descripcion..'"'
+   fin
 
-	si formato
-		elegir(formato)
-	 		caso "markdown":
-			articulo = articulo..',"parse_mode":"markdown"'
-			caso "html":
-			articulo = articulo..',"parse_mode":"html"'
-		fin
-	fin
+   si formato
+      elegir(formato)
+         caso "markdown":
+         articulo = articulo..',"parse_mode":"markdown"'
+         caso "html":
+         articulo = articulo..',"parse_mode":"html"'
+      fin
+   fin
 
-    si teclado
-        articulo = articulo..',"reply_markup":'..parsear(teclado)
-    fin
-    si url
-        articulo = articulo..',"url":"'..url..'"'
-    fin
-    si esconder_url
-        articulo = articulo..',"hide_url":true'
-    fin
-    si thumb_url
-        articulo = articulo..',"thumb_url":"'..thumb_url..'"'
-    fin
-    si thumb_anchura
-        articulo = articulo..',"thumb_width":'..anumero(thumb_anchura)
-    fin
-    si thumb_altura
-        articulo = articulo..',"thumb_height":'..anumero(thumb_altura)
-    fin
-	retornar json.decodificar(articulo..'}')
+   si teclado
+      articulo = articulo..',"reply_markup":'..parsear(teclado)
+   fin
+   si url
+      articulo = articulo..',"url":"'..url..'"'
+   fin
+   si esconder_url
+      articulo = articulo..',"hide_url":true'
+   fin
+   si thumb_url
+      articulo = articulo..',"thumb_url":"'..thumb_url..'"'
+   fin
+   si thumb_anchura
+      articulo = articulo..',"thumb_width":'..anumero(thumb_anchura)
+   fin
+   si thumb_altura
+      articulo = articulo..',"thumb_height":'..anumero(thumb_altura)
+   fin
+   retornar json.decodificar(articulo..'}')
 fin
 
 funcion fotoInline(consultaId, foto, descripcion)
-	articulo = '{"type":"photo","id":"'..consultaId..'","photo_url":"'..foto..'"'
+   articulo = '{"type":"photo","id":"'..consultaId..'","photo_url":"'..foto..'"'
 
-	si foto
-		articulo = articulo..',"thumb_url":"'..foto..'"'
-	fin
+   si foto
+      articulo = articulo..',"thumb_url":"'..foto..'"'
+   fin
 
-	si descripcion
-		articulo = articulo..',"description":"'..descripcion..'"'
-	fin
-	retornar json.decodificar(articulo..'}')
+   si descripcion
+      articulo = articulo..',"description":"'..descripcion..'"'
+   fin
+   retornar json.decodificar(articulo..'}')
 fin

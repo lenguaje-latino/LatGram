@@ -1,15 +1,15 @@
 funcion mensajes()
+   hash = "extras:"..msg.de.id..":portapapeles"
     si blocks[1] == "copiar"
         si respuesta.id
-            hash = "plus:"..msg.de.id..":json"
             si respuesta.sticker.id
                 redis.asignar(com, hash, '{"tipo": "sticker", "contenido":"'..respuesta.sticker.id..'"}')
                 enviarMensaje(msg.chat.id, "*Sticker copiado en el portapapeles*.", md)
             osi respuesta.voz.id
                 redis.asignar(com, hash, '{"tipo": "voz", "contenido":"'..respuesta.voz.id..'", "accion": "grabar_audio"}')
                 enviarMensaje(msg.chat.id, "*Audio copiado en el portapapeles*.", md)
-            osi respuesta.foto.id
-                redis.asignar(com, hash, '{"tipo": "foto", "contenido":"'..respuesta.foto.id..'", "accion": "subir_foto"}')
+            osi respuesta.foto[0].id
+                redis.asignar(com, hash, '{"tipo": "foto", "contenido":"'..respuesta.foto[0].id..'", "accion": "subir_foto"}')
                 enviarMensaje(msg.chat.id, "*Foto copiada en el portapapeles*.", md)
             osi respuesta.archivo.id
                 redis.asignar(com, hash, '{"tipo": "archivo", "contenido":"'..respuesta.archivo.id..'", "accion": "subir_archivo"}')
@@ -26,17 +26,12 @@ funcion mensajes()
             enviarMensaje(msg.chat.id, "*Debes responder* a un _texto_, _archivo_, _sticker_, _nota de voz_ o a una _foto_ para guardarla a tu portapapeles.", md)
         fin
     osi blocks[1] == "pegar"
-        hash = "plus:"..msg.de.id..":json"
         portapapeles = redis.obtener(com, hash)
         si portapapeles
             c = json.decodificar(portapapeles)
         //    si c.accion enviarAccion(msg.chat.id, acadena(c.accion)) fin
             si c.tipo == "sticker"
-                vvvvv = [[
-                {"text":"Programación Latino","callback_data":"!!!cb"},
-                {"text":"Repositorio del Bot","url":"https://github.com/lenguaje-latino/BotGram"}
-                ]]
-                enviarSticker(msg.chat.id, c.contenido, msg.id, vvvvv)
+                enviarSticker(msg.chat.id, c.contenido, msg.id)
             osi c.tipo == "foto"
                 enviarFoto(msg.chat.id, c.contenido, "Foto enviada desde el portapapeles")
             osi c.tipo == "voz"
@@ -50,12 +45,11 @@ funcion mensajes()
             enviarMensaje(msg.chat.id, "*No hay nada pegado en tu portapapeles*.", md)
         fin
     osi blocks[1] == "vaciar"
-        hash = "plus:"..msg.de.id..":json"
         portapapeles = redis.obtener(com, hash)
         si portapapeles
             c = json.decodificar(portapapeles)
             enviarMensaje(msg.chat.id, "*¿Está seguro de vacíar su papelera?* tiene un "..c.tipo.." en su portapapeles \[S/n].", md)
-            iniciarLeer(msg.de.id, msg.texto)
+            iniciarLeer(msg.de.id, msg.texto, 22, 10)
             retorno 1
         fin
         enviarMensaje(msg.chat.id, "*No tienes nada en el portapapeles*.", md)

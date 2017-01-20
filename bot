@@ -63,6 +63,19 @@ funcion incluir_variables()
 			"usuario": msj.left_chat_member.username,
 			"nombre": msj.left_chat_member.first_name,
 			"apellido": msj.left_chat_member.last_name
+		},
+		"video": {
+			"duracion": msj.video.duration,
+			"id": msj.video.file_id,
+			"peso": msj.video.file_size,
+			"anchura": msj.video.width,
+			"altura": msj.video.height,
+			"thumb": {
+				"id": msj.video.thumb.file_id,
+				"peso": msj.video.thumb.file_size,
+				"anchura": msj.video.thumb.width,
+				"altura": msj.video.thumb.height
+			}
 		}
 	}
 
@@ -361,12 +374,13 @@ funcion menu(argc, argv)
 
 	com = redis.conectar(config.redis_ip, config.redis_puerto)
 
-	inicio = enviarMensaje(config.admins[0], "<b>Bot iniciado</b>", html, falso)
+	iadmins = json.decodificar(archivo.leer(config.admins))
+	inicio = enviarMensaje(acadena(iadmins.admins[0]), "<b>Bot iniciado</b>", html, falso)
 	imprimir(color.azul)
 	si inicio
-		imprimir("\tConfirmación enviada a " .. config.admins[0] .. ".\n\tBot @"..bot.usuario..".", 1)
+		imprimir("\tConfirmación enviada a " .. iadmins.admins[0] .. ".\n\tBot @"..bot.usuario..", ID: "..bot.id, 1)
 	sino
-		imprimir("\tError en confirmación.\n\tBot @"..bot.usuario, 1)
+		imprimir("\tError en confirmación.\n\tBot @"..bot.usuario..", ID: "..bot.id, 1)
 	fin
 	imprimir(color.reset.."\n", 1)
 	si config.limpiar_updates_al_iniciar
@@ -387,8 +401,8 @@ funcion menu(argc, argv)
 		fin
 		si sis.avisar(2) || sis.avisar(20)
 			imprimir("\nBot detenido (@"..bot.usuario..")",1)
+			redis.desconectar(com)
 			sis.salir()
 		fin
 	fin
-	redis.desconectar(com)
 fin
