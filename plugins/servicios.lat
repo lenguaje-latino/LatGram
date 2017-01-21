@@ -35,10 +35,10 @@ global funcion usuario_hace_spam()
                retornar verdadero
             fin
          fin
-      osi spam_match_texto_link
+      /*osi spam_match_texto_link
          retornar verdadero
       osi spam_match_capcion_link
-         retornar verdadero
+         retornar verdadero*/
       osi msg.reenviado.chat.id
          retornar verdadero
       fin
