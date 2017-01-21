@@ -35,15 +35,15 @@ global funcion usuario_hace_spam()
                retornar verdadero
             fin
          fin
-      /*osi spam_match_texto_link
+         /*osi spam_match_texto_link
          retornar verdadero
       osi spam_match_capcion_link
-         retornar verdadero*/
-      osi msg.reenviado.chat.id
-         retornar verdadero
-      fin
+      retornar verdadero*/
+   osi msg.reenviado.chat.id
+      retornar verdadero
    fin
-   retornar falso
+fin
+retornar falso
 fin
 
 global funcion nuevo_usuario()
@@ -176,71 +176,72 @@ funcion subproceso()
       fin
    fin
 
-   si bot_agregado()
-      configurar_grupo(msg.chat.id)
-      enviarMensaje(msg.chat.id, "¡Hola! soy "..bot.nombre..", gracias por añadirme a este chat.")
-      retornar "Bot añadido a "..msg.chat.titulo
-   osi bot_eliminado()
-      desconfigurar_grupo(msg.chat.id)
-      retornar "Bot eliminado de "..msg.chat.titulo
-   fin
-
-   si subproceso_papelera()
-      retornar "Opción de portapapeles de "..msg.de.nombre..": "..msg.texto
-   fin
-
-   si comando_personalizado()
-      permitido = redis.sesmiembro(com, AHASH, "extras")
-      si permitido
-         enviarMensaje(msg.chat.id, comando_personalizado(), md)
-         retornar "comando personalizado ejecutado ("..msg.texto..")"
+   si msg.agregado.id
+      si bot_agregado()
+         configurar_grupo(msg.chat.id)
+         enviarMensaje(msg.chat.id, "¡Hola! soy "..bot.nombre..", gracias por añadirme a este chat.")
+         retornar "Bot añadido a "..msg.chat.titulo
       fin
-   fin
 
-   si arabe_detectado(msg.agregado.nombre)
-      no_permitido = !redis.sesmiembro(com, AHASH, "arabes")
-      si no_permitido
-         banearUsuario(msg.chat.id, msg.agregado.id)
-         retornar "ALLAHU AKBAR "..msg.agregado.id
-      fin
-   fin
-
-   si arabe_detectado(msg.agregado.apellido)
-      no_permitido = !redis.sesmiembro(com, AHASH, "arabes")
-      si no_permitido
-         banearUsuario(msg.chat.id, msg.agregado.id)
-         retornar "allahu akbar "..msg.agregado.id
-      fin
-   fin
-
-   si nuevo_usuario()
-      si msg.agregado.usuario
-         registrar_id_usuario(msg.agregado.usuario, msg.agregado.id)
-      fin
-      si es_bot(msg.agregado.id)
-         no_permitido = !redis.sesmiembro(com, AHASH, "bots")
-         si no_permitido
-            ok = banearUsuario(msg.chat.id, msg.agregado.id)
-            si ok
-               enviarMensaje(msg.chat.id, "Bots *no permitidos* en este chat, expulsado.", md)
-               retornar "Bot eliminado de "..msg.chat.titulo
+      si nuevo_usuario()
+         si msg.agregado.usuario
+            registrar_id_usuario(msg.agregado.usuario, msg.agregado.id)
+         fin
+         si es_bot(msg.agregado.id)
+            no_permitido = !redis.sesmiembro(com, AHASH, "bots")
+            si no_permitido
+               ok = banearUsuario(msg.chat.id, msg.agregado.id)
+               si ok
+                  enviarMensaje(msg.chat.id, "Bots *no permitidos* en este chat, expulsado.", md)
+                  retornar "Bot eliminado de "..msg.chat.titulo
+               fin
             fin
          fin
+         permitido = redis.sesmiembro(com, AHASH, "bienvenida")
+         si permitido
+            enviarMensaje(msg.chat.id, nuevo_usuario(), md)
+            retornar "Nuevo miembro en "..msg.chat.titulo.."\nMiembro: "..msg.agregado.nombre.." ("..msg.agregado.id..")"
+         fin
       fin
-      permitido = redis.sesmiembro(com, AHASH, "bienvenida")
-      si permitido
-         enviarMensaje(msg.chat.id, nuevo_usuario(), md)
-         retornar "Nuevo miembro en "..msg.chat.titulo.."\nMiembro: "..msg.agregado.nombre.." ("..msg.agregado.id..")"
+
+      si arabe_detectado(msg.agregado.nombre)
+         no_permitido = !redis.sesmiembro(com, AHASH, "arabes")
+         si no_permitido
+            banearUsuario(msg.chat.id, msg.agregado.id)
+            retornar "ALLAHU AKBAR "..msg.agregado.id
+         fin
+      fin
+
+      si arabe_detectado(msg.agregado.apellido)
+         no_permitido = !redis.sesmiembro(com, AHASH, "arabes")
+         si no_permitido
+            banearUsuario(msg.chat.id, msg.agregado.id)
+            retornar "allahu akbar "..msg.agregado.id
+         fin
       fin
    fin
 
-   si es_link(msg.texto)
-      no_permitido = !redis.sesmiembro(com, AHASH, "links")
-      si no_permitido
-         baneado = banearUsuario(msg.chat.id, msg.de.id)
-         si baneado
-            enviarMensaje(msg.chat.id, "El usuario "..no_markdown(msg.de.nombre).." *ha sido baneado por poner links*.", md)
-            retornar("Link en grupo "..msg.chat.titulo)
+   si msg.texto
+      si subproceso_papelera()
+         retornar "Opción de portapapeles de "..msg.de.nombre..": "..msg.texto
+      fin
+
+      si comando_personalizado()
+         permitido = redis.sesmiembro(com, AHASH, "extras")
+         si permitido
+            enviarMensaje(msg.chat.id, comando_personalizado(), md)
+            retornar "comando personalizado ejecutado ("..msg.texto..")"
+         fin
+      fin
+
+      si es_link(msg.texto)
+         no_permitido = !redis.sesmiembro(com, AHASH, "links")
+         si no_permitido
+            baneado = banearUsuario(msg.chat.id, msg.de.id)
+            si baneado
+               enviarMensaje(msg.chat.id, "El usuario "..no_markdown(msg.de.nombre).." *ha sido baneado por poner links*.", md)
+               retornar("Link en grupo "..msg.chat.titulo)
+            fin
          fin
       fin
    fin
