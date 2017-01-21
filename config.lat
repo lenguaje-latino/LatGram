@@ -67,7 +67,7 @@ retornar {
          "tg.me/([[:alnum:]_]+)$",
          "telegram.me/([[:alnum:]_]+)",
          "telegram.dog/([[:alnum:]_]+)"
-      ]
+      ],
       "spam_links":[
          "telegram.me/joinchat/",
          "telegram.dog/joinchat/",
