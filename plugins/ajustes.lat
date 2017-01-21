@@ -46,7 +46,7 @@ funcion mensajes()
    fin
 
    si matches[1] == "bienvenida"
-      si matches[2] ~= "^on$"
+      si matches[2] == "on"
          lo_agrega = redis.sagregar(com, hash, "bienvenida")
          si lo_agrega
             enviarMensaje(msg.chat.id, "Bienvenida *activada* en este chat.", md)
@@ -54,7 +54,7 @@ funcion mensajes()
          fin
          enviarMensaje(msg.chat.id, "La bienvenida *ya está activada*.", md)
 
-      osi matches[2] ~= "^off$"
+      osi matches[2] == "off"
          lo_borra = redis.sborrar(com, hash, "bienvenida")
          si lo_borra
             enviarMensaje(msg.chat.id, "Bienvenida *desactivada* en este chat.", md)
@@ -62,7 +62,7 @@ funcion mensajes()
          fin
          enviarMensaje(msg.chat.id, "La bienvenida *ya está desactivada*.", md)
 
-      osi matches[2] ~= "^\[del]$"
+      osi matches[2] == "rm"
          bienvenida = redis.hobtener(com, chash, "bienvenida")
          si bienvenida
             redis.hborrar(com, chash, "bienvenida")
@@ -94,7 +94,7 @@ funcion mensajes()
          fin
          retornar 0
       fin
-      si matches[2] ~= "^on$"
+      si matches[2] == "on"
          lo_agrega = redis.sagregar(com, hash, "reglas")
          si lo_agrega
             enviarMensaje(msg.chat.id, "Reglas *activadas* en este chat.", md)
@@ -102,7 +102,7 @@ funcion mensajes()
          fin
          enviarMensaje(msg.chat.id, "Las reglas *ya están activadas*.", md)
 
-      osi matches[2] ~= "^off$"
+      osi matches[2] == "off"
          lo_borra = redis.sborrar(com, hash, "reglas")
          si lo_borra
             enviarMensaje(msg.chat.id, "Reglas *desactivadas* en este chat.", md)
@@ -110,7 +110,7 @@ funcion mensajes()
          fin
          enviarMensaje(msg.chat.id, "Las reglas *ya están desactivadas*.", md)
 
-      osi matches[2] ~= "^\[del]$"
+      osi matches[2] == "rm"
          bienvenida = redis.hobtener(com, chash, "reglas")
          si bienvenida
             redis.hborrar(com, chash, "reglas")
@@ -130,7 +130,7 @@ funcion mensajes()
    fin
 
    si matches[1] == "flood"
-      si matches[2] ~= "^on$"
+      si matches[2] == "on"
          lo_agrega = redis.sagregar(com, hash, "flood")
          si lo_agrega
             enviarMensaje(msg.chat.id, "Flood *permitido* en este chat.", md)
@@ -138,7 +138,7 @@ funcion mensajes()
          fin
          enviarMensaje(msg.chat.id, "El flood *ya está permitido*.", md)
 
-      osi matches[2] ~= "^off$"
+      osi matches[2] == "off"
          lo_borra = redis.sborrar(com, hash, "flood")
          si lo_borra
             enviarMensaje(msg.chat.id, "Flood *no permitido* en este chat.", md)
@@ -146,7 +146,7 @@ funcion mensajes()
          fin
          enviarMensaje(msg.chat.id, "El flood *ya no está permitido*.", md)
 
-      osi matches[2] ~= "^\[reset]$"
+      osi matches[2] == "reset"
          flood = redis.hobtener(com, chash, "flood")
          si flood
             redis.hborrar(com, chash, "flood")
@@ -156,10 +156,7 @@ funcion mensajes()
          enviarMensaje(msg.chat.id, "El flood *ya tiene los ajustes predeterminados*, lo puedes permitir con `/flood on`.", md)
 
       sino
-         si !anumero(matches[2])
-            enviarMensaje(msg.chat.id, "Opción `"..no_markdown(matches[2]).."` *desconocida*.", md)
-            retornar 0
-         osi anumero(matches[2]) < config.grupos[0].min_ajuste_mflood
+         si anumero(matches[2]) < config.grupos[0].min_ajuste_mflood
             enviarMensaje(msg.chat.id, "El número máximo de mensajes por flood *debe ser mayor a "..(config.grupos[0].min_ajuste_mflood-1).."*.", md)
             retornar 0
          osi anumero(matches[2]) > config.grupos[0].max_ajuste_mflood
@@ -282,12 +279,12 @@ fin
 retornar {
    "comandos": [
    "^/(reglas)$",
+   "^/(reglas) (on|off|rm|.*)$",
+   "^/(flood) (on|off|reset|[0-9]+)$",
+   "^/(bienvenida) (on|off|rm|.*)$",
+   "^/(tflood) ([0-9]+)$",
    "^/(spam) (on|off)$",
    "^/(extras) (on|off)$",
-   "^/(bienvenida) (.*)$",
-   "^/(reglas) (.*)$",
-   "^/(flood) (.*)$",
-   "^/(tflood) ([0-9]+)$",
    "^/(stickers) (on|off)$",
    "^/(voz) (on|off)$",
    "^/(fotos) (on|off)$",

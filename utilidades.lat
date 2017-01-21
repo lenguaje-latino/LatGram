@@ -102,7 +102,7 @@ funcion cargar_plugins()
       .."verifica config.lat, se montaron "..lista.longitud(plugins_montados).." plugins de "..lista.longitud(config.plugins)..color.reset, 1)
    fin
    imprimir(color.bold..color.blanco.."\n\tSubproceso "..color.marcado..color.r_azul.."  "..color.reset
-   ..color.bold..color.blanco.."  Match "..color.marcado..color.r_verde.."  "..color.reset
+   ..color.bold..color.blanco.."  Mensaje "..color.marcado..color.r_verde.."  "..color.reset
    ..color.bold..color.blanco.."  Inline "..color.marcado..color.r_purpura.."  "..color.reset
    ..color.bold..color.blanco.."  Callback "..color.marcado..color.blanco.."  "
    ..color.reset,1)

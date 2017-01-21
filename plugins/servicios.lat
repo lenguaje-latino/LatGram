@@ -1,18 +1,21 @@
-global funcion configurar_grupo()
+global funcion configurar_grupo(chatid)
    si config.grupos[0].permitidos
-      shash = "ajustes:"..msg.chat.id
+      shash = "ajustes:"..chatid
       desde (i=0; i<config.grupos[0].permitidos; i++)
          redis.sagregar(com, shash, config.grupos[0].permitidos[i])
-         imprimir("Configurando "..config.grupos[0].permitidos[i].."...")
       fin
+      redis.sagregar(com, BOT_SHASH, acadena(chatid))
+      retornar verdadero
    fin
+   retornar falso
 fin
 
-global funcion desconfigurar_grupo()
-   redis.borrar(com, "ajustes:"..msg.chat.id..":customs")
-   redis.borrar(com, "ajustes:"..msg.chat.id)
-   redis.borrar(com, "extras:"..msg.chat.id)
-   redis.borrar(com, "extras:"..msg.chat.id..":customs")
+global funcion desconfigurar_grupo(chatid)
+   redis.borrar(com, "ajustes:"..chatid..":customs")
+   redis.borrar(com, "ajustes:"..chatid)
+   redis.borrar(com, "extras:"..chatid)
+   redis.borrar(com, "extras:"..chatid..":customs")
+   redis.sborrar(com, BOT_SHASH, acadena(chatid))
 fin
 
 global funcion usuario_hace_spam()
@@ -47,14 +50,19 @@ global funcion nuevo_usuario()
          nombre_usuario = "(sin usuario)"
       fin
       si bienvenida_custom
-         mensaje = cadena.reemplazar(bienvenida_custom, "$usuario", nombre_usuario)
+         mensaje = cadena.reemplazar(bienvenida_custom, "$usuario", no_markdown(nombre_usuario))
          mensaje = cadena.reemplazar(mensaje, "$id", acadena(msg.agregado.id))
-         mensaje = cadena.reemplazar(mensaje, "$nombre", msg.agregado.nombre)
-         mensaje = cadena.reemplazar(mensaje, "$titulo", msg.chat.titulo)
+         mensaje = cadena.reemplazar(mensaje, "$nombre", no_markdown(msg.agregado.nombre))
+         mensaje = cadena.reemplazar(mensaje, "$titulo", no_markdown(msg.chat.titulo))
       sino
-         mensaje = "Bienvenido "..no_markdown(msg.agregado.nombre).." a "..no_markdown(msg.chat.titulo)
+         mensaje = cadena.reemplazar(config.grupos[0].bienvenida_por_defecto, "$usuario", no_markdown(nombre_usuario))
+         mensaje = cadena.reemplazar(mensaje, "$id", acadena(msg.agregado.id))
+         mensaje = cadena.reemplazar(mensaje, "$nombre", no_markdown(msg.agregado.nombre))
+         mensaje = cadena.reemplazar(mensaje, "$titulo", no_markdown(msg.chat.titulo))
       fin
-      retornar mensaje
+      si mensaje
+         retornar mensaje
+      fin
    fin
    retornar falso
 fin
@@ -85,9 +93,9 @@ global funcion subproceso_papelera()
    retornar falso
 fin
 
-global funcion flood(id, max_mensajes, max_tiempo)
+global funcion aviso_flood(chatid, id, max_mensajes, max_tiempo)
    si id
-      hash = "tmp:"..id..":flood"
+      hash = "tmp:"..id..":flood:chat:"..chatid
       tiempo = redis.tiempo(com, hash)
       si tiempo
          a = redis.aumentar(com, hash)
@@ -109,12 +117,26 @@ global funcion arabe_detectado(cad)
    retornar falso
 fin
 
+global funcion es_link(t)
+   si t
+      si config.regex[0].links == 1
+         si cadena.match(t, config.regex[0].links[0])
+            retornar verdadero
+         fin
+      sino
+         si config.regex[0].links
+            desde(u=0;u<config.regex[0].links;u++)
+               si cadena.match(t, config.regex[0].links[u])
+                  retornar verdadero
+               fin
+            fin
+         fin
+      fin
+   fin
+   retornar falso
+fin
+
 funcion subproceso()
-
-   /*    funcion usuario_ingresa_link()
-   si msg.chat.tipo != "private"
-   cadena.match(msg.texto, "https?://[a-Z_-%.%?%.:/%+=&]+")*/
-
    si msg.chat.tipo == "private"
       si msg.de.usuario
          registrar_id_usuario(msg.de.usuario, msg.de.id)
@@ -141,7 +163,7 @@ funcion subproceso()
       si tit
          max_tiempo = tit
       fin
-      flood_ = flood(msg.de.id, anumero(max_mensajes), anumero(max_tiempo))
+      flood_ = aviso_flood(msg.chat.id, msg.de.id, anumero(max_mensajes), anumero(max_tiempo))
       si flood_
          ban = banearUsuario(msg.chat.id, msg.de.id)
          si ban
@@ -150,9 +172,12 @@ funcion subproceso()
       fin
    fin
 
-   si bot_eliminado()
-      desconfigurar_grupo()
-      redis.sborrar(com, BOT_SHASH, acadena(msg.chat.id))
+   si bot_agregado()
+      configurar_grupo(msg.chat.id)
+      enviarMensaje(msg.chat.id, "¡Hola! soy "..bot.nombre..", gracias por añadirme a este chat.")
+      retornar "Bot añadido a "..msg.chat.titulo
+   osi bot_eliminado()
+      desconfigurar_grupo(msg.chat.id)
       retornar "Bot eliminado de "..msg.chat.titulo
    fin
 
@@ -160,24 +185,17 @@ funcion subproceso()
       retornar "Opción de portapapeles de "..msg.de.nombre..": "..msg.texto
    fin
 
-   si bot_agregado()
-      configurar_grupo()
-      enviarMensaje(msg.chat.id, "¡Hola! soy "..bot.nombre..", gracias por añadirme a este chat.")
-      redis.sagregar(com, BOT_SHASH, acadena(msg.chat.id))
-      retornar "Bot añadido a "..msg.chat.titulo
-   fin
-
    si comando_personalizado()
-      es_miembro = redis.sesmiembro(com, AHASH, "extras")
-      si es_miembro
+      permitido = redis.sesmiembro(com, AHASH, "extras")
+      si permitido
          enviarMensaje(msg.chat.id, comando_personalizado(), md)
          retornar "comando personalizado ejecutado ("..msg.texto..")"
       fin
    fin
 
    si arabe_detectado(msg.agregado.nombre)
-      es_miembro = !redis.sesmiembro(com, AHASH, "arabes")
-      si es_miembro
+      no_permitido = !redis.sesmiembro(com, AHASH, "arabes")
+      si no_permitido
          banearUsuario(msg.chat.id, msg.agregado.id)
          retornar "ALLAHU AKBAR "..msg.agregado.id
       fin
@@ -195,10 +213,21 @@ funcion subproceso()
       si msg.agregado.usuario
          registrar_id_usuario(msg.agregado.usuario, msg.agregado.id)
       fin
-      es_miembro = redis.sesmiembro(com, AHASH, "bienvenida")
-      si es_miembro
+      permitido = redis.sesmiembro(com, AHASH, "bienvenida")
+      si permitido
          enviarMensaje(msg.chat.id, nuevo_usuario(), md)
          retornar "Nuevo miembro en "..msg.chat.titulo.."\nMiembro: "..msg.agregado.nombre.." ("..msg.agregado.id..")"
+      fin
+   fin
+
+   si es_link(msg.texto)
+      no_permitido = !redis.sesmiembro(com, AHASH, "links")
+      si no_permitido
+         baneado = banearUsuario(msg.chat.id, msg.de.id)
+         si baneado
+            enviarMensaje(msg.chat.id, "El usuario "..no_markdown(msg.de.nombre).." *ha sido baneado por poner links*.", md)
+            retornar("Link en grupo "..msg.chat.titulo)
+         fin
       fin
    fin
 
@@ -212,7 +241,6 @@ funcion subproceso()
          enviarMensaje(msg.chat.id, no_markdown(msg.de.nombre).." *baneado por spam*.", md)
          retornar "spam en chat en "..msg.chat.titulo.."\nDe: "..msg.de.nombre.."\nId: "..msg.de.id.."\nMensaje: "..msg.texto.."\nEstado: expulsado"
       fin
-      retornar falso
    fin
 
 fin

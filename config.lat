@@ -1,5 +1,5 @@
 retornar {
-   "api_key": "293072192:AAEWVjztMuXICPM_TrSifFA0aV167g7bEmA",
+   "api_key": "270233092:AAFfrK7qrqLXmhh9W3nC0qD3ufk7jZLPIKs",
 
    "consultas_inline": verdadero,
 
@@ -28,6 +28,9 @@ retornar {
             "arabes",
             "links"
             ],
+
+         "bienvenida_por_defecto": "Bienvenido $nombre ($id) a *$titulo*.", // variables: $nombre, $id, $titulo y $usuario
+
          "max_mensajes_flood": 10, // si un grupo no configura el máximo de mensajes de flood y está 'off' este será el máximo.
          "max_tiempo_flood": 15, // en mismo caso de arriba, pero con el tiempo máximo por mensaje.
 
@@ -42,6 +45,12 @@ retornar {
    "datos":[{
       "admins": "datos/admins.json",
       "gbans": "datos/gbans.json"
+   }],
+
+   "regex":[{
+      "links":[
+         "https?://[a-Z_-%.%?%.:/%+=&]+\.[[:alnum:]]{2,4}"
+         ]
    }],
 
    "tmp":[{ // lista de archivos que envia el bot para exportar, puedes usarlo para cambiar el nombre del archivo a enviar
