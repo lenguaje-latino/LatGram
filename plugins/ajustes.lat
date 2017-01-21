@@ -199,6 +199,25 @@ funcion mensajes()
       fin
    fin
 
+   si matches[1] == "bots"
+      si matches[2] == "on"
+         lo_agrega = redis.sagregar(com, hash, "bots")
+         si lo_agrega
+            enviarMensaje(msg.chat.id, "Bots *permitidos* en este chat.", md)
+            retornar 0
+         fin
+         enviarMensaje(msg.chat.id, "Los bots *ya están permitidos*.", md)
+
+      osi matches[2] == "off"
+         lo_borra = redis.sborrar(com, hash, "bots")
+         si lo_borra
+            enviarMensaje(msg.chat.id, "Bots *no permitidos* en este chat.", md)
+            retornar 0
+         fin
+         enviarMensaje(msg.chat.id, "Los bots *ya no están permitidos*.", md)
+      fin
+   fin
+
    si matches[1] == "voz"
       si matches[2] == "on"
          lo_agrega = redis.sagregar(com, hash, "voz")
@@ -284,6 +303,7 @@ retornar {
    "^/(bienvenida) (on|off|rm|.*)$",
    "^/(tflood) ([0-9]+)$",
    "^/(spam) (on|off)$",
+   "^/(bots) (on|off)$",
    "^/(extras) (on|off)$",
    "^/(stickers) (on|off)$",
    "^/(voz) (on|off)$",

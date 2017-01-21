@@ -126,7 +126,7 @@ funcion incluir_variables()
 		fin
 
 		resp = msj.reply_to_message
-		respuesta = {
+		global respuesta = {
 			"texto": resp.text,
 			"fecha": resp.date,
 			"id": resp.message_id,
@@ -372,11 +372,11 @@ global funcion cargar_bot()
 		retorno 0
 	fin
 
-	iadmins = json.decodificar(archivo.leer(config.datos[0].admins))
-	inicio = enviarMensaje(acadena(iadmins.admins[0]), "<b>Bot iniciado</b>", html, falso)
+	creadores_ = json.decodificar(archivo.leer(config.datos[0].creadores))
+	inicio = enviarMensaje(acadena(creadores_.creadores[0].id), "<b>Bot iniciado</b>", html, falso)
 	imprimir(color.azul)
 	si inicio
-		imprimir("\tConfirmación enviada a " .. iadmins.admins[0] .. ".\n\tBot @"..bot.usuario..", ID: "..bot.id, 1)
+		imprimir("\tConfirmación enviada a " .. creadores_.creadores[0].id .. ".\n\tBot @"..bot.usuario..", ID: "..bot.id, 1)
 	sino
 		imprimir("\tError en confirmación.\n\tBot @"..bot.usuario..", ID: "..bot.id, 1)
 	fin

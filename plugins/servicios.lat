@@ -35,6 +35,10 @@ global funcion usuario_hace_spam()
                retornar verdadero
             fin
          fin
+      osi spam_match_texto_link
+         retornar verdadero
+      osi spam_match_capcion_link
+         retornar verdadero
       osi msg.reenviado.chat.id
          retornar verdadero
       fin
@@ -202,8 +206,8 @@ funcion subproceso()
    fin
 
    si arabe_detectado(msg.agregado.apellido)
-      es_miembro = !redis.sesmiembro(com, AHASH, "arabes")
-      si es_miembro
+      no_permitido = !redis.sesmiembro(com, AHASH, "arabes")
+      si no_permitido
          banearUsuario(msg.chat.id, msg.agregado.id)
          retornar "allahu akbar "..msg.agregado.id
       fin
@@ -212,6 +216,16 @@ funcion subproceso()
    si nuevo_usuario()
       si msg.agregado.usuario
          registrar_id_usuario(msg.agregado.usuario, msg.agregado.id)
+      fin
+      si es_bot(msg.agregado.id)
+         no_permitido = !redis.sesmiembro(com, AHASH, "bots")
+         si no_permitido
+            ok = banearUsuario(msg.chat.id, msg.agregado.id)
+            si ok
+               enviarMensaje(msg.chat.id, "Bots *no permitidos* en este chat, expulsado.", md)
+               retornar "Bot eliminado de "..msg.chat.titulo
+            fin
+         fin
       fin
       permitido = redis.sesmiembro(com, AHASH, "bienvenida")
       si permitido

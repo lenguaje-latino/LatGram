@@ -34,13 +34,13 @@ funcion mensajes()
          si !id_obtenida
             enviarMensaje(msg.chat.id, "*El usuario no está registrado en la base de datos*.", md)
             retornar 0
-         osi redis.sagregar(com, BOT_GMODS, acadena(id_obtenida))
+         osi nuevo_gmod(matches[2], id_obtenida)
             enviarMensaje(msg.chat.id, "*Nuevo moderador global*: @"..no_markdown(matches[2]).." ("..id_obtenida..")", md)
             retornar 0
          fin
          enviarMensaje(msg.chat.id, "Este usuario *ya es moderador global*.", md)
       osi respuesta.de.id
-         si redis.sagregar(com, BOT_GMODS, acadena(respuesta.de.id))
+         si nuevo_gmod(respuesta.de.nombre, respuesta.de.id)
             enviarMensaje(msg.chat.id, "*Nuevo moderador global*: "..no_markdown(respuesta.de.nombre).." ("..respuesta.de.id..")", md)
             retornar 0
          fin
@@ -58,13 +58,13 @@ funcion mensajes()
          si !id_obtenida
             enviarMensaje(msg.chat.id, "*El usuario no está registrado en la base de datos*.", md)
             retornar 0
-         osi redis.sagregar(com, BOT_GADMINS, acadena(id_obtenida))
+         osi nuevo_gadmin(matches[2], id_obtenida)
             enviarMensaje(msg.chat.id, "*Nuevo administrador global*: @"..no_markdown(matches[2]).." ("..id_obtenida..")", md)
             retornar 0
          fin
          enviarMensaje(msg.chat.id, "Este usuario *ya es administrador global*.", md)
       osi respuesta.de.id
-         si redis.sagregar(com, BOT_GADMINS, acadena(respuesta.de.id))
+         si  nuevo_gadmin(respuesta.de.nombre, respuesta.de.id)
             enviarMensaje(msg.chat.id, "*Nuevo administrador global*: "..no_markdown(respuesta.de.nombre).." ("..respuesta.de.id..")", md)
             retornar 0
          fin
@@ -82,13 +82,13 @@ funcion mensajes()
          si !id_obtenida
             enviarMensaje(msg.chat.id, "*El usuario no está registrado en la base de datos*.", md)
             retornar 0
-         osi nuevo_creador(id_obtenida)
+         osi nuevo_creador(matches[2], id_obtenida)
             enviarMensaje(msg.chat.id, "*Nuevo creador*: @"..no_markdown(matches[2]).." ("..id_obtenida..")", md)
             retornar 0
          fin
          enviarMensaje(msg.chat.id, "Este usuario *ya es creador*.", md)
       osi respuesta.de.id
-         si nuevo_creador(respuesta.de.id)
+         si nuevo_creador(respuesta.de.nombre, respuesta.de.id)
             enviarMensaje(msg.chat.id, "*Nuevo creador*: "..no_markdown(respuesta.de.nombre).." ("..respuesta.de.id..")", md)
             retornar 0
          fin
@@ -131,13 +131,13 @@ funcion mensajes()
          si !id_obtenida
             enviarMensaje(msg.chat.id, "*El usuario no está registrado en la base de datos*.", md)
             retornar 0
-         osi redis.sborrar(com, BOT_GMODS, acadena(id_obtenida))
+         osi rm_gmod(id_obtenida)
             enviarMensaje(msg.chat.id, "*Moderador global eliminado*: @"..no_markdown(matches[2]).." ("..id_obtenida..")", md)
             retornar 0
          fin
          enviarMensaje(msg.chat.id, "Este usuario *ya no es moderador global*.", md)
       osi respuesta.de.id
-         si redis.sborrar(com, BOT_GMODS, acadena(respuesta.de.id))
+         si rm_gmod(respuesta.de.id)
             enviarMensaje(msg.chat.id, "*Moderador global eliminado*: "..no_markdown(respuesta.de.nombre).." ("..respuesta.de.id..")", md)
             retornar 0
          fin
@@ -155,13 +155,13 @@ funcion mensajes()
          si !id_obtenida
             enviarMensaje(msg.chat.id, "*El usuario no está registrado en la base de datos*.", md)
             retornar 0
-         osi redis.sborrar(com, BOT_GADMINS, acadena(id_obtenida))
+         osi rm_gadmin(id_obtenida)
             enviarMensaje(msg.chat.id, "*Administrador global eliminado*: @"..no_markdown(matches[2]).." ("..id_obtenida..")", md)
             retornar 0
          fin
          enviarMensaje(msg.chat.id, "Este usuario *ya no es administrador global*.", md)
       osi respuesta.de.id
-         si redis.sborrar(com, BOT_GADMINS, acadena(respuesta.de.id))
+         si rm_gadmin(respuesta.de.id)
             enviarMensaje(msg.chat.id, "*Administrador global eliminado*: "..no_markdown(respuesta.de.nombre).." ("..respuesta.de.id..")", md)
             retornar 0
          fin
@@ -179,13 +179,19 @@ funcion mensajes()
          si !id_obtenida
             enviarMensaje(msg.chat.id, "*El usuario no está registrado en la base de datos*.", md)
             retornar 0
-         osi eliminar_creador(id_obtenida)
+         osi rm_creador_ignorado(id_obtenida)
+            enviarMensaje(msg.chat.id, "El usuario que intentas eliminar de creadores, *está puesto en la lista de ignorados*.", md)
+            retorno 0
+         osi rm_creador(id_obtenida)
             enviarMensaje(msg.chat.id, "*Creador eliminado*: @"..no_markdown(matches[2]).." ("..id_obtenida..")", md)
             retornar 0
          fin
-         enviarMensaje(msg.chat.id, "Este usuario *ya es creador*.", md)
+         enviarMensaje(msg.chat.id, "Este usuario *ya no es creador*.", md)
       osi respuesta.de.id
-         si eliminar_creador(respuesta.de.id)
+         si rm_creador_ignorado(respuesta.de.id)
+            enviarMensaje(msg.chat.id, "El usuario que intentas eliminar de creadores, *está puesto en la lista de ignorados*.", md)
+            retorno 0
+         osi rm_creador(respuesta.de.id)
             enviarMensaje(msg.chat.id, "*Creador eliminado*: "..no_markdown(respuesta.de.nombre).." ("..respuesta.de.id..")", md)
             retornar 0
          fin

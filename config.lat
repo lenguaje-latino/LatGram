@@ -20,6 +20,7 @@ retornar {
          "permitidos":[ // estos ajustes los activará/permitirá cuando metan al bot a un grupo
             "spam",
             "extras",
+            "bots",
             "bienvenida",
             "reglas",
             "stickers",
@@ -42,19 +43,42 @@ retornar {
       }
    ],
 
+   "ignorar_rm":[{
+      "creadores": [], // array de ids para que no puedan ser removidas de creador
+      "gadmins": [], // array de ids para que no puedan ser removidas de administradores globales
+      "gmods": [], // array de ids para que no puedan ser removidas de moderadores globales
+      "mods": [] // array de ids para que no puedan ser removidas de moderadores del grupo
+   }],
+
    "datos":[{
-      "admins": "datos/admins.json",
-      "gbans": "datos/gbans.json"
+      "creadores": "datos/creadores.json",
+      "gadmins": "datos/gadmins.json",
+      "gmods": "datos/gmods.json",
+      "gbans": "datos/gbans.json",
+      "lista_blanca": "datos/lista_blanca.json"
    }],
 
    "regex":[{
       "links":[
          "https?://[a-Z_-%.%?%.:/%+=&]+\.[[:alnum:]]{2,4}"
-         ]
+      ],
+      "spam_mencion":[
+         "@[a-Z_0-9]+",
+         "tg.me/([[:alnum:]_]+)$",
+         "telegram.me/([[:alnum:]_]+)",
+         "telegram.dog/([[:alnum:]_]+)"
+      ]
+      "spam_links":[
+         "telegram.me/joinchat/",
+         "telegram.dog/joinchat/",
+         "tg.me/joinchat/"
+      ]
    }],
 
    "tmp":[{ // lista de archivos que envia el bot para exportar, puedes usarlo para cambiar el nombre del archivo a enviar
-      "usuarios": "usuarios.json"
+      "usuarios": "usuarios.json",
+      "gmods": "gmods.json",
+      "gadmins": "gadmins.json"
    }],
 
    "updates":[{
