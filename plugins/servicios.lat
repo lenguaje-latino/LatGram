@@ -167,7 +167,7 @@ funcion subproceso()
       fin
       flood_ = aviso_flood(msg.chat.id, msg.de.id, anumero(max_mensajes), anumero(max_tiempo))
       si flood_
-         si usuario_es_admin(msg.chat.id, msg.de.id) || es_creador(msg.de.id) || es_gadmin(msg.de.id) || es_gmod(msg.de.id) || es_mod(msg.chat.id, msg.de.id)
+         si es_creador(msg.de.id) || es_gadmin(msg.de.id) || es_gmod(msg.de.id) || es_mod(msg.chat.id, msg.de.id)
             retornar 0
          fin
          ban = banearUsuario(msg.chat.id, msg.de.id)
