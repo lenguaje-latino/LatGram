@@ -47,26 +47,25 @@ retornar falso
 fin
 
 global funcion nuevo_usuario()
+   si !msg.agregado.id retornar falso osi !msg.chat.id retornar falso fin
    bienvenida_custom = redis.hobtener(com, "ajustes:"..msg.chat.id..":customs", "bienvenida")
-   si msg.agregado.id
-      nombre_usuario = msg.agregado.usuario
-      si ! nombre_usuario
-         nombre_usuario = "(sin usuario)"
-      fin
-      si bienvenida_custom
-         mensaje = cadena.reemplazar(bienvenida_custom, "$usuario", no_markdown(nombre_usuario))
-         mensaje = cadena.reemplazar(mensaje, "$id", acadena(msg.agregado.id))
-         mensaje = cadena.reemplazar(mensaje, "$nombre", no_markdown(msg.agregado.nombre))
-         mensaje = cadena.reemplazar(mensaje, "$titulo", no_markdown(msg.chat.titulo))
-      sino
-         mensaje = cadena.reemplazar(config.grupos[0].bienvenida_por_defecto, "$usuario", no_markdown(nombre_usuario))
-         mensaje = cadena.reemplazar(mensaje, "$id", acadena(msg.agregado.id))
-         mensaje = cadena.reemplazar(mensaje, "$nombre", no_markdown(msg.agregado.nombre))
-         mensaje = cadena.reemplazar(mensaje, "$titulo", no_markdown(msg.chat.titulo))
-      fin
-      si mensaje
-         retornar mensaje
-      fin
+   nombre_usuario = msg.agregado.usuario
+   si ! nombre_usuario
+      nombre_usuario = "(sin usuario)"
+   fin
+   si bienvenida_custom
+      mensaje = cadena.reemplazar(bienvenida_custom, "$usuario", no_markdown(nombre_usuario))
+      mensaje = cadena.reemplazar(mensaje, "$id", acadena(msg.agregado.id))
+      mensaje = cadena.reemplazar(mensaje, "$nombre", no_markdown(msg.agregado.nombre))
+      mensaje = cadena.reemplazar(mensaje, "$titulo", no_markdown(msg.chat.titulo))
+   sino
+      mensaje = cadena.reemplazar(config.grupos[0].bienvenida_por_defecto, "$usuario", no_markdown(nombre_usuario))
+      mensaje = cadena.reemplazar(mensaje, "$id", acadena(msg.agregado.id))
+      mensaje = cadena.reemplazar(mensaje, "$nombre", no_markdown(msg.agregado.nombre))
+      mensaje = cadena.reemplazar(mensaje, "$titulo", no_markdown(msg.chat.titulo))
+   fin
+   si mensaje
+      retornar mensaje
    fin
    retornar falso
 fin

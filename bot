@@ -358,11 +358,6 @@ global funcion cargar_bot()
 
 	global BOT_SHASH = "bot:"..bot.id..":schats"
 	global BOT_HHASH = "latgram:usuarios"
-	global BOT_GMODS = "bot:"..bot.id..":gmods"
-	global BOT_GADMINS = "bot:"..bot.id..":gadmins"
-	global GMODS = redis.smiembros(com, BOT_GMODS)
-	global GADMINS = redis.smiembros(com, BOT_GADMINS)
-
 
 	verificacion = verificar_apikey()
 	si ! verificacion.ok

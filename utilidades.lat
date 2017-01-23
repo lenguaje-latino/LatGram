@@ -50,15 +50,11 @@ funcion no_markdown(texto, eliminar)
    retornar texto
 fin
 
-funcion bot_agregado()
-   si bot.id
-      si msg.agregado.id
-         si msg.agregado.id == bot.id
-            retornar verdadero
-         fin
-      fin
-   fin
-   retornar falso
+funcion bot_agregado(botid, addid)
+   si !botid retornar falso fin
+   si !addid retornar falso fin
+   si botid == addid retornar falso fin
+   retornar verdadero
 fin
 
 funcion bot_eliminado()
