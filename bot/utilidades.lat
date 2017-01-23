@@ -169,6 +169,7 @@ funcion iniciarLeer(id, texto, proceso_id, expiracion)
 fin
 
 funcion es_bot(userid)
+   si userid == bot.id retornar falso fin
    estado = json.decodificar(curl.peticion(URL .. "sendMessage?chat_id=" .. userid .. "&text=test"))
    si !estado.ok && estado.description ~= "Bot can't send messages to bots"
       retornar verdadero
