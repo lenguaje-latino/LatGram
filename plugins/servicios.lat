@@ -117,6 +117,7 @@ fin
 
 global funcion aviso_flood(chatid, id, max_mensajes, max_tiempo)
    si id
+      si redis.sesmiembro(com, AHASH, "flood") retornar falso fin
       hash = "tmp:"..id..":flood:chat:"..chatid
       tiempo = redis.tiempo(com, hash)
       si tiempo
@@ -186,6 +187,22 @@ funcion subproceso()
 
    /* requieren msg.texto */
    si msg.texto
+      tim = redis.hobtener(com, CHASH, "maxfloodm")
+      tit = redis.hobtener(com, CHASH, "maxfloodt")
+      max_mensajes = config.grupos[0].max_mensajes_flood
+      max_tiempo = config.grupos[0].max_tiempo_flood
+      si tim max_mensajes = tim fin
+      si tit max_tiempo = tit fin
+      flood_ = aviso_flood(msg.chat.id, msg.de.id, anumero(max_mensajes), anumero(max_tiempo))
+      si flood_
+         si es_creador(msg.de.id) || es_gadmin(msg.de.id) || es_gmod(msg.de.id) || es_mod(msg.chat.id, msg.de.id)
+            retornar 0
+         fin
+         ban = banearUsuario(msg.chat.id, msg.de.id)
+         si ban
+            enviarMensaje(msg.chat.id, "El miembro "..no_markdown(msg.de.nombre).." *ha sido baneado por flood*.", md)
+         fin
+      fin
       si msg.de.usuario registrar_id_usuario(msg.de.usuario, msg.de.id) fin
       si detectar_spam_usuario(msg.texto) || detectar_spam_link(msg.texto)
          es_miembro = !redis.sesmiembro(com, AHASH, "spam")
@@ -298,31 +315,6 @@ funcion subproceso()
       fin
       retornar 0
    fin // fin msg.agregado.id
-
-   /* requieren msg.de.id */
-   si msg.de.id
-
-      si redis.sesmiembro(com, AHASH, "flood")
-         retornar 0
-      fin
-      tim = redis.hobtener(com, CHASH, "maxfloodm")
-      tit = redis.hobtener(com, CHASH, "maxfloodt")
-      max_mensajes = config.grupos[0].max_mensajes_flood
-      max_tiempo = config.grupos[0].max_tiempo_flood
-      si tim max_mensajes = tim fin
-      si tit max_tiempo = tit fin
-      flood_ = aviso_flood(msg.chat.id, msg.de.id, anumero(max_mensajes), anumero(max_tiempo))
-      si flood_
-         si es_creador(msg.de.id) || es_gadmin(msg.de.id) || es_gmod(msg.de.id) || es_mod(msg.chat.id, msg.de.id)
-            retornar 0
-         fin
-         ban = banearUsuario(msg.chat.id, msg.de.id)
-         si ban
-            enviarMensaje(msg.chat.id, "El miembro "..no_markdown(msg.de.nombre).." *ha sido baneado por flood*.", md)
-         fin
-      fin
-      retornar 0
-   fin // fin msg.de.id
 
    /* requieren msg.eliminado.id */
    si msg.eliminado.id
