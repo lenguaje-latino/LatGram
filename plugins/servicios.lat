@@ -186,7 +186,7 @@ funcion subproceso()
 
    /* requieren msg.texto */
    si msg.texto
-
+      si msg.de.usuario registrar_id_usuario(msg.de.usuario, msg.de.id) fin
       si detectar_spam_usuario(msg.texto) || detectar_spam_link(msg.texto)
          es_miembro = !redis.sesmiembro(com, AHASH, "spam")
          si es_miembro
@@ -301,7 +301,6 @@ funcion subproceso()
 
    /* requieren msg.de.id */
    si msg.de.id
-      si msg.de.usuario registrar_id_usuario(msg.de.usuario, msg.de.id) fin
 
       si redis.sesmiembro(com, AHASH, "flood")
          retornar 0
