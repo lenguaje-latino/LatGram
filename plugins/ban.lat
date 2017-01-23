@@ -64,12 +64,20 @@ funcion mensajes()
          enviarMensaje(msg.chat.id, "*Debes ser creador del bot para usar este comando*.", md)
          retorno 0
       fin
-      si matches[2]
+      si matches[2] && !respuesta.de.id
          id_usuario = obtener_id_usuario(matches[2])
          si !id_usuario
             enviarMensaje(msg.chat.id, "*El usuario no está registrado en la base de datos*.", md)
          sino
-            ok = gban(matches[2], id_usuario)
+            si es_creador(id_usuario)
+               enviarMensaje(msg.chat.id, "*No puedes banear a un creador globalmente*.", md)
+               retornar 0
+            fin
+            si matches[3]
+               ok = gban("@"..matches[2], id_usuario, matches[3])
+            sino
+               ok = gban("@"..matches[2], id_usuario)
+            fin
             si ok
                enviarMensaje(msg.chat.id, "El ID "..id_usuario.." *ha sido globalmente baneado*.", md)
             sino
@@ -77,7 +85,15 @@ funcion mensajes()
             fin
          fin
       osi respuesta.de.id
-         ok = gban(respuesta.de.nombre, respuesta.de.id)
+         si es_creador(respuesta.de.id)
+            enviarMensaje(msg.chat.id, "*No puedes banear a un creador globalmente*.", md)
+            retornar 0
+         fin
+         si matches[2]
+            ok = gban(respuesta.de.nombre, respuesta.de.id, matches[2])
+         sino
+            ok = gban(respuesta.de.nombre, respuesta.de.id)
+         fin
          si ok
             enviarMensaje(msg.chat.id, "El usuario "..no_markdown(respuesta.de.nombre).." *ha sido globalmente baneado*.", md)
          sino
@@ -120,8 +136,10 @@ retornar {
       "^/(expulsar) @([[:alnum:]_]+)$",
       "^/(desban)$",
       "^/(desban) @([[:alnum:]_]+)$",
-      "^/(gban)$",
       "^/(gban) @([[:alnum:]_]+)$",
+      "^/(gban) @([[:alnum:]_]+) (.*)$",
+      "^/(gban)$",
+      "^/(gban) (.*)$",
       "^/(desgban)$",
       "^/(desgban) @([[:alnum:]_]+)$"
    ],

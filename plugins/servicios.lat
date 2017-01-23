@@ -94,6 +94,27 @@ global funcion subproceso_papelera()
    retornar falso
 fin
 
+global funcion subproceso_reglas()
+   array = obtenerLeer(msg.de.id, msg.texto, 1)
+   si array
+      si msg.texto != "Detener."
+         chash = "ajustes:"..msg.chat.id..":customs"
+         ok = enviarMensaje(msg.chat.id, "*Nuevas reglas asignadas*:\n"..msg.texto, md)
+         detenerLeer(msg.de.id, 1)
+         si ! ok
+            enviarMensaje(msg.chat.id, "*Verifica el markdown*.", md)
+         sino
+            redis.hasignar(com, chash, "reglas", msg.texto)
+         fin
+      sino
+         enviarMensaje(msg.chat.id, "*Proceso abortado*.", md)
+         detenerLeer(msg.de.id, 1)
+      fin
+      retornar verdadero
+   fin
+   retornar falso
+fin
+
 global funcion aviso_flood(chatid, id, max_mensajes, max_tiempo)
    si id
       hash = "tmp:"..id..":flood:chat:"..chatid
@@ -182,6 +203,10 @@ funcion subproceso()
          retornar "Opción de portapapeles de "..msg.de.nombre..": "..msg.texto
       fin
 
+      si subproceso_reglas()
+         retornar "Reglas cambiadas desde leer"
+      fin
+
       si arabe_detectado(msg.texto)
          no_permitido = !redis.sesmiembro(com, AHASH, "arabes")
          si no_permitido
@@ -217,6 +242,20 @@ funcion subproceso()
 
    /* requieren msg.agregado.id */
    si msg.agregado.id
+      si es_gban(msg.agregado.id)
+         ok = banearUsuario(msg.chat.id, msg.agregado.id)
+         si ok
+            ban = es_gban(msg.agregado.id)
+            motivo = ban.motivo
+            si !motivo
+               motivo = "_no asignado_"
+            fin
+            enviarMensaje(msg.chat.id, "El usuario "..no_markdown(msg.agregado.nombre).." *está globalmente baneado*."
+            .."\n*Motivo*: "..motivo, md)
+         fin
+         retornar 0
+      fin
+
       si bot_agregado()
          configurar_grupo(msg.chat.id)
          enviarMensaje(msg.chat.id, "¡Hola! soy "..bot.nombre..", gracias por añadirme a este chat.")

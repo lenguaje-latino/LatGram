@@ -82,6 +82,12 @@ funcion mensajes()
    fin
 
    si matches[1] == "reglas"
+      si matches[2] == "leer"
+         enviarMensaje(msg.chat.id, "*OK*. Ahora escribe las reglas, puedes usar markdown, puedes escribir *Detener.* para tener el proceso."
+         .."\n*NOTA*: si tu cliente de Telegram que usas cuenta con markdown, *desactivalo*.", md)
+            iniciarLeer(msg.de.id, msg.texto, 1)
+            retornar 0
+      fin
       si !matches[2]
          reglas_activadas = redis.sesmiembro(com, hash, "reglas")
          si reglas_activadas
