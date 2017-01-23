@@ -12,7 +12,8 @@ retornar {
       "ajustes",
       "portapapeles",
       "exportar",
-      "promover"
+      "promover",
+      "creadores"
    ],
 
    "grupos":[ // ajustes para todos los grupos en caso de que no haya un registro
@@ -27,7 +28,7 @@ retornar {
             "voz",
             "fotos",
             "arabes",
-            "links"
+            "links" // puedes añadir "flood" abajo, pero no lo recomiendo.
             ],
 
          "bienvenida_por_defecto": "Bienvenido $nombre ($id) a *$titulo*.", // variables: $nombre, $id, $titulo y $usuario
@@ -62,23 +63,21 @@ retornar {
       "links":[
          "https?://[a-Z_-%.%?%.:/%+=&]+\.[[:alnum:]]{2,4}"
       ],
-      "spam_mencion":[
-         "@[a-Z_0-9]+",
-         "tg.me/([[:alnum:]_]+)$",
-         "telegram.me/([[:alnum:]_]+)",
-         "telegram.dog/([[:alnum:]_]+)"
+      "matches_spam_usuario":[
+         "@([[:alnum:]_]+)",
+         "[Tt].[Mm][Ee]/([[:alnum:]_]+)$",
+         "[Tt][Ee][Ll][Ee][Gg][Rr][Aa][Mm].[Mm][Ee]/([[:alnum:]_]+)",
+         "[Tt][Ee][Ll][Ee][Gg][Rr][Aa][Mm].[Dd][Oo][Gg]/([[:alnum:]_]+)"
       ],
-      "spam_links":[
-         "telegram.me/joinchat/",
-         "telegram.dog/joinchat/",
-         "tg.me/joinchat/"
+      "matches_spam_links":[
+         "[Tt].[Mm][Ee]/[Jj][Oo][Ii][Nn][Cc][Hh][Aa][Tt]/",
+         "[Tt][Ee][Ll][Ee][Gg][Rr][Aa][Mm].[Mm][Ee]/[Jj][Oo][Ii][Nn][Cc][Hh][Aa][Tt]/",
+         "[Tt][Ee][Ll][Ee][Gg][Rr][Aa][Mm].[Dd][Oo][Gg]/[Jj][Oo][Ii][Nn][Cc][Hh][Aa][Tt]/"
       ]
    }],
 
    "tmp":[{ // lista de archivos que envia el bot para exportar, puedes usarlo para cambiar el nombre del archivo a enviar
-      "usuarios": "usuarios.json",
-      "gmods": "gmods.json",
-      "gadmins": "gadmins.json"
+      "usuarios": "usuarios.json"
    }],
 
    "updates":[{

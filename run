@@ -1,0 +1,19 @@
+#!/bin/bash
+sesion=LatGram
+case $1 in
+   tmux)
+   if [[ ! -f "/usr/bin/tmux" ]]; then echo "Estas funciones requieren paquete tmux instalado"; fi
+   tmux new-session -s "${sesion}" -d "latino bot/bot.lat"
+   echo "Sesión tmux iniciada con nombre $sesion"
+   exit;;
+   volver)
+   if [[ ! -f "/usr/bin/tmux" ]]; then echo "Estas funciones requieren paquete tmux instalado"; fi
+   tmux new-session -t "${sesion}"
+   exit;;
+   matar)
+   if [[ ! -f "/usr/bin/tmux" ]]; then echo "Estas funciones requieren paquete tmux instalado"; fi
+   tmux kill-session -t "${sesion}"
+   exit;;
+esac
+
+latino bot/bot.lat

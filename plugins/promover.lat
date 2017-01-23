@@ -1,7 +1,7 @@
 funcion mensajes()
    mod_local_hash = "moderadores:"..msg.chat.id
    si matches[1] == "mod"
-      si !usuario_es_admin(msg.chat.id, msg.de.id) && !es_creador(msg.de.id) && !es_gadmin(msg.de.id)
+      si !es_admin(msg.chat.id, msg.de.id) && !es_creador(msg.de.id) && !es_gadmin(msg.de.id)
          enviarMensaje(msg.chat.id, "*Debes ser administrador del chat* ó *administrador global* para usar este comando.", md)
          retornar 0
       fin
@@ -10,13 +10,13 @@ funcion mensajes()
          si !id_obtenida
             enviarMensaje(msg.chat.id, "*El usuario no está registrado en la base de datos*.", md)
             retornar 0
-         osi redis.sagregar(com, mod_local_hash, acadena(id_obtenida))
+         osi nuevo_mod(msg.chat.id, id_obtenida)
             enviarMensaje(msg.chat.id, "*Nuevo moderador del chat*: @"..no_markdown(matches[2]).." ("..id_obtenida..")", md)
             retornar 0
          fin
          enviarMensaje(msg.chat.id, "Este usuario *ya es moderador del chat*.", md)
       osi respuesta.de.id
-         si redis.sagregar(com, mod_local_hash, acadena(respuesta.de.id))
+         si nuevo_mod(msg.chat.id, respuesta.de.id)
             enviarMensaje(msg.chat.id, "*Nuevo moderador del chat*: "..no_markdown(respuesta.de.nombre).." ("..respuesta.de.id..")", md)
             retornar 0
          fin
@@ -98,7 +98,7 @@ funcion mensajes()
 
 
    si matches[1] == "rmmod"
-      si !usuario_es_admin(msg.chat.id, msg.de.id) && !es_creador(msg.de.id) && !es_gadmin(msg.de.id)
+      si !es_admin(msg.chat.id, msg.de.id) && !es_creador(msg.de.id) && !es_gadmin(msg.de.id)
          enviarMensaje(msg.chat.id, "*Debes ser administrador* ó *moderador global* para usar este comando.", md)
          retornar 0
       fin
@@ -107,13 +107,13 @@ funcion mensajes()
          si !id_obtenida
             enviarMensaje(msg.chat.id, "*El usuario no está registrado en la base de datos*.", md)
             retornar 0
-         osi redis.sborrar(com, mod_local_hash, acadena(id_obtenida))
+         osi rm_mod(msg.chat.id, id_obtenida)
             enviarMensaje(msg.chat.id, "*Moderador eliminado*: @"..no_markdown(matches[2]).." ("..id_obtenida..")", md)
             retornar 0
          fin
          enviarMensaje(msg.chat.id, "Este usuario *ya no es moderador del chat*.", md)
       osi respuesta.de.id
-         si redis.sagregar(com, mod_local_hash, acadena(respuesta.de.id))
+         si rm_mod(msg.chat.id, respuesta.de.id)
             enviarMensaje(msg.chat.id, "*Moderador eliminado*: "..no_markdown(respuesta.de.nombre).." ("..respuesta.de.id..")", md)
             retornar 0
          fin

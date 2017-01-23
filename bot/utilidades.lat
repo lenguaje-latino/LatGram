@@ -68,17 +68,6 @@ funcion bot_eliminado()
    retornar falso
 fin
 
-funcion usuario_es_admin(chatId, userId)
-   res = curl.peticion(URL .. "getChatAdministrators?chat_id="..chatId)
-   j = json.decodificar(res)
-   desde (i=0; i<j.result;i++)
-      si j.result[i].user.id == userId
-         retornar verdadero
-      fin
-   fin
-   retornar falso
-fin
-
 funcion ires()
    si res
       imprimir(color.italicas..json.formato(res)..color.reset)
@@ -192,7 +181,7 @@ funcion limpiar_updates()
    si update
       update = update.result
       si lista.longitud(update) > config.updates[0].max
-         curl.peticion(URL.."getUpdates?offset="..update[update-1].update_id+1)
+         imprimir(curl.peticion(URL.."getUpdates?offset="..anumero(update[lista.longitud(update)-1].update_id+1)))
          retornar anumero(update)
       fin
    fin
@@ -277,6 +266,13 @@ funcion nuevo_gmod(nombre, id)
    })
    archivo.escribir(config.datos[0].gmods, acadena(json.formato(lista_)))
    retornar verdadero
+fin
+
+funcion nuevo_mod(chatid, id)
+   si redis.sagregar(com, "moderadores:"..chatid, acadena(id))
+      retornar verdadero
+   fin
+   retornar falso
 fin
 
 /* comprobar si está en la lista para no eliminar */
@@ -403,6 +399,13 @@ funcion rm_gmod(id)
    retornar falso
 fin
 
+funcion rm_mod(chatid, id)
+   si redis.sborrar(com, "moderadores:"..chatid, acadena(id))
+      retornar verdadero
+   fin
+   retornar falso
+fin
+
 /* comprobar rangos */
 funcion es_creador(id)
    archivo_ = archivo.leer(config.datos[0].creadores)
@@ -463,8 +466,19 @@ funcion es_gmod(id)
    retornar falso
 fin
 
+funcion es_admin(chatId, userId)
+   res = curl.peticion(URL .. "getChatMember?chat_id="..chatId.."&user_id="..userId)
+   ok = json.decodificar(res)
+   si ok
+      si ok.result.user.status == "creator" || ok.result.user.status == "administrator"
+         retornar verdadero
+      fin
+   fin
+   retornar falso
+fin
+
 funcion es_mod(chatid,id)
-   si !id retornar falso fin
+   si !id || !chatid retornar falso fin
    mod = redis.sesmiembro(com, "moderadores:"..chatid, acadena(id))
    si mod retornar verdadero fin
    retornar falso

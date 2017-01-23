@@ -1,5 +1,5 @@
 #!/usr/bin/latino
-config = incluir ('config')
+config = incluir ('bot/config')
 URL = 'https://api.telegram.org/bot' .. config.api_key .. '/'
 AURL = 'https://api.telegram.org/file/bot' .. config.api_key .. '/'
 html = "html"
@@ -56,6 +56,8 @@ funcion incluir_variables()
 				"apellido": msj.new_chat_member.last_name
 			},
 			"reenviado": {
+				"id": msj.forward_from_message_id,
+				"fecha": msj.forward_date,
 				"chat": {
 					"tipo": msj.forward_from_chat.type,
 					"titulo": msj.forward_from_chat.title,
@@ -63,10 +65,10 @@ funcion incluir_variables()
 					"usuario": msj.forward_from_chat.username
 				},
 				"de": {
-					"tipo": msj.forward_from_chat.type,
-					"titulo": msj.forward_from_chat.title,
-					"id": msj.forward_from_chat.id,
-					"usuario": msj.forward_from_chat.username
+					"usuario": msj.forward_from.username,
+					"apellido": msj.forward_from.last_name,
+					"id": msj.forward_from.id,
+					"nombre": msj.forward_from.first_name
 				}
 			},
 			"eliminado": {
@@ -347,7 +349,8 @@ funcion iniciar_bot()
 	fin
 fin
 
-global funcion cargar_bot()
+
+global funcion cargar_bot(como_)
 	bot = ObtenerBot()
 	bot = bot.result
 	global bot = {
@@ -355,32 +358,34 @@ global funcion cargar_bot()
 		"nombre": bot.first_name,
 		"usuario": bot.username
 	}
+	si como_ && como_ == "completo"
+		limpiar()
+		verificacion = verificar_apikey()
+		si ! verificacion.ok
+			imprimir("\aERROR ("..verificacion.error_code.." - "..verificacion.description..")"
+			.."\nVerifica la apikey en ajustes.lat", 1)
+			redis.desconectar(com)
+			retorno 0
+		fin
 
-	global BOT_SHASH = "bot:"..bot.id..":schats"
-	global BOT_HHASH = "latgram:usuarios"
+		global creadores_ = json.decodificar(archivo.leer(config.datos[0].creadores))
+		global creadores_ = creadores_.creadores
+		inicio = enviarMensaje(acadena(creadores_[0].id), "<b>Bot iniciado</b>", html, falso)
+		imprimir(color.azul)
+		si inicio
+			imprimir("\tConfirmación enviada a " .. creadores_[0].id .. ".\n\tBot @"..bot.usuario..", ID: "..bot.id, 1)
+			key="completo"
+		sino
+			imprimir("\tError en confirmación.\n\tBot @"..bot.usuario..", ID: "..bot.id, 1)
+			key="completo"
+		fin
+		imprimir(color.reset.."\n", 1)
 
-	verificacion = verificar_apikey()
-	si ! verificacion.ok
-		imprimir("\aERROR ("..verificacion.error_code.." - "..verificacion.description..")"
-		.."\nVerifica la apikey en ajustes.lat", 1)
-		redis.desconectar(com)
-		retorno 0
-	fin
-
-	creadores_ = json.decodificar(archivo.leer(config.datos[0].creadores))
-	inicio = enviarMensaje(acadena(creadores_.creadores[0].id), "<b>Bot iniciado</b>", html, falso)
-	imprimir(color.azul)
-	si inicio
-		imprimir("\tConfirmación enviada a " .. creadores_.creadores[0].id .. ".\n\tBot @"..bot.usuario..", ID: "..bot.id, 1)
-	sino
-		imprimir("\tError en confirmación.\n\tBot @"..bot.usuario..", ID: "..bot.id, 1)
-	fin
-	imprimir(color.reset.."\n", 1)
-
-	si config.updates[0].limpiar_al_iniciar
-		updates = limpiar_updates()
-		si updates
-			imprimir(color.cafe.."Actualizaciones limpias con un total de "..updates..color.reset.."\n", 1)
+		si config.updates[0].limpiar_al_iniciar
+			updates = limpiar_updates()
+			si updates
+				imprimir(color.cafe.."Actualizaciones limpias con un total de "..updates..color.reset.."\n", 1)
+			fin
 		fin
 	fin
 
@@ -389,8 +394,8 @@ fin
 
 
 funcion menu(argc, argv)
-	incluir ('metodos')
-	incluir ('utilidades')
+	incluir ('bot/metodos')
+	incluir ('bot/utilidades')
 	com = redis.conectar(config.redis[0].ip, config.redis[0].puerto)
 
 	json_res=falso
@@ -403,8 +408,9 @@ funcion menu(argc, argv)
 		fin
 		retornar 0
 	fin
-	limpiar()
-	cargar_bot()
+	cargar_bot("completo")
+	global BOT_SHASH = "bot:"..bot.id..":schats"
+	global BOT_HHASH = "latgram:usuarios"
 
 	mientras verdadero
 		res = actualizaciones()

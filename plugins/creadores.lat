@@ -1,0 +1,16 @@
+funcion mensajes()
+   si !es_creador(msg.de.id) retornar falso fin
+   si matches[1] == "reset"
+      limpiar()
+      imprimir(color.azul.."\n\t\tBot reseteado\n",1)
+      cargar_bot()
+      enviarMensaje(msg.chat.id, "Bot *reseteado*.", md)
+   fin
+fin
+
+retornar {
+   "comandos":[
+      "/(reset)"
+   ],
+   "accion": mensajes
+}
