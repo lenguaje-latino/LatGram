@@ -3,6 +3,8 @@ retornar {
 
    "consultas_inline": verdadero,
 
+   "lenguaje": "es",
+
    "dir": "plugins/",
    "plugins":[
       "servicios",
