@@ -1,5 +1,10 @@
-es = {
-        "start": "¡Hey! ".no_markdown(msg->de->nombre)."\n\nYou're testing the new bot written completely in *Latino programming* with matches, inline queries and more. 😄👍"
-}
+retornar {
+   "usuarios":[
+   {
+      "start": "¡Hey! %s, I'm @%s.\n"
+      .."\nYou're testing a bot written in *Latino* with matches, inline queries and more. 😄👍",
 
-retornar es
+      "id": "*Chat ID*: %i\n*User ID*: %i"
+   }
+   ]
+}

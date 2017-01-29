@@ -1,6 +1,10 @@
 retornar {
    "usuarios":[
-      {"start": "¡Hey! %s, soy @%s.\n"
-      .."\nEstás probando el nuevo bot escrito completamente en la *programación Latino* con matches, consultas inline y más. 😄👍"}
+   {
+      "start": "¡Hey! %s, soy @%s.\n"
+      .."\nEstás probando el nuevo bot escrito completamente en la *programación Latino* con matches, consultas inline y más. 😄👍",
+
+      "id": "*Chat ID*: %i\n*Usuario ID*: %i"
+   }
    ]
 }
