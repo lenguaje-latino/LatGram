@@ -5,13 +5,19 @@ AURL = 'https://api.telegram.org/file/bot' .. config.api_key .. '/'
 html = "html"
 md = "markdown"
 
-funcion parsear(teclado_inline)
+//&reply_markup={"keyboard":[["Yes","No"],["Maybe"],["1","2","3"]],"one_time_keyboard":true}
+
+funcion parsear(teclado_inline, normal)
 	si tipo(teclado_inline) == "lista"
 		inline = []
 		desde (i=0;i<teclado_inline;i++)
 			lista.agregar(inline, teclado_inline[i])
 		fin
-		retornar acadena('{"inline_keyboard":'..inline..'}')
+		si normal
+			retornar acadena('{"keyboard":'..inline..', "one_time_keyboard":true}')
+		sino
+			retornar acadena('{"inline_keyboard":'..inline..'}')
+		fin
 	fin
 	imprimir("Elemento inesperado, el elemento debe ser lista, no "..tipo(teclado_inline)..".")
 fin
@@ -350,15 +356,13 @@ funcion iniciar_bot()
 fin
 
 
-global funcion cargar_bot(como_)
-	bot = ObtenerBot()
-	bot = bot.result
-	global bot = {
-		"id": bot.id,
-		"nombre": bot.first_name,
-		"usuario": bot.username
-	}
-	si como_ && como_ == "completo"
+global funcion _BOT(argumento)
+	si !argumento retornar 0 fin
+	si argumento == "iniciar"
+		global _creadores_ = archivo.leer(config.datos[0].creadores)
+		global _gadmins_ = archivo.leer(config.datos[0].gadmins)
+		global _gmods_ = archivo.leer(config.datos[0].gmods)
+		global _gbans_ = archivo.leer(config.datos[0].gbans)
 		limpiar()
 		verificacion = verificar_apikey()
 		si ! verificacion.ok
@@ -368,25 +372,43 @@ global funcion cargar_bot(como_)
 			retorno 0
 		fin
 
-		global creadores_ = json.decodificar(archivo.leer(config.datos[0].creadores))
-		global creadores_ = creadores_.creadores
-		inicio = enviarMensaje(acadena(creadores_[0].id), "<b>Bot iniciado</b>", html, falso)
+		creadores_ = json.decodificar(archivo.leer(config.datos[0].creadores))
+		creadores_ = creadores_.creadores
+		inicio = enviarMensaje(acadena(creadores_[0].id), "<b>Bot iniciado</b>", html)
 		imprimir(color.azul)
 		si inicio
 			imprimir("\tConfirmación enviada a " .. creadores_[0].id .. ".\n\tBot @"..bot.usuario..", ID: "..bot.id, 1)
-			key="completo"
 		sino
 			imprimir("\tError en confirmación.\n\tBot @"..bot.usuario..", ID: "..bot.id, 1)
-			key="completo"
 		fin
 		imprimir(color.reset.."\n", 1)
 
 		si config.updates[0].limpiar_al_iniciar
 			updates = limpiar_updates()
 			si updates
-				imprimir(color.cafe.."Actualizaciones limpias con un total de "..updates..color.reset.."\n", 1)
+				imprimirf(color.cafe.."Actualizaciones limpias con un total de "..updates..color.reset.."\n\n")
 			fin
 		fin
+	osi argumento == "recargar"
+		limpiar()
+		imprimirf(color.azul.."\n\tBot recargado.\n\n")
+		config = incluir("bot/config")
+		global _creadores_ = archivo.leer(config.datos[0].creadores)
+		global _gadmins_ = archivo.leer(config.datos[0].gadmins)
+		global _gmods_ = archivo.leer(config.datos[0].gmods)
+		global _gbans_ = archivo.leer(config.datos[0].gbans)
+	osi argumento == "recargar_creadores"
+		global _creadores_ = archivo.leer(config.datos[0].creadores)
+		retornar 0
+	osi argumento == "recargar_gadmins"
+		global _gadmins_ = archivo.leer(config.datos[0].gadmins)
+		retornar 0
+	osi argumento == "recargar_gmods"
+		global _gmods_ = archivo.leer(config.datos[0].gmods)
+		retornar 0
+	osi argumento == "recargar_gbans"
+		global _gbans_ = archivo.leer(config.datos[0].gbans)
+		retornar 0
 	fin
 
 	global plugins = cargar_plugins()
@@ -396,7 +418,6 @@ fin
 funcion menu(argc, argv)
 	incluir ('bot/metodos')
 	incluir ('bot/utilidades')
-	com = redis.conectar(config.redis[0].ip, config.redis[0].puerto)
 
 	json_res=falso
 	si argv[1] == "--json" || argv[1] == "-j" json_res=verdadero fin
@@ -408,7 +429,17 @@ funcion menu(argc, argv)
 		fin
 		retornar 0
 	fin
-	cargar_bot("completo")
+	com = redis.conectar(config.redis[0].ip, config.redis[0].puerto)
+
+	bot = ObtenerBot()
+	bot = bot.result
+	global bot = {
+		"id": bot.id,
+		"nombre": bot.first_name,
+		"usuario": bot.username
+	}
+
+	_BOT("iniciar")
 	global BOT_SHASH = "bot:"..bot.id..":schats"
 	global BOT_HHASH = "latgram:usuarios"
 

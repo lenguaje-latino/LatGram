@@ -1,3 +1,28 @@
+funcion inline()
+   array = []
+   si imatches[1] == "esgban"
+      esgban = es_gban(imatches[2])
+      si esgban
+         motivo = esgban.motivo
+         si !motivo
+            motivo = "(no asignado)"
+         fin
+         acerca = "Nombre: "..esgban.nombre.."\nID: "..esgban.id.."\nMotivo: "..motivo
+         lista.agregar(array, textoInline(1, "✅  "..imatches[2], acerca, acerca))
+      sino
+         lista.agregar(array, textoInline(2, "❌ "..imatches[2], "❌ ID "..imatches[2].." *no enlistado*.", "Esta ID no está en la lista.", md))
+      fin
+      si lista.longitud(array) != 0
+         enviarConsultaInline(cinline.id, array, 2)
+      fin
+/*   osi imatches[1] == "buscar"
+      si imatches[2] == "motivo"
+         array = []
+         desde (i=0; i<)*/
+         fin
+fin
+
+
 funcion mensajes()
    si msg.chat.tipo == "private"
       enviarMensaje(msg.chat.id, "Este comando *solo funciona en grupos*.", md)
@@ -143,5 +168,10 @@ retornar {
       "^/(desgban)$",
       "^/(desgban) @([[:alnum:]_]+)$"
    ],
+   "icomandos":[
+      "^(esgban) ([0-9]+)$",
+      "^(buscar) (motivo) (.*)$"
+   ],
+   "inline": inline,
    "accion": mensajes
 }

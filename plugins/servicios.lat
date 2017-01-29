@@ -78,22 +78,6 @@ global funcion comando_personalizado()
    retornar falso
 fin
 
-global funcion subproceso_papelera()
-   array = obtenerLeer(msg.de.id, msg.texto, 22)
-   si array
-      si cadena.match(cadena.minusculas(msg.texto), "^(s|si)$")
-         redis.borrar(com, "extras:"..msg.de.id..":portapapeles")
-         enviarMensaje(msg.chat.id, "*Papelera vaciada*.", md)
-         detenerLeer(msg.de.id, 22)
-      sino
-         enviarMensaje(msg.chat.id, "*Proceso abortado*.", md)
-         detenerLeer(msg.de.id, 22)
-      fin
-      retornar verdadero
-   fin
-   retornar falso
-fin
-
 global funcion subproceso_reglas()
    array = obtenerLeer(msg.de.id, msg.texto, 1)
    si array
@@ -216,10 +200,6 @@ funcion subproceso()
          fin
       fin
 
-      si subproceso_papelera()
-         retornar "Opción de portapapeles de "..msg.de.nombre..": "..msg.texto
-      fin
-
       si subproceso_reglas()
          retornar "Reglas cambiadas desde leer"
       fin
@@ -269,8 +249,8 @@ funcion subproceso()
             fin
             enviarMensaje(msg.chat.id, "El usuario "..no_markdown(msg.agregado.nombre).." *está globalmente baneado*."
             .."\n*Motivo*: "..motivo, md)
+            retornar "Usuario expulsado"
          fin
-         retornar 0
       fin
 
       si bot_agregado()

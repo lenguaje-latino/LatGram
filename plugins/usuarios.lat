@@ -10,6 +10,7 @@ funcion inline()
       textoInline(1, "Tu información de usuario", cinline_datos),
       textoInline(2, "Tu ID", "`"..cinline.de.id.."`", falso, md)
       ]
+      imprimir(array)
     enviarConsultaInline(cinline.id, array, 1)
 fin
 
@@ -25,16 +26,9 @@ funcion callback()
 fin
 
 funcion mensajes()
-   funcion crear_imagen(texto1, texto2)
-      en = "https://cdn.meme.am/Instance/Preview?imageID=14821613&generatorTypeID=&panels=&text0="..curl.escape(texto1)
-      si texto2
-         en = en.."&text1="..curl.escape(texto2)
-      fin
-      retornar en
-   fin
    si matches[1] == "id"
       si !matches[2]
-         enviarMensaje(msg.chat.id, "*Chat ID*: "..msg.chat.id.."\n*User ID*: "..msg.de.id, md)
+         imprimir(enviarMensaje(msg.chat.id, "*Chat ID*: "..msg.chat.id.."\n*User ID*: "..msg.de.id, md))
          retornar 0
       fin
       id_obtenida = obtener_id_usuario(matches[2])
@@ -51,18 +45,6 @@ funcion mensajes()
       ]]
       enviarTeclado(msg.chat.id, "¡Hey! "..no_markdown(msg.de.nombre).."\n\nEstás probando el nuevo bot escrito completamente en la *programación Latino*. Por el momento faltan cosas. Pero de poco a poco irá mejorando 😄👍", ayuda, md)
    fin
-   si matches[1] == "linus"
-      si ! matches[3]
-         b = cadena.reemplazar(matches[2], "/", " ")
-         a = crear_imagen(b)
-      sino
-         b = cadena.reemplazar(matches[2], "/", " ")
-         c = cadena.reemplazar(matches[3], "/", " ")
-         a = crear_imagen(b, c)
-      fin
-      enviarFoto(msg.chat.id, a)
-   fin
-
 fin
 
 retornar {
@@ -71,9 +53,7 @@ retornar {
       "^/(id) @([[:alnum:]_]+)$",
       "^/(id)@"..bot.usuario.."$",
       "^/(start)$",
-      "^/(start)@"..bot.usuario.."$",
-      "^/(linus) ([[:alnum:]@_\)\(\/]+)$",
-      "^/(linus) ([[:alnum:]@_\)\(\/]+) ([[:alnum:]@_\)\(\/]+)$"
+      "^/(start)@"..bot.usuario.."$"
    ],
 
    "icomandos": [

@@ -1,5 +1,3 @@
-plugins_montados = []
-
 funcion colores()
    colores = {
       "amarillo": sis.pipe('echo "\033[1;33m"'),
@@ -78,6 +76,7 @@ funcion ires()
 fin
 
 funcion cargar_plugins()
+   global plugins_montados = []
    plugins = []
    desde (plugin_cargado=0; plugin_cargado<config.plugins; plugin_cargado++)
       existe = archivo.leer(config.dir..config.plugins[plugin_cargado]..".lat")
@@ -182,7 +181,7 @@ funcion limpiar_updates()
    si update
       update = update.result
       si lista.longitud(update) > config.updates[0].max
-         imprimir(curl.peticion(URL.."getUpdates?offset="..anumero(update[lista.longitud(update)-1].update_id+1)))
+         curl.peticion(URL.."getUpdates?offset="..update[lista.longitud(update)-1].update_id)
          retornar anumero(update)
       fin
    fin
@@ -192,9 +191,8 @@ fin
 /* crear rangos */
 funcion nuevo_creador(nombre, id)
    si !id retornar falso fin
-   archivo_ = archivo.leer(config.datos[0].creadores)
-   si !archivo_ retornar falso fin
-   lista_ = json.decodificar(archivo_)
+   si !_creadores_ retornar falso fin
+   lista_ = json.decodificar(_creadores_)
    si lista.longitud(lista_.creadores) == 1
       si anumero(id) == lista_.creadores[0].id
          retornar falso
@@ -211,17 +209,17 @@ funcion nuevo_creador(nombre, id)
       "id": anumero(id)
    })
    archivo.escribir(config.datos[0].creadores, acadena(json.formato(lista_)))
+   _BOT("recargar_creadores")
    retornar verdadero
 fin
 
 funcion nuevo_gadmin(nombre, id)
    si !id retornar falso fin
-   archivo_ = archivo.leer(config.datos[0].gadmins)
-   si !archivo_
+   si !_gadmins_
       archivo.crear(config.datos[0].gadmins)
       lista_ = {"gadmins":[]}
    sino
-      lista_ = json.decodificar(archivo_)
+      lista_ = json.decodificar(_gadmins_)
    fin
    si lista.longitud(lista_.gadmins) == 1
       si anumero(id) == lista_.gadmins[0].id
@@ -239,16 +237,16 @@ funcion nuevo_gadmin(nombre, id)
       "id": anumero(id)
    })
    archivo.escribir(config.datos[0].gadmins, acadena(json.formato(lista_)))
+   _BOT("recargar_gadmins")
    retornar verdadero
 fin
 
 funcion nuevo_gmod(nombre, id)
-   archivo_ = archivo.leer(config.datos[0].gmods)
-   si !archivo_
+   si !_gmods_
       archivo.crear(config.datos[0].gmods)
       lista_ = {"gmods":[]}
    sino
-      lista_ = json.decodificar(archivo_)
+      lista_ = json.decodificar(_gmods_)
    fin
    si lista.longitud(lista_.gmods) == 1
       si anumero(id) == lista_.gmods[0].id
@@ -266,6 +264,7 @@ funcion nuevo_gmod(nombre, id)
       "id": anumero(id)
    })
    archivo.escribir(config.datos[0].gmods, acadena(json.formato(lista_)))
+   _BOT("recargar_gmods")
    retornar verdadero
 fin
 
@@ -330,14 +329,14 @@ fin
 
 /* eliminar rangos */
 funcion rm_creador(id)
-   archivo_ = archivo.leer(config.datos[0].creadores)
-   si !archivo retornar falso fin
-   lista_ = json.decodificar(archivo_)
+   si !_creadores_ retornar falso fin
+   lista_ = json.decodificar(_creadores_)
    si lista.longitud(lista_.creadores) == 0 retornar falso fin
    si lista.longitud(lista_.creadores) == 1
       si anumero(id) == lista_.creadores[0].id
          lista.eliminar_indice(lista_.creadores, 0)
          archivo.escribir(config.datos[0].creadores, acadena(json.formato(lista_)))
+         _BOT("recargar_creadores")
          retornar verdadero
       fin
    sino
@@ -345,6 +344,7 @@ funcion rm_creador(id)
          si anumero(id) == lista_.creadores[i].id
             lista.eliminar_indice(lista_.creadores, i)
             archivo.escribir(config.datos[0].creadores, acadena(json.formato(lista_)))
+            _BOT("recargar_creadores")
             retornar verdadero
          fin
       fin
@@ -354,14 +354,14 @@ fin
 
 funcion rm_gadmin(id)
    si !id retornar falso fin
-   archivo_ = archivo.leer(config.datos[0].gadmins)
-   si !archivo_ retornar falso fin
-   lista_ = json.decodificar(archivo_)
+   si !_gadmins_ retornar falso fin
+   lista_ = json.decodificar(_gadmins_)
    si lista.longitud(lista_.gadmins) == 0 retornar falso fin
    si lista.longitud(lista_.gadmins) == 1
       si anumero(id) == lista_.gadmins[0].id
          lista.eliminar_indice(lista_.gadmins, 0)
          archivo.escribir(config.datos[0].gadmins, acadena(json.formato(lista_)))
+         _BOT("recargar_gadmins")
          retornar verdadero
       fin
    sino
@@ -369,6 +369,7 @@ funcion rm_gadmin(id)
          si anumero(id) == lista_.gadmins[i].id
             lista.eliminar_indice(lista_.gadmins, i)
             archivo.escribir(config.datos[0].gadmins, acadena(json.formato(lista_)))
+            _BOT("recargar_gadmins")
             retornar verdadero
          fin
       fin
@@ -378,14 +379,14 @@ fin
 
 funcion rm_gmod(id)
    si !id retornar falso fin
-   archivo_ = archivo.leer(config.datos[0].gmods)
-   si !archivo_ retornar falso fin
-   lista_ = json.decodificar(archivo_)
+   si !_gmods_ retornar falso fin
+   lista_ = json.decodificar(_gmods_)
    si lista.longitud(lista_.gmods) == 0 retornar falso fin
    si lista.longitud(lista_.gmods) == 1
       si anumero(id) == lista_.gmods[0].id
          lista.eliminar_indice(lista_.gmods, 0)
          archivo.escribir(config.datos[0].gmods, acadena(json.formato(lista_)))
+         _BOT("recargar_gmods")
          retornar verdadero
       fin
    sino
@@ -393,6 +394,7 @@ funcion rm_gmod(id)
          si anumero(id) == lista_.gmods[i].id
             lista.eliminar_indice(lista_.gmods, i)
             archivo.escribir(config.datos[0].gmods, acadena(json.formato(lista_)))
+            _BOT("recargar_gmods")
             retornar verdadero
          fin
       fin
@@ -409,9 +411,8 @@ fin
 
 /* comprobar rangos */
 funcion es_creador(id)
-   archivo_ = archivo.leer(config.datos[0].creadores)
-   si !archivo_ retornar falso fin
-   lista_ = json.decodificar(archivo_)
+   si !_creadores_ retornar falso fin
+   lista_ = json.decodificar(_creadores_)
    si lista.longitud(lista_.creadores) == 0 retornar falso fin
    si lista.longitud(lista_.creadores) == 1
       si anumero(id) == lista_.creadores[0].id
@@ -429,9 +430,8 @@ fin
 
 funcion es_gadmin(id)
    si !anumero(id) retornar falso fin
-   archivo_ = archivo.leer(config.datos[0].gadmins)
-   si !archivo_ retornar falso fin
-   lista_ = json.decodificar(archivo_)
+   si !_gadmins_ retornar falso fin
+   lista_ = json.decodificar(_gadmins_)
    si lista.longitud(lista_.gadmins) == 0 retornar falso fin
    si lista.longitud(lista_.gadmins) == 1
       si anumero(id) == lista_.gadmins[0].id
@@ -449,9 +449,8 @@ fin
 
 funcion es_gmod(id)
    si !anumero(id) retornar falso fin
-   archivo_ = archivo.leer(config.datos[0].gmods)
-   si !archivo_ retornar falso fin
-   lista_ = json.decodificar(archivo_)
+   si !_gmods_ retornar falso fin
+   lista_ = json.decodificar(_gmods_)
    si lista.longitud(lista_.gmods) == 0 retornar falso fin
    si lista.longitud(lista_.gmods) == 1
       si anumero(id) == lista_.gmods[0].id
@@ -469,9 +468,9 @@ fin
 
 funcion es_admin(chatId, userId)
    res = curl.peticion(URL .. "getChatMember?chat_id="..chatId.."&user_id="..userId)
-   ok = json.decodificar(res)
-   si ok
-      si ok.result.user.status == "creator" || ok.result.user.status == "administrator"
+   res = json.decodificar(res)
+   si res.ok
+      si res.result.status == "creator" || res.result.status == "administrator"
          retornar verdadero
       fin
    fin
@@ -487,12 +486,11 @@ fin
 
 /* gbans */
 funcion gban(nombre, id, motivo)
-   archivo_ = archivo.leer(config.datos[0].gbans)
-   si !archivo_
+   si !_gbans_
       archivo.crear(config.datos[0].gbans)
       lista_ = {"gbans":[]}
    sino
-      lista_ = json.decodificar(archivo_)
+      lista_ = json.decodificar(_gbans_)
    fin
    desde (i=0;i<lista_.gbans;i++)
       si anumero(id) == lista_.gbans[i].id
@@ -512,32 +510,32 @@ funcion gban(nombre, id, motivo)
       })
    fin
    archivo.escribir(config.datos[0].gbans, acadena(json.formato(lista_)))
+   _BOT("recargar_gbans")
    retornar verdadero
 fin
 
-funcion es_gban(id)
-   archivo_ = archivo.leer(config.datos[0].gbans)
-   si archivo_
-      lista_ = json.decodificar(archivo_)
+funcion desgban(id)
+   si !id retornar falso fin
+   si _gbans_
+      lista_ = json.decodificar(_gbans_)
       desde (i=0;i<lista_.gbans;i++)
          si anumero(id) == lista_.gbans[i].id
-            retornar lista_.gbans[i]
+            lista.eliminar_indice(lista_.gbans, i)
+            archivo.escribir(config.datos[0].gbans, acadena(json.formato(lista_)))
+            _BOT("recargar_gbans")
+            retornar verdadero
          fin
       fin
    fin
    retornar falso
 fin
 
-funcion desgban(id)
-   si !id retornar falso fin
-   archivo_ = archivo.leer(config.datos[0].gbans)
-   si archivo_
-      lista_ = json.decodificar(archivo_)
+funcion es_gban(id)
+   si _gbans_
+      lista_ = json.decodificar(_gbans_)
       desde (i=0;i<lista_.gbans;i++)
          si anumero(id) == lista_.gbans[i].id
-            lista.eliminar_indice(lista_.gbans, i)
-            archivo.escribir(config.datos[0].gbans, acadena(json.formato(lista_)))
-            retornar verdadero
+            retornar lista_.gbans[i]
          fin
       fin
    fin

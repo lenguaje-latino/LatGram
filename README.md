@@ -1,44 +1,96 @@
-- Windows; Requiere -> Instalador Latino(en windows; exe, [releases](https://github.com/primitivorm/latino/releases)) 
+|  [Desarrollador](https://telegram.me/jarriz)    |    <b>[Plugins +](https://github.com/jarriztg/Plugins-LatGram)</b>    |    [Wiki](https://github.com/lenguaje-latino/LatGram/wiki) | [Latino](https://github.com/primitivorm/latino)   |    [Issue](https://github.com/lenguaje-latino/LatGram/issues/new) |
+|----|----|----|----|----|
 
-- Linux; Requiere -> Seguir pasos en https://github.com/primitivorm/latino para la instalación de Latino ó descargar archivo deb en [releases](https://github.com/primitivorm/latino/releases)
+# :robot: LatGram :robot:
 
 
-## Formas de ejecutar
-#### Windows
-Primero debes tener instalado el exe de Latino (leer más arriba)
+Un bot de Telegram hecho en <b>[Latino](https://github.com/primitivorm/latino)</b>, con multiusos como comandos inline, callbacks, comandos normales, uso de regex y match en grupos, etc.
 
-1 - [Descargar archivo ZIP](https://github.com/jarriztg/telegram-bot-latino/archive/master.zip) del repositorio, pegar en:
-`C:\Users\TU_USUARIO\Desktop\`.
+><b>NOTA</b>: Este bot solo funcionará en <i>Windows 10 Insider con Bash Ubuntu</i> instalado ó <i>Linux</i>.
 
-2 - Abrir `cmd` y escribir `cd C:\Users\TU_USUARIO\Desktop\`.
+><b>ADICIONAL</b>: Fué probado <i>C9</i> pero no trabajó con el regex, te recomiendo correrlo en vps como [ovh.es](https://ovh.es) para así mantenerlo siempre en línea o corriendo con Tmux.
 
-3 - Escribir `cd telegram-bot-latino-master`.
+Para consultar acerca de como instalar <i>Windows 10 Insider con Bash Ubuntu</i> consultar: [Cómo instalar el Bash de Ubuntu en Windows 10 Anniversary](https://winphonemetro.com/2016/08/como-instalar-bash-ubuntu-windows-10-anniversary)
 
-4 - Editar el archivo `ajustes.lat` preferiblemente con Notepad++ y pegar tu ID (si no la sabes brinca este paso) e ir a [@BotFather](https://telegram.me/botfather) y crear un bot escribiendole `/newbot`, asignas su nombre, despúes su usuario y te generará algo llamado Token o apikey.
+## Instalación
+Compilar <b>[Latino](https://github.com/primitivorm/latino)</b> para poder correr el bot:
 
-5 - Copiamos el apikey y lo pegamos en `ajustes.lat` en la variable api_key.
+```bash
+ git clone --recursive https://github.com/primitivorm/latino
+ cd latino
+ git submodule update --init --recursive
+ cmake .
+ make
+ sudo make install
+```
 
-6 - Volvemos a `cmd` y escribimos `latino bot`
+Clonar el reposotorio:
+```bash
+git clone https://github.com/lenguaje-latino/LatGram
+cd LatGram # entramos a la carpeta del bot
+```
 
-Ya estará arrancando! Solamente inicia el bot buscando el usuario que asignaste en Telegram.
+## Configuración
 
-#### Linux
-Primero debes tener instalado [Latino](https://github.com/primitivorm/latino) y sus dependencias (leer más arriba)
+Si no sabes como crear un crear un Bot, te invito a consultar: [Como crear un bot de Telegram](https://github.com/lenguaje-latino/LatGram/wiki/Como-crear-un-bot-de-Telegram), ahí sabrás de donde sacar el api_key si no tienes idea de qué es.
 
-1 - Clona el repositorio con `git clone https://github.com/jarriztg/telegram-bot-latino`
+Teniendo copiada nuestra api_key (ó también llamada `HTTP API`) la pegaremos en bot/config.lat en la [línea 2](https://github.com/lenguaje-latino/LatGram/blob/master/bot/config.lat#L2) quedando así, de la siguiente manera:
+```C
+"api_key": "TU_API_KEY_DE_BOTFATHER" // recuerda no eliminas acentos ',' ni nada.
+```
 
-2 - Escribe en la consola `cd telegram-bot-latino; nano ajustes.lat`
+Para correr el bot, necesitaremos al paquete Tmux, necesitarás instalarlo para aquello:
+```bash
+# Debian, Ubuntu o distribuciones basadas en él, incluyendo Windows 10 Insider Bash Ubuntu.
+sudo apt install tmux
 
-3 - Si no tienes un bot ve a [@BotFather](https://telegram.me/botfather) y crea un bot escribiendole `/newbot`, asignas su nombre, despúes su usuario y te generará algo llamado Token o apikey. `ingresas tu ID (si no la sabes brinca este paso) y pega el apikey que te dió botfather.`
+# Fedora o distribuciones basadas en él.
+sudo dnf install tmux
 
-4 - Darle permisos de ejecución a bot con `chmod +x bot`
+# ArchLinux o distribuciones basadas en él.
+sudo yaourt -S tmux
+```
 
-5 - Correr el bot con `./bot` ó correrlo con `latino bot`, es lo mismo.
+## Iniciar
 
--------------------------------------------------
+### Modo normal
 
-Limpiar actualizaciones `./lanzar.sh limpiar`
+Tendremos varias formas de iniciarlo, una de ellas es la sesión normal del bot, que es lo mismo que hacer `latino bot/bot.lat`.
+<br>A continuación te muestro la forma de arrancarlo en modo normal con el script bash:
+```bash
+./run
+```
 
-Formas de lanzar el bot en linux en sesión segura:
-`./lanzar.sh` y presionamos `CTRL + b` y pulsamos la letra `d`
-(requiere tmux) `sudo apt install tmux`
+Si quieres ver las tablas json para ayudar a hacer el bot, arranca el bot de la siguiente manera:
+```bash
+./run --json # De esta forma nos devolverá las tablas para traducirlas
+```
+
+
+### Modo subproceso
+De esta forma el bot arrancará como proceso y estará de modo silencioso arrancandose, sin posibles cierres.
+<br><br>
+<i>Iniciar una sesión</i>:
+```bash
+./run tmux
+```
+
+<i>Volver a la sesión</i>:
+```bash
+./run volver
+```
+
+<i>Cerrar la sesión</i>:
+```bash
+./run matar
+```
+---
+# Pull Requests
+Los requisitos para enviar un pull request son los siguientes:
+> - <i>Código correctamente indexado (recomiendo [atom](http://atom.io)).</i>
+- <i>Un código óptimo y rápido.</i>
+- <i>Código entendible para los usuarios, puedes usar palabras en inglés (generales), pero no para el uso del usuario.</i>
+- <i>No usar múltiples matches en el mismo comando, ej. correcto: "/comando (opción1|opción2)".</i>
+- <i>Plugins de uso básico para el bot (plugins de uso múltiple <b>[aquí](https://github.com/jarriztg/Plugins-LatGram)</b>).</i>
+- <i>No uso de APIs externas a la de Telegram.</i>
+- <i>Probar tu propio código antes de mandar tu pull request.</i>

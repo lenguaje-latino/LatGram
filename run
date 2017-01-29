@@ -16,4 +16,4 @@ case $1 in
    exit;;
 esac
 
-latino bot/bot.lat
+latino bot/bot.lat $1
