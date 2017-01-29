@@ -35,7 +35,7 @@ funcion mensajes()
       si id_obtenida
          enviarMensaje(msg.chat.id, "`"..id_obtenida.."`", md)
       sino
-         enviarMensaje(msg.chat.id, "*El usuario no está registrado en la base de datos*.", md)
+         enviarMensaje(msg.chat.id, leng.error[0], md)
       fin
    fin
    si matches[1] == "start"

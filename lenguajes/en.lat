@@ -6,5 +6,8 @@ retornar {
 
       "id": "*Chat ID*: %i\n*User ID*: %i"
    }
+   ],
+   "error":[
+      "*User not registred in the database*."
    ]
 }
