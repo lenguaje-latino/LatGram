@@ -23,8 +23,8 @@ funcion inline()
       si portapapeles
          c = json.decodificar(portapapeles)
          si c.tipo == "foto"
-            //a = [ fotoInline(1, falso, c.contenido, falso, "Pegada desde el portapapeles") ]
-            //enviarConsultaInline(cinline.id, a, 1)
+            a = [ fotoInline(1, falso, c.contenido, falso, "Pegada desde el portapapeles") ]
+            enviarConsultaInline(cinline.id, a, 1)
          fin
       fin
    fin
