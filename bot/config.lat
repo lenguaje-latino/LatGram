@@ -14,7 +14,8 @@ retornar {
       "ajustes",
       "exportar",
       "promover",
-      "creadores"
+      "creadores",
+	  "resolver" // puedes resolver un usuario por ID, respuesta o por alias.
    ],
 
    "grupos":[ // ajustes para todos los grupos en caso de que no haya un registro
