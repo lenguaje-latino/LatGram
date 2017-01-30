@@ -15,7 +15,8 @@ retornar {
       "exportar",
       "promover",
       "creadores",
-	  "resolver" // puedes resolver un usuario por ID, respuesta o por alias.
+      "resolver",
+      "portapapeles"
    ],
 
    "grupos":[ // ajustes para todos los grupos en caso de que no haya un registro
@@ -76,6 +77,10 @@ retornar {
          "[Tt][Ee][Ll][Ee][Gg][Rr][Aa][Mm].[Mm][Ee]/[Jj][Oo][Ii][Nn][Cc][Hh][Aa][Tt]/",
          "[Tt][Ee][Ll][Ee][Gg][Rr][Aa][Mm].[Dd][Oo][Gg]/[Jj][Oo][Ii][Nn][Cc][Hh][Aa][Tt]/"
       ]
+   }],
+
+   "descargas":[{
+      "obtenerArchivo": "descargas/"
    }],
 
    "tmp":[{ // lista de archivos que envia el bot para exportar, puedes usarlo para cambiar el nombre del archivo a enviar

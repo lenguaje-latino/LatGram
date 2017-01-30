@@ -6,6 +6,10 @@ html = "html"
 md = "markdown"
 
 //&reply_markup={"keyboard":[["Yes","No"],["Maybe"],["1","2","3"]],"one_time_keyboard":true}
+funcion cod(texto)
+   x = cadena.reemplazar(texto, "\n", cadena.formato("%c", 10))
+   retornar curl.escape(x)
+fin
 
 funcion parsear(teclado_inline, normal)
 	si tipo(teclado_inline) == "lista"
@@ -14,9 +18,9 @@ funcion parsear(teclado_inline, normal)
 			lista.agregar(inline, teclado_inline[i])
 		fin
 		si normal
-			retornar acadena('{"keyboard":'..inline..', "one_time_keyboard":true}')
+			retornar { "keyboard": inline, "one_time_keyboard": verdadero }
 		sino
-			retornar acadena('{"inline_keyboard":'..inline..'}')
+			retornar { "inline_keyboard": inline }
 		fin
 	fin
 	imprimir("Elemento inesperado, el elemento debe ser lista, no "..tipo(teclado_inline)..".")

@@ -1,6 +1,7 @@
 funcion inline()
    array = []
    si imatches[1] == "esgban"
+
       esgban = es_gban(imatches[2])
       si esgban
          motivo = esgban.motivo
@@ -8,7 +9,10 @@ funcion inline()
             motivo = "(no asignado)"
          fin
          acerca = "Nombre: "..esgban.nombre.."\nID: "..esgban.id.."\nMotivo: "..motivo
-         lista.agregar(array, textoInline(1, "✅  "..imatches[2], acerca, acerca))
+         link_teclado = [[
+         { "text": "Buscar otra ID","switch_inline_query_current_chat": "esgban " }
+         ]]
+         lista.agregar(array, textoInline(1, "✅  "..imatches[2], acerca, acerca, falso, link_teclado))
       sino
          lista.agregar(array, textoInline(2, "❌ "..imatches[2], "❌ ID "..imatches[2].." *no enlistado*.", "Esta ID no está en la lista.", md))
       fin

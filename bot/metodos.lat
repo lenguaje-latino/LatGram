@@ -1,10 +1,5 @@
 // Actualizaciones
 
-funcion cod(texto)
-   x = cadena.reemplazar(texto, "\n", cadena.formato("%c", 10))
-   retornar curl.escape(x)
-fin
-
 funcion actualizaciones()
    consulta = curl.peticion(URL .. "getUpdates")
    consulta = json.decodificar(consulta)
@@ -307,7 +302,9 @@ funcion obtenerArchivo(Id, descargar)
    status = json.decodificar(datos)
    si status.ok
       si descargar
-         curl.descargar(AURL..status.result.file_path, "DESCARGA-"..mate.aleatorio(0, 999999))
+         n_ = cadena.match(status.result.file_path, "/([[:alnum:]_.]+)")
+         curl.descargar(AURL..status.result.file_path, config.descargas[0].obtenerArchivo..n_[0][1])
+         retornar n_[0][1]
       fin
       retornar status
    fin
@@ -670,7 +667,6 @@ funcion enviarConsultaInline(IdConsulta, resultado, limite)
    si status.ok
       retornar status
    fin
-   imprimir(status.description)
    retornar falso
 fin
 
@@ -679,13 +675,13 @@ funcion textoInline(consultaId, titulo, texto, descripcion, formato, teclado, ur
    articulo = {}
    articulo.type = "article"
    articulo.id = acadena(consultaId)
-   articulo.title = cod(titulo)
    articulo.message_text = cod(texto)
-
-   si descripcion
-      articulo.description = cod(description)
+   si titulo
+      articulo.title = cod(titulo)
    fin
-
+   si descripcion
+      articulo.description = cod(descripcion)
+   fin
    si formato
       elegir(formato)
          caso "markdown":
@@ -694,7 +690,6 @@ funcion textoInline(consultaId, titulo, texto, descripcion, formato, teclado, ur
          articulo.parse_mode = formato
       fin
    fin
-
    si teclado
       articulo.reply_markup = parsear(teclado)
    fin
@@ -716,15 +711,32 @@ funcion textoInline(consultaId, titulo, texto, descripcion, formato, teclado, ur
    retornar json.decodificar(acadena(articulo))
 fin
 
-funcion fotoInline(consultaId, foto, descripcion)
+funcion fotoInline(consultaId, titulo, foto, descripcion, capcion, anchura, altura, teclado, msg_contenido)
    foto = {}
    foto.type = "photo"
-   foto.id = acadena(consultaId)
-   foto.photo_url = cod(foto)
-   foto.thumb_url = cod(foto)
-
-   si descripcion
-      foto.description = cod(descripcion)
+   foto.id = consultaId
+   foto.photo_url = foto
+   foto.thumb_url = foto
+   si titulo
+      foto.title = titulo
    fin
-   retornar articulo
+   si descripcion
+      foto.description = descripcion
+   fin
+   si capcion
+      foto.caption = capcion
+   fin
+   si anchura
+      foto.photo_width = anchura
+   fin
+   si altura
+      foto.photo_height = altura
+   fin
+   si teclado
+      foto.reply_markup = parsear(teclado)
+   fin
+   si msg_contenido
+      foto.input_message_content = msg_contenido
+   fin
+   retornar foto
 fin
