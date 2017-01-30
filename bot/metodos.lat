@@ -1,8 +1,7 @@
 // Actualizaciones
 
 funcion cod(texto)
-   x = cadena.reemplazar(texto, "\n", "
-")
+   x = cadena.reemplazar(texto, "\n", cadena.formato("%c", 10))
    retornar curl.escape(x)
 fin
 
@@ -308,7 +307,7 @@ funcion obtenerArchivo(Id, descargar)
    status = json.decodificar(datos)
    si status.ok
       si descargar
-         sis.pipe('wget --no-check-certificate '..AURL..status.result.file_path)
+         curl.descargar(AURL..status.result.file_path, "DESCARGA-"..mate.aleatorio(0, 999999))
       fin
       retornar status
    fin
