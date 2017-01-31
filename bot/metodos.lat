@@ -667,6 +667,7 @@ funcion enviarConsultaInline(IdConsulta, resultado, limite)
    si status.ok
       retornar status
    fin
+   imprimir(status.description)
    retornar falso
 fin
 
@@ -711,20 +712,21 @@ funcion textoInline(consultaId, titulo, texto, descripcion, formato, teclado, ur
    retornar json.decodificar(acadena(articulo))
 fin
 
-funcion fotoInline(consultaId, titulo, foto, descripcion, capcion, anchura, altura, teclado, msg_contenido)
+funcion fotoInline(consultaId, titulo, foto_, descripcion, capcion, anchura, altura, teclado, msg_contenido)
    foto = {}
+   foto_ = cod(foto_)
    foto.type = "photo"
-   foto.id = consultaId
-   foto.photo_url = foto
-   foto.thumb_url = foto
+   foto.id = acadena(consultaId)
+   foto.photo_url = foto_
+   foto.thumb_url = foto_
    si titulo
-      foto.title = titulo
+      foto.title = cod(titulo)
    fin
    si descripcion
-      foto.description = descripcion
+      foto.description = cod(descripcion)
    fin
    si capcion
-      foto.caption = capcion
+      foto.caption = cod(capcion)
    fin
    si anchura
       foto.photo_width = anchura

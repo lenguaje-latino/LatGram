@@ -36,7 +36,6 @@ funcion incluir_variables()
 		global cb = res.callback_query
 	fin
 	si res.inline_query
-		var=verdadero
 		global cinline = res.inline_query
 	fin
 	si msj
@@ -93,6 +92,7 @@ funcion incluir_variables()
 				"peso": msj.video.file_size,
 				"anchura": msj.video.width,
 				"altura": msj.video.height,
+            "tipo": msj.video.mime_type,
 				"thumb": {
 					"id": msj.video.thumb.file_id,
 					"peso": msj.video.thumb.file_size,
@@ -168,6 +168,20 @@ funcion incluir_variables()
 				"id": resp.voice.file_id,
 				"peso": resp.voice.file_size
 			},
+         "video": {
+            "duracion": resp.video.duration,
+            "id": resp.video.file_id,
+            "peso": resp.video.file_size,
+            "anchura": resp.video.width,
+            "altura": resp.video.height,
+            "tipo": resp.video.mime_type,
+            "thumb": {
+               "id": resp.video.thumb.file_id,
+               "peso": resp.video.thumb.file_size,
+               "anchura": resp.video.thumb.width,
+               "altura": resp.video.thumb.height
+            }
+         },
 			"archivo": {
 				"nombre": resp.document.file_name,
 				"formato": resp.document.mime_type,

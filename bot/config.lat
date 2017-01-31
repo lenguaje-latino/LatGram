@@ -15,8 +15,7 @@ retornar {
       "exportar",
       "promover",
       "creadores",
-      "resolver",
-      "portapapeles"
+      "resolver"
    ],
 
    "grupos":[ // ajustes para todos los grupos en caso de que no haya un registro
