@@ -1,13 +1,13 @@
 retornar {
-   "usuarios":[
-   {
-      "start": "¡Hey! %s, soy @%s.\n"
-      .."\nEstás probando el nuevo bot escrito completamente en la *programación Latino* con matches, consultas inline y más. 😄👍",
+        "usuarios":[
+        {
+                "start": "¡Hey! %s, soy @%s.\n"
+                .."\nEstás probando el nuevo bot escrito completamente en la *programación Latino* con matches, consultas inline y más. 😄👍",
 
-      "id": "*Chat ID*: %i\n*Usuario ID*: %i"
-   }
-   ],
-   "error":[
-      "*El usuario no está registrado en la base de datos*."
-   ]
+                "id": "*Chat ID*: %i\n*Usuario ID*: %i"
+        }
+        ],
+        "error":[
+        "*El usuario no está registrado en la base de datos*."
+        ]
 }

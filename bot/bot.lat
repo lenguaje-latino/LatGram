@@ -1,4 +1,9 @@
 #!/usr/bin/latino
+/* información */
+VERSION = 0.6
+DESARROLLADOR = "@Jarriz"
+APOYO = "@Webrom"
+
 config = incluir ('bot/config')
 URL = 'https://api.telegram.org/bot' .. config.api_key .. '/'
 AURL = 'https://api.telegram.org/file/bot' .. config.api_key .. '/'
@@ -7,472 +12,490 @@ md = "markdown"
 
 //&reply_markup={"keyboard":[["Yes","No"],["Maybe"],["1","2","3"]],"one_time_keyboard":true}
 funcion cod(texto)
-   x = cadena.reemplazar(texto, "\n", cadena.formato("%c", 10))
-   retornar curl.escape(x)
+        x = cadena.reemplazar(texto, "\n", cadena.formato("%c", 10))
+        retornar curl.escape(x)
 fin
 
 funcion parsear(teclado_inline, normal)
-	si tipo(teclado_inline) == "lista"
-		inline = []
-		desde (i=0;i<teclado_inline;i++)
-			lista.agregar(inline, teclado_inline[i])
-		fin
-		si normal
-			retornar { "keyboard": inline, "one_time_keyboard": verdadero }
-		sino
-			retornar { "inline_keyboard": inline }
-		fin
-	fin
-	imprimir("Elemento inesperado, el elemento debe ser lista, no "..tipo(teclado_inline)..".")
+        si tipo(teclado_inline) == "lista"
+                inline = []
+                desde (i=0;i<teclado_inline;i++)
+                        lista.agregar(inline, teclado_inline[i])
+                fin
+                si normal
+                        retornar { "keyboard": inline, "one_time_keyboard": verdadero }
+                sino
+                        retornar { "inline_keyboard": inline }
+                fin
+        fin
+        imprimir("Elemento inesperado, el elemento debe ser lista, no "..tipo(teclado_inline)..".")
 fin
 
 funcion incluir_variables()
-	res = res.result[0]
-	msj = res.message
-	global msg = nulo
-	global cinline = nulo
-	global cb = nulo
-	si res.callback_query
-		global cb = res.callback_query
-	fin
-	si res.inline_query
-		global cinline = res.inline_query
-	fin
-	si msj
-		global msg = {
-			"id": msj.message_id,
-			"texto": msj.text,
-			"fecha": msj.date,
-			"capcion": msj.caption,
-			"de": {
-				"id": msj.from.id,
-				"nombre": msj.from.first_name,
-				"apellido": msj.from.last_name,
-				"usuario": msj.from.username
-			},
-			"chat": {
-				"id": msj.chat.id,
-				"titulo": msj.chat.title,
-				"nombre": msj.chat.first_name,
-				"apellido": msj.chat.last_name,
-				"usuario": msj.chat.username,
-				"tipo": msj.chat.type
-			},
-			"agregado": {
-				"id": msj.new_chat_member.id,
-				"usuario": msj.new_chat_member.username,
-				"nombre": msj.new_chat_member.first_name,
-				"apellido": msj.new_chat_member.last_name
-			},
-			"reenviado": {
-				"id": msj.forward_from_message_id,
-				"fecha": msj.forward_date,
-				"chat": {
-					"tipo": msj.forward_from_chat.type,
-					"titulo": msj.forward_from_chat.title,
-					"id": msj.forward_from_chat.id,
-					"usuario": msj.forward_from_chat.username
-				},
-				"de": {
-					"usuario": msj.forward_from.username,
-					"apellido": msj.forward_from.last_name,
-					"id": msj.forward_from.id,
-					"nombre": msj.forward_from.first_name
-				}
-			},
-			"eliminado": {
-				"id": msj.left_chat_member.id,
-				"usuario": msj.left_chat_member.username,
-				"nombre": msj.left_chat_member.first_name,
-				"apellido": msj.left_chat_member.last_name
-			},
-			"video": {
-				"duracion": msj.video.duration,
-				"id": msj.video.file_id,
-				"peso": msj.video.file_size,
-				"anchura": msj.video.width,
-				"altura": msj.video.height,
-            "tipo": msj.video.mime_type,
-				"thumb": {
-					"id": msj.video.thumb.file_id,
-					"peso": msj.video.thumb.file_size,
-					"anchura": msj.video.thumb.width,
-					"altura": msj.video.thumb.height
-				}
-			},
-			"sticker": {
-				"anchura": msj.sticker.width,
-				"altura": msj.sticker.height,
-				"emoji": msj.sticker.emoji,
-				"thumb": {
-					"id": msj.sticker.thumb.file_id,
-					"peso": msj.sticker.thumb.file_size,
-					"anchura": msj.sticker.thumb.width,
-					"altura": msj.sticker.thumb.height
-				},
-				"id": msj.sticker.file_id,
-				"peso": msj.sticker.file_size
-			}
-		}
+        res = res.result[0]
+        msj = res.message
+        global msg = nulo
+        global cinline = nulo
+        global cb = nulo
+        si res.callback_query
+                global cb = res.callback_query
+        fin
+        si res.inline_query
+                global cinline = res.inline_query
+        fin
+        si msj
+                global msg = {
+                        "id": msj.message_id,
+                        "texto": msj.text,
+                        "fecha": msj.date,
+                        "capcion": msj.caption,
+                        "de": {
+                                "id": msj.from.id,
+                                "nombre": msj.from.first_name,
+                                "apellido": msj.from.last_name,
+                                "usuario": msj.from.username
+                        },
+                        "chat": {
+                                "id": msj.chat.id,
+                                "titulo": msj.chat.title,
+                                "nombre": msj.chat.first_name,
+                                "apellido": msj.chat.last_name,
+                                "usuario": msj.chat.username,
+                                "tipo": msj.chat.type
+                        },
+                        "agregado": {
+                                "id": msj.new_chat_member.id,
+                                "usuario": msj.new_chat_member.username,
+                                "nombre": msj.new_chat_member.first_name,
+                                "apellido": msj.new_chat_member.last_name
+                        },
+                        "reenviado": {
+                                "id": msj.forward_from_message_id,
+                                "fecha": msj.forward_date,
+                                "chat": {
+                                        "tipo": msj.forward_from_chat.type,
+                                        "titulo": msj.forward_from_chat.title,
+                                        "id": msj.forward_from_chat.id,
+                                        "usuario": msj.forward_from_chat.username
+                                },
+                                "de": {
+                                        "usuario": msj.forward_from.username,
+                                        "apellido": msj.forward_from.last_name,
+                                        "id": msj.forward_from.id,
+                                        "nombre": msj.forward_from.first_name
+                                }
+                        },
+                        "eliminado": {
+                                "id": msj.left_chat_member.id,
+                                "usuario": msj.left_chat_member.username,
+                                "nombre": msj.left_chat_member.first_name,
+                                "apellido": msj.left_chat_member.last_name
+                        },
+                        "video": {
+                                "duracion": msj.video.duration,
+                                "id": msj.video.file_id,
+                                "peso": msj.video.file_size,
+                                "anchura": msj.video.width,
+                                "altura": msj.video.height,
+                                "tipo": msj.video.mime_type,
+                                "thumb": {
+                                        "id": msj.video.thumb.file_id,
+                                        "peso": msj.video.thumb.file_size,
+                                        "anchura": msj.video.thumb.width,
+                                        "altura": msj.video.thumb.height
+                                }
+                        },
+                        "sticker": {
+                                "anchura": msj.sticker.width,
+                                "altura": msj.sticker.height,
+                                "emoji": msj.sticker.emoji,
+                                "thumb": {
+                                        "id": msj.sticker.thumb.file_id,
+                                        "peso": msj.sticker.thumb.file_size,
+                                        "anchura": msj.sticker.thumb.width,
+                                        "altura": msj.sticker.thumb.height
+                                },
+                                "id": msj.sticker.file_id,
+                                "peso": msj.sticker.file_size
+                        },
+                        "archivo": {
+                                "nombre": msj.document.file_name,
+                                "tipo": msj.document.mime_type,
+                                "id": msj.document.file_id,
+                                "peso": msj.document.file_size,
+                                "thumb": {
+                                        "id": msj.document.thumb.file_id,
+                                        "peso": msj.document.thumb.file_size,
+                                        "anchura": msj.document.thumb.width,
+                                        "altura": msj.document.thumb.height
+                                }
+                        }
+                }
 
-		si msj.photo
-			msg.foto = []
-			desde (i=0;i<msj.photo;i++)
-				si msj.photo[i].file_path
-					lista.agregar(msg.foto, {
-						"id": msj.photo[i].file_id,
-						"peso": msj.photo[i].file_size,
-						"path": msj.photo[i].file_path,
-						"anchura": msj.photo[i].width,
-						"altura": msj.photo[i].height
-					})
-				sino
-					lista.agregar(msg.foto, {
-						"id": msj.photo[i].file_id,
-						"peso": msj.photo[i].file_size,
-						"anchura": msj.photo[i].width,
-						"altura": msj.photo[i].height
-					})
-				fin
-			fin
-		fin
+                si msj.entities
+                        msg.entrada = []
+                        desde (i=0;i<msj.entities;i++)
+                                lista.agregar(msg.entrada, {
+                                        "tipo": msj.entities[i].type,
+                                        "offset": msj.entities[i].offset,
+                                        "longitud": msj.entities[i].length,
+                                        "url": msj.entities[i].url,
+                                        "usuario":{
+                                                "nombre": msj.entities[i].user.first_name,
+                                                "apellido": msj.entities[i].user.last_name,
+                                                "usuario": msj.entities[i].user.username,
+                                                "id": msj.entities[i].user.id
+                                        }
+                                })
+                        fin
+                fin
 
-		resp = msj.reply_to_message
-		global respuesta = {
-			"texto": resp.text,
-			"fecha": resp.date,
-			"id": resp.message_id,
-			"chat": {
-				"tipo": resp.chat.type,
-				"id": resp.chat.id,
-				"usuario": resp.chat.username,
-				"nombre": resp.chat.first_name,
-				"apellido": resp.chat.last_name
-			},
-			"sticker": {
-				"thumb": {
-					"id": resp.sticker.thumb.file_id,
-					"peso": resp.sticker.thumb.file_size,
-					"anchura": resp.sticker.thumb.width,
-					"altura": resp.sticker.thumb.height
-				},
-				"id": resp.sticker.file_id,
-				"peso": resp.sticker.file_size,
-				"emoji": resp.sticker.emoji,
-				"anchura": resp.sticker.width,
-				"altura": resp.sticker.height
-			},
-			"voz": {
-				"duracion": resp.voice.duration,
-				"formato": resp.voice.mime_type,
-				"id": resp.voice.file_id,
-				"peso": resp.voice.file_size
-			},
-         "video": {
-            "duracion": resp.video.duration,
-            "id": resp.video.file_id,
-            "peso": resp.video.file_size,
-            "anchura": resp.video.width,
-            "altura": resp.video.height,
-            "tipo": resp.video.mime_type,
-            "thumb": {
-               "id": resp.video.thumb.file_id,
-               "peso": resp.video.thumb.file_size,
-               "anchura": resp.video.thumb.width,
-               "altura": resp.video.thumb.height
-            }
-         },
-			"archivo": {
-				"nombre": resp.document.file_name,
-				"formato": resp.document.mime_type,
-				"id": resp.document.file_id,
-				"peso": resp.document.file_size
-			},
-			"de": {
-				"id": resp.from.id,
-				"usuario": resp.from.username,
-				"nombre": resp.from.first_name,
-				"apellido": resp.from.last_name
-			}
-		}
-		si resp.photo
-			respuesta.foto = []
-			desde (i=0;i<resp.photo;i++)
-				si resp.photo[i].file_path
-					lista.agregar(respuesta.foto, {
-						"id": resp.photo[i].file_id,
-						"peso": resp.photo[i].file_size,
-						"path": resp.photo[i].file_path,
-						"anchura": resp.photo[i].width,
-						"altura": resp.photo[i].height
-					})
-				sino
-					lista.agregar(respuesta.foto, {
-						"id": resp.photo[i].file_id,
-						"peso": resp.photo[i].file_size,
-						"anchura": resp.photo[i].width,
-						"altura": resp.photo[i].height
-					})
-				fin
-			fin
-		fin
-	fin
+                si msj.photo
+                        msg.foto = []
+                        desde (i=0;i<msj.photo;i++)
+                                lista.agregar(msg.foto, {
+                                        "id": msj.photo[i].file_id,
+                                        "peso": msj.photo[i].file_size,
+                                        "path": msj.photo[i].file_path,
+                                        "anchura": msj.photo[i].width,
+                                        "altura": msj.photo[i].height
+                                })
+                        fin
+                fin
 
-	si cinline
-		global cinline = {
-			"id": cinline.id,
-			"texto": cinline.query,
-			"offset": cinline.offset,
-			"de": {
-				"id": cinline.from.id,
-				"nombre": cinline.from.first_name,
-				"apellido": cinline.from.last_name,
-				"usuario": cinline.from.username
-			},
-			"chat": {
-				"id": cinline.chat.id,
-				"nombre": cinline.chat.first_name,
-				"apellido": cinline.chat.last_name,
-				"usuario": cinline.chat.username
-			}
-		}
-	fin
+                resp = msj.reply_to_message
+                global respuesta = {
+                        "texto": resp.text,
+                        "fecha": resp.date,
+                        "id": resp.message_id,
+                        "chat": {
+                                "tipo": resp.chat.type,
+                                "id": resp.chat.id,
+                                "usuario": resp.chat.username,
+                                "nombre": resp.chat.first_name,
+                                "apellido": resp.chat.last_name
+                        },
+                        "sticker": {
+                                "thumb": {
+                                        "id": resp.sticker.thumb.file_id,
+                                        "peso": resp.sticker.thumb.file_size,
+                                        "anchura": resp.sticker.thumb.width,
+                                        "altura": resp.sticker.thumb.height
+                                },
+                                "id": resp.sticker.file_id,
+                                "peso": resp.sticker.file_size,
+                                "emoji": resp.sticker.emoji,
+                                "anchura": resp.sticker.width,
+                                "altura": resp.sticker.height
+                        },
+                        "voz": {
+                                "duracion": resp.voice.duration,
+                                "formato": resp.voice.mime_type,
+                                "id": resp.voice.file_id,
+                                "peso": resp.voice.file_size
+                        },
+                        "video": {
+                                "duracion": resp.video.duration,
+                                "id": resp.video.file_id,
+                                "peso": resp.video.file_size,
+                                "anchura": resp.video.width,
+                                "altura": resp.video.height,
+                                "tipo": resp.video.mime_type,
+                                "thumb": {
+                                        "id": resp.video.thumb.file_id,
+                                        "peso": resp.video.thumb.file_size,
+                                        "anchura": resp.video.thumb.width,
+                                        "altura": resp.video.thumb.height
+                                }
+                        },
+                        "archivo": {
+                                "nombre": resp.document.file_name,
+                                "tipo": resp.document.mime_type,
+                                "id": resp.document.file_id,
+                                "peso": resp.document.file_size,
+                                "thumb": {
+                                        "id": resp.document.thumb.file_id,
+                                        "peso": resp.document.thumb.file_size,
+                                        "anchura": resp.document.thumb.width,
+                                        "altura": resp.document.thumb.height
+                                }
+                        },
+                        "de": {
+                                "id": resp.from.id,
+                                "usuario": resp.from.username,
+                                "nombre": resp.from.first_name,
+                                "apellido": resp.from.last_name
+                        }
+                }
+                si resp.photo
+                        respuesta.foto = []
+                        desde (i=0;i<resp.photo;i++)
+                                lista.agregar(respuesta.foto, {
+                                        "id": resp.photo[i].file_id,
+                                        "peso": resp.photo[i].file_size,
+                                        "path": resp.photo[i].file_path,
+                                        "anchura": resp.photo[i].width,
+                                        "altura": resp.photo[i].height
+                                })
+                        fin
+                fin
+        fin
 
-	si cb
-		global cb = {
-			"id": cb.id,
-			"chat_instancia": cb.chat_instance,
-			"datos": cb.data,
-			"de": {
-				"id": cb.from.id,
-				"usuario": cb.from.username,
-				"nombre": cb.from.first_name
-			},
-			"msg": {
-				"id": cb.message.message_id,
-				"fecha": cb.message.date,
-				"chat": {
-					"tipo": cb.message.chat.type,
-					"id": cb.message.chat.id,
-					"usuario": cb.message.chat.username,
-					"nombre": cb.message.chat.first_name
-				},
-				"de": {
-					"id": cb.message.from.id,
-					"usuario": cb.message.from.username,
-					"nombre": cb.message.from.first_name
-				},
-				"sticker": {
-					"id": cb.message.sticker.file_id,
-					"thumb": {
-						"id": cb.message.sticker.thumb.file_id,
-						"peso": cb.message.sticker.thumb.file_size,
-						"anchura": cb.message.sticker.thumb.width,
-						"altura": cb.message.sticker.thumb.height
-					},
-					"peso": cb.message.sticker.file_size,
-					"emoji": cb.message.sticker.emoji,
-					"anchura": cb.message.sticker.width,
-					"altura": cb.message.sticker.height
-				},
-				"respuesta": {
-					"texto": cb.message.reply_to_message.text,
-					"fecha": cb.message.reply_to_message.date,
-					"id": cb.message.reply_to_message.message_id,
-					"chat": {
-						"tipo": cb.message.reply_to_message.chat.type,
-						"id": cb.message.reply_to_message.chat.id,
-						"usuario": cb.message.reply_to_message.chat.username,
-						"nombre": cb.message.reply_to_message.chat.first_name
-					},
-					"de": {
-						"id": cb.message.reply_to_message.from.id,
-						"usuario": cb.message.reply_to_message.from.username,
-						"nombre": cb.message.reply_to_message.from.first_name
-					}
-				}
-			}
-		}
-	fin
+        si cinline
+                global cinline = {
+                        "id": cinline.id,
+                        "texto": cinline.query,
+                        "offset": cinline.offset,
+                        "de": {
+                                "id": cinline.from.id,
+                                "nombre": cinline.from.first_name,
+                                "apellido": cinline.from.last_name,
+                                "usuario": cinline.from.username
+                        },
+                        "chat": {
+                                "id": cinline.chat.id,
+                                "nombre": cinline.chat.first_name,
+                                "apellido": cinline.chat.last_name,
+                                "usuario": cinline.chat.username
+                        }
+                }
+        fin
+
+        si cb
+                global cb = {
+                        "id": cb.id,
+                        "chat_instancia": cb.chat_instance,
+                        "datos": cb.data,
+                        "de": {
+                                "id": cb.from.id,
+                                "usuario": cb.from.username,
+                                "nombre": cb.from.first_name
+                        },
+                        "msg": {
+                                "id": cb.message.message_id,
+                                "fecha": cb.message.date,
+                                "chat": {
+                                        "tipo": cb.message.chat.type,
+                                        "id": cb.message.chat.id,
+                                        "usuario": cb.message.chat.username,
+                                        "nombre": cb.message.chat.first_name
+                                },
+                                "de": {
+                                        "id": cb.message.from.id,
+                                        "usuario": cb.message.from.username,
+                                        "nombre": cb.message.from.first_name
+                                },
+                                "sticker": {
+                                        "id": cb.message.sticker.file_id,
+                                        "thumb": {
+                                                "id": cb.message.sticker.thumb.file_id,
+                                                "peso": cb.message.sticker.thumb.file_size,
+                                                "anchura": cb.message.sticker.thumb.width,
+                                                "altura": cb.message.sticker.thumb.height
+                                        },
+                                        "peso": cb.message.sticker.file_size,
+                                        "emoji": cb.message.sticker.emoji,
+                                        "anchura": cb.message.sticker.width,
+                                        "altura": cb.message.sticker.height
+                                },
+                                "respuesta": {
+                                        "texto": cb.message.reply_to_message.text,
+                                        "fecha": cb.message.reply_to_message.date,
+                                        "id": cb.message.reply_to_message.message_id,
+                                        "chat": {
+                                                "tipo": cb.message.reply_to_message.chat.type,
+                                                "id": cb.message.reply_to_message.chat.id,
+                                                "usuario": cb.message.reply_to_message.chat.username,
+                                                "nombre": cb.message.reply_to_message.chat.first_name
+                                        },
+                                        "de": {
+                                                "id": cb.message.reply_to_message.from.id,
+                                                "usuario": cb.message.reply_to_message.from.username,
+                                                "nombre": cb.message.reply_to_message.from.first_name
+                                        }
+                                }
+                        }
+                }
+        fin
 fin
 
 funcion iniciar_bot()
-	incluir_variables()
-	desde (num_plugin=0; num_plugin<plugins; num_plugin++)
-		si acadena(plugins[num_plugin].subproceso) == "funcion" // convertimos a cadena y obligamos al usuario a usar una función
-			retorna = plugins[num_plugin].subproceso()
-			si (retorna && tipo(retorna) != "logico" && !json_res)
-				imprimir(color.r_azul..color.marcado.."\n "..retorna.." "..color.reset
-				..color.r_rojo.."\nPlugin: "..color.blanco..color.subrayado..plugins_montados[num_plugin]
-				..color.reset, 1)
-				retornar 0
-			fin
-		fin
-		si plugins[num_plugin].comandos
-			desde (num_comando=0; num_comando<(plugins[num_plugin].comandos); num_comando++)
-				si msg.texto
-					matches = cadena.match(msg.texto, plugins[num_plugin].comandos[num_comando])
-					si matches
-						matches = matches[0]
-						blocks = matches
-						si convertir.cadena(plugins[num_plugin].accion) == "funcion" && !json_res
-							plugins[num_plugin].accion()
-							imprimir(color.marcado..color.r_verde.."\n "..matches[0].." "..color.reset
-							..color.r_verde.."\nUsuario: "..color.reset..msg.de.nombre
-							..color.r_verde.."\nID: "..color.amarillo..msg.de.id
-							..color.r_rojo.."\nPlugin: "..color.blanco..color.subrayado..plugins_montados[num_plugin]
-							..color.reset, 1)
-							retornar 0
-						fin
-					fin
-				fin
-			fin
-		fin
-		si plugins[num_plugin].callbacks
-			desde (cb_num=0; cb_num<(plugins[num_plugin].callbacks); cb_num++)
-				si cb && cb.datos
-					cmatches = cadena.match(cb.datos, plugins[num_plugin].callbacks[cb_num])
-					si cmatches
-						cmatches = cmatches[0]
-						cblocks = cmatches
-						si convertir.cadena(plugins[num_plugin].callback) == "funcion" && !json_res
-							plugins[num_plugin].callback()
-							imprimir(color.marcado..color.blanco.."\n "..cmatches[0].." "..color.reset
-							..color.r_verde.."\nUsuario: "..color.reset..cb.de.nombre
-							..color.r_verde.."\nID: "..color.amarillo..cb.de.id
-							..color.r_rojo.."\nPlugin: "..color.blanco..color.subrayado..plugins_montados[num_plugin]
-							..color.reset, 1)
-							retornar 0
-						fin
-					fin
-				fin
-			fin
-		fin
-		si config.consultas_inline
-			si plugins[num_plugin].icomandos
-				desde (num_icomando=0; num_icomando<(plugins[num_plugin].icomandos); num_icomando++)
-					si cinline && cinline.texto
-						imatches = cadena.match(cinline.texto, plugins[num_plugin].icomandos[num_icomando])
-						si imatches
-							imatches = imatches[0]
-							iblocks = imatches
-							si convertir.cadena(plugins[num_plugin].inline) == "funcion" && !json_res
-								plugins[num_plugin].inline()
-								imprimir(color.marcado..color.r_purpura.."\n "..imatches[0].." "..color.reset
-								..color.r_verde.."\nUsuario: "..color.reset..cinline.de.nombre
-								..color.r_verde.."\nID: "..color.amarillo..cinline.de.id
-								..color.r_rojo.."\nPlugin: "..color.blanco..color.subrayado..plugins_montados[num_plugin]
-								..color.reset, 1)
-								retornar 0
-							fin
-						fin
-					fin
-				fin
-			fin
-		fin
-	fin
+        incluir_variables()
+        desde (num_plugin=0; num_plugin<plugins; num_plugin++)
+                si acadena(plugins[num_plugin].subproceso) == "funcion" // convertimos a cadena y obligamos al usuario a usar una función
+                        retorna = plugins[num_plugin].subproceso()
+                        si (retorna && tipo(retorna) != "logico" && !json_res)
+                                imprimir(color.r_azul..color.marcado.."\n "..retorna.." "..color.reset
+                                ..color.r_rojo.."\nPlugin: "..color.blanco..color.subrayado..plugins_montados[num_plugin]
+                                ..color.reset, 1)
+                                retornar 0
+                        fin
+                fin
+                si plugins[num_plugin].comandos
+                        desde (num_comando=0; num_comando<(plugins[num_plugin].comandos); num_comando++)
+                                si msg.texto
+                                        matches = cadena.match(msg.texto, plugins[num_plugin].comandos[num_comando])
+                                        si matches
+                                                matches = matches[0]
+                                                blocks = matches
+                                                si convertir.cadena(plugins[num_plugin].accion) == "funcion" && !json_res
+                                                        plugins[num_plugin].accion()
+                                                        imprimir(color.marcado..color.r_verde.."\n "..matches[0].." "..color.reset
+                                                        ..color.r_verde.."\nUsuario: "..color.reset..msg.de.nombre
+                                                        ..color.r_verde.."\nID: "..color.amarillo..msg.de.id
+                                                        ..color.r_rojo.."\nPlugin: "..color.blanco..color.subrayado..plugins_montados[num_plugin]
+                                                        ..color.reset, 1)
+                                                        retornar 0
+                                                fin
+                                        fin
+                                fin
+                        fin
+                fin
+                si plugins[num_plugin].callbacks
+                        desde (cb_num=0; cb_num<(plugins[num_plugin].callbacks); cb_num++)
+                                si cb && cb.datos
+                                        cmatches = cadena.match(cb.datos, plugins[num_plugin].callbacks[cb_num])
+                                        si cmatches
+                                                cmatches = cmatches[0]
+                                                cblocks = cmatches
+                                                si convertir.cadena(plugins[num_plugin].callback) == "funcion" && !json_res
+                                                        plugins[num_plugin].callback()
+                                                        imprimir(color.marcado..color.blanco.."\n "..cmatches[0].." "..color.reset
+                                                        ..color.r_verde.."\nUsuario: "..color.reset..cb.de.nombre
+                                                        ..color.r_verde.."\nID: "..color.amarillo..cb.de.id
+                                                        ..color.r_rojo.."\nPlugin: "..color.blanco..color.subrayado..plugins_montados[num_plugin]
+                                                        ..color.reset, 1)
+                                                        retornar 0
+                                                fin
+                                        fin
+                                fin
+                        fin
+                fin
+                si config.consultas_inline
+                        si plugins[num_plugin].icomandos
+                                desde (num_icomando=0; num_icomando<(plugins[num_plugin].icomandos); num_icomando++)
+                                        si cinline && cinline.texto
+                                                imatches = cadena.match(cinline.texto, plugins[num_plugin].icomandos[num_icomando])
+                                                si imatches
+                                                        imatches = imatches[0]
+                                                        iblocks = imatches
+                                                        si convertir.cadena(plugins[num_plugin].inline) == "funcion" && !json_res
+                                                                plugins[num_plugin].inline()
+                                                                imprimir(color.marcado..color.r_purpura.."\n "..imatches[0].." "..color.reset
+                                                                ..color.r_verde.."\nUsuario: "..color.reset..cinline.de.nombre
+                                                                ..color.r_verde.."\nID: "..color.amarillo..cinline.de.id
+                                                                ..color.r_rojo.."\nPlugin: "..color.blanco..color.subrayado..plugins_montados[num_plugin]
+                                                                ..color.reset, 1)
+                                                                retornar 0
+                                                        fin
+                                                fin
+                                        fin
+                                fin
+                        fin
+                fin
+        fin
 fin
 
 
 global funcion _BOT(argumento)
-	si !argumento retornar 0 fin
-	si argumento == "iniciar"
-		global leng = incluir("lenguajes/"..config.lenguaje)
-		global _creadores_ = archivo.leer(config.datos[0].creadores)
-		global _gadmins_ = archivo.leer(config.datos[0].gadmins)
-		global _gmods_ = archivo.leer(config.datos[0].gmods)
-		global _gbans_ = archivo.leer(config.datos[0].gbans)
-		limpiar()
-		verificacion = verificar_apikey()
-		si ! verificacion.ok
-			imprimir("\aERROR ("..verificacion.error_code.." - "..verificacion.description..")"
-			.."\nVerifica la apikey en ajustes.lat", 1)
-			redis.desconectar(com)
-			retorno 0
-		fin
+        si !argumento retornar 0 fin
+        si argumento == "iniciar"
+                global leng = incluir("lenguajes/"..config.lenguaje)
+                global _creadores_ = archivo.leer(config.datos[0].creadores)
+                global _gadmins_ = archivo.leer(config.datos[0].gadmins)
+                global _gmods_ = archivo.leer(config.datos[0].gmods)
+                global _gbans_ = archivo.leer(config.datos[0].gbans)
+                limpiar()
+                verificacion = verificar_apikey()
+                si ! verificacion.ok
+                        imprimir("\aERROR ("..verificacion.error_code.." - "..verificacion.description..")"
+                        .."\nVerifica la apikey en ajustes.lat", 1)
+                        redis.desconectar(com)
+                        retorno 0
+                fin
 
-		creadores_ = json.decodificar(archivo.leer(config.datos[0].creadores))
-		creadores_ = creadores_.creadores
-		inicio = enviarMensaje(acadena(creadores_[0].id), "<b>Bot iniciado</b>", html)
-		imprimir(color.azul)
-		si inicio
-			imprimir("\tConfirmación enviada a " .. creadores_[0].id .. ".\n\tBot @"..bot.usuario..", ID: "..bot.id, 1)
-		sino
-			imprimir("\tError en confirmación.\n\tBot @"..bot.usuario..", ID: "..bot.id, 1)
-		fin
-		imprimir(color.reset.."\n", 1)
+                creadores_ = json.decodificar(archivo.leer(config.datos[0].creadores))
+                creadores_ = creadores_.creadores
+                inicio = enviarMensaje(acadena(creadores_[0].id), "<b>Bot iniciado</b>", html)
+                imprimir(color.azul)
+                si inicio
+                        imprimir("\tConfirmación enviada a " .. creadores_[0].id .. ".\n\tBot @"..bot.usuario..", ID: "..bot.id, 1)
+                sino
+                        imprimir("\tError en confirmación.\n\tBot @"..bot.usuario..", ID: "..bot.id, 1)
+                fin
+                imprimir(color.reset.."\n", 1)
 
-		si config.updates[0].limpiar_al_iniciar
-			updates = limpiar_updates()
-			si updates
-				imprimirf(color.cafe.."Actualizaciones limpias con un total de "..updates..color.reset.."\n\n")
-			fin
-		fin
-	osi argumento == "recargar"
-		limpiar()
-		imprimirf(color.azul.."\n\tBot recargado.\n\n")
-		config = incluir("bot/config")
-		global leng = incluir("lenguajes/"..config.lenguaje)
-		global _creadores_ = archivo.leer(config.datos[0].creadores)
-		global _gadmins_ = archivo.leer(config.datos[0].gadmins)
-		global _gmods_ = archivo.leer(config.datos[0].gmods)
-		global _gbans_ = archivo.leer(config.datos[0].gbans)
-	osi argumento == "recargar_creadores"
-		global _creadores_ = archivo.leer(config.datos[0].creadores)
-		retornar 0
-	osi argumento == "recargar_gadmins"
-		global _gadmins_ = archivo.leer(config.datos[0].gadmins)
-		retornar 0
-	osi argumento == "recargar_gmods"
-		global _gmods_ = archivo.leer(config.datos[0].gmods)
-		retornar 0
-	osi argumento == "recargar_gbans"
-		global _gbans_ = archivo.leer(config.datos[0].gbans)
-		retornar 0
-	fin
+                si config.updates[0].limpiar_al_iniciar
+                        updates = limpiar_updates()
+                        si updates
+                                imprimirf(color.cafe.."Actualizaciones limpias con un total de "..updates..color.reset.."\n\n")
+                        fin
+                fin
+        osi argumento == "recargar"
+                limpiar()
+                imprimirf(color.azul.."\n\tBot recargado.\n\n")
+                config = incluir("bot/config")
+                global leng = incluir("lenguajes/"..config.lenguaje)
+                global _creadores_ = archivo.leer(config.datos[0].creadores)
+                global _gadmins_ = archivo.leer(config.datos[0].gadmins)
+                global _gmods_ = archivo.leer(config.datos[0].gmods)
+                global _gbans_ = archivo.leer(config.datos[0].gbans)
+        osi argumento == "recargar_creadores"
+                global _creadores_ = archivo.leer(config.datos[0].creadores)
+                retornar 0
+        osi argumento == "recargar_gadmins"
+                global _gadmins_ = archivo.leer(config.datos[0].gadmins)
+                retornar 0
+        osi argumento == "recargar_gmods"
+                global _gmods_ = archivo.leer(config.datos[0].gmods)
+                retornar 0
+        osi argumento == "recargar_gbans"
+                global _gbans_ = archivo.leer(config.datos[0].gbans)
+                retornar 0
+        fin
 
-	global plugins = cargar_plugins()
+        global plugins = cargar_plugins()
 fin
 
 
 funcion menu(argc, argv)
-	incluir ('bot/metodos')
-	incluir ('bot/utilidades')
+        incluir ('bot/metodos')
+        incluir ('bot/utilidades')
 
-	json_res=falso
-	si argv[1] == "--json" || argv[1] == "-j" json_res=verdadero fin
-	si argv[1] == "-h"
-		si cadena.contiene(argv[0], "./")
-			imprimir("Ayuda "..color.cyan..argv[0].." [opción]"..color.reset.."\n\t"..color.bold.."[--json ][-j]"..color.reset..": imprimir en formato json",1)
-		sino
-			imprimir("Ayuda "..color.cyan.."latino "..argv[0].." [opción]"..color.reset.."\n\t"..color.bold.."[--json ][-j]"..color.reset..": imprimir en formato json",1)
-		fin
-		retornar 0
-	fin
-	com = redis.conectar(config.redis[0].ip, config.redis[0].puerto)
+        json_res=falso
+        si argv[1] == "--json" || argv[1] == "-j" json_res=verdadero fin
+        si argv[1] == "-h"
+                si cadena.contiene(argv[0], "./")
+                        imprimir("Ayuda "..color.cyan..argv[0].." [opción]"..color.reset.."\n\t"..color.bold.."[--json ][-j]"..color.reset..": imprimir en formato json",1)
+                sino
+                        imprimir("Ayuda "..color.cyan.."latino "..argv[0].." [opción]"..color.reset.."\n\t"..color.bold.."[--json ][-j]"..color.reset..": imprimir en formato json",1)
+                fin
+                retornar 0
+        fin
+        com = redis.conectar(config.redis[0].ip, config.redis[0].puerto)
 
-	bot = ObtenerBot()
-	bot = bot.result
-	global bot = {
-		"id": bot.id,
-		"nombre": bot.first_name,
-		"usuario": bot.username
-	}
+        bot = ObtenerBot()
+        bot = bot.result
+        global bot = {
+                "id": bot.id,
+                "nombre": bot.first_name,
+                "usuario": bot.username
+        }
 
-	_BOT("iniciar")
-	global BOT_SHASH = "bot:"..bot.id..":schats"
-	global BOT_HHASH = "latgram:usuarios"
+        _BOT("iniciar")
+        global BOT_SHASH = "bot:"..bot.id..":schats"
+        global BOT_HHASH = "latgram:usuarios"
 
-	mientras verdadero
-		res = actualizaciones()
-		si res
-			si json_res ires() fin
-			iniciar_bot()
-		fin
-		si sis.avisar(2) || sis.avisar(20)
-			imprimir("\nBot detenido (@"..bot.usuario..")",1)
-			redis.desconectar(com)
-			sis.salir()
-		fin
-	fin
+        mientras verdadero
+                res = actualizaciones()
+                si res
+                        si json_res ires() fin
+                        iniciar_bot()
+                fin
+                si sis.avisar(2) || sis.avisar(20)
+                        imprimir("\nBot detenido (@"..bot.usuario..")",1)
+                        redis.desconectar(com)
+                        sis.salir()
+                fin
+        fin
 fin

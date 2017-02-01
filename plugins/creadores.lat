@@ -1,14 +1,14 @@
 funcion mensajes()
-   si !es_creador(msg.de.id) retornar falso fin
-   si matches[1] == "recargar"
-      _BOT("recargar")
-      enviarMensaje(msg.chat.id, "Bot *recargado*.", md)
-   fin
+        si !es_creador(msg.de.id) retornar falso fin
+        si matches[1] == "recargar"
+                _BOT("recargar")
+                enviarMensaje(msg.chat.id, "Bot *recargado*.", md)
+        fin
 fin
 
 retornar {
-   "comandos":[
-      "/(recargar)"
-   ],
-   "accion": mensajes
+        "comandos":[
+                "/(recargar)"
+        ],
+        "accion": mensajes
 }

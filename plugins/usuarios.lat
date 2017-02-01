@@ -1,70 +1,119 @@
 funcion inline()
-    cinline_datos = "\nID: "..cinline.de.id.."\nNombre: "..cinline.de.nombre
-    si cinline.de.apellido
-        cinline_datos = cinline_datos.."\nApellido: "..cinline.de.apellido
-    fin
-    si cinline.de.usuario
-        cinline_datos = cinline_datos.."\nUsuario: @"..cinline.de.usuario
-    fin
-    array = [
-      textoInline(1, "Tu información de usuario", cinline_datos),
-      textoInline(2, "Tu ID", "`"..cinline.de.id.."`", falso, md)
-      ]
-      imprimir(array)
-    enviarConsultaInline(cinline.id, array, 1)
+        cinline_datos = "\nID: "..cinline.de.id.."\nNombre: "..cinline.de.nombre
+        si cinline.de.apellido
+                cinline_datos ..= "\nApellido: "..cinline.de.apellido
+        fin
+        si cinline.de.usuario
+                cinline_datos ..= "\nUsuario: @"..cinline.de.usuario
+        fin
+        array = [
+                textoInline(1, "Tu información de usuario", cinline_datos),
+                textoInline(2, "Tu ID", "`"..cinline.de.id.."`", falso, md)
+        ]
+        enviarConsultaInline(cinline.id, array, 1)
 fin
 
 funcion callback()
-   si cmatches[1] == "latino"
-      link_teclado = [[
-      {"text":"Github","url":"https://github.com/lenguaje-latino/BotGram"}
-      ]]
-      editarMensaje(cb.msg.chat.id, cb.msg.id, "*Latino* es un lenguaje de programación en español interpretado hecho en C"
-      .."\n¿Puedo ayudar? Si así es, *Latino busca desarrolladores* para Latino."
-      .."\nCabe destacar que este bot *fué programado en Latino*.", md, link_teclado)
-   fin
+        si cmatches[1] == "latino"
+                link_teclado = [[
+                {"text":"Github","url":"https://github.com/lenguaje-latino/BotGram"}
+                ]]
+                editarMensaje(cb.msg.chat.id, cb.msg.id, "*Latino* es un lenguaje de programación en español interpretado hecho en C"
+                .."\n¿Puedo ayudar? Si así es, *Latino busca desarrolladores* para Latino."
+                .."\nCabe destacar que este bot *fué programado en Latino*.", md, link_teclado)
+        fin
 fin
 
 funcion mensajes()
-   si matches[1] == "id"
-      si !matches[2]
-         enviarMensaje(msg.chat.id, cadena.formato(leng.usuarios[0].id, msg.chat.id, msg.de.id), md)
-         retornar 0
-      fin
-      id_obtenida = obtener_id_usuario(matches[2])
-      si id_obtenida
-         enviarMensaje(msg.chat.id, "`"..id_obtenida.."`", md)
-      sino
-         enviarMensaje(msg.chat.id, leng.error[0], md)
-      fin
-   fin
-   si matches[1] == "start"
-      ayuda = [[
-      {"text":"Programación Latino","callback_data":"!!!latino"},
-      {"text":"Repositorio del Bot","url":"https://github.com/lenguaje-latino/BotGram"}
-      ]]
-      enviarTeclado(msg.chat.id, cadena.formato(leng.usuarios[0].start, no_markdown(msg.de.nombre), no_markdown(bot.usuario)), ayuda, md)
-   fin
+        si matches[1] == "id"
+                si !matches[2]
+                        enviarMensaje(msg.chat.id, cadena.formato(leng.usuarios[0].id, msg.chat.id, msg.de.id), md)
+                        retornar 0
+                fin
+                id_obtenida = obtener_id_usuario(matches[2])
+                si id_obtenida
+                        enviarMensaje(msg.chat.id, "`"..id_obtenida.."`", md)
+                sino
+                        enviarMensaje(msg.chat.id, leng.error[0], md)
+                fin
+        fin
+        si matches[1] == "start"
+                ayuda = [[
+                        {"text":"Programación Latino","callback_data":"!!!latino"},
+                        {"text":"Repositorio del Bot","url":"https://github.com/lenguaje-latino/BotGram"}
+                ]]
+                enviarTeclado(msg.chat.id, cadena.formato(leng.usuarios[0].start, no_markdown(msg.de.nombre), no_markdown(bot.usuario)), ayuda, md)
+        fin
+        si matches[1] == "res"
+                si respuesta.id
+                        datos = "*Nombre*: "..no_markdown(respuesta.de.nombre)
+                        .."\n*Chat ID*: "..respuesta.chat.id
+                        .."\n*ID*: "..respuesta.de.id
+                        si respuesta.de.usuario
+                                datos ..= "\n*Alias*: @"..no_markdown(respuesta.de.usuario)
+                        fin
+                        enviarMensaje(msg.chat.id,datos,md)
+                        retornar 0
+                fin
+                si msg.entrada[1].usuario.id
+                        sec = msg.entrada[1].usuario.id
+                sino
+                        sec = matches[2]
+                fin
+                id_obtenida = obtener_id_usuario(matches[2]) || sec
+                si id_obtenida
+                        si msg.entrada[1].usuario.id
+                                res = {
+                                        "result":{
+                                                "id": msg.entrada[1].usuario.id,
+                                                "username": msg.entrada[1].usuario.usuario,
+                                                "first_name": msg.entrada[1].usuario.nombre
+                                        }
+                                }
+                        sino
+                                res = obtenerChat(id_obtenida)
+                        fin
+                        si res
+                                datos = "*Nombre*: "..no_markdown(res.result.first_name)
+                                .."\n*ID*: "..res.result.id
+                                .."\n*Chat ID*: "..msg.chat.id
+                                si res.result.username
+                                        datos ..= "\n*Alias*: @"..no_markdown(res.result.username)
+                                fin
+                                enviarMensaje(msg.chat.id, datos,md)
+                        fin
+                fin
+        fin
+
+        si matches[1] == "version"
+                enviarMensaje(msg.chat.id, "`LatGram v"..VERSION.."`"
+                .."\n*Desarrollador*: "..DESARROLLADOR
+                .."\n*Apoyo*: "..APOYO, md)
+        fin
 fin
 
 retornar {
-   "comandos": [
-      "^/(id)$",
-      "^/(id) @([[:alnum:]_]+)$",
-      "^/(id)@"..bot.usuario.."$",
-      "^/(start)$",
-      "^/(start)@"..bot.usuario.."$"
-   ],
+        "comandos": [
+                "^/(id)$",
+                "^/(id) @([[:alnum:]_]+)$",
+                "^/(id)@"..bot.usuario.."$",
+                "^/(start)$",
+                "^/(start)@"..bot.usuario.."$",
+                "^/(res)$",
+                "^/(res) @([[:alnum:]_]+)$",
+                "^/(res) (.*)$",
+                "^/(version)$"
+        ],
 
-   "icomandos": [
-      "^id$"
-   ],
+        "icomandos": [
+                "^id$"
+        ],
 
-   "callbacks": [
-      "^!!!(latino)$"
-   ],
+        "callbacks": [
+                "^!!!(latino)$"
+        ],
 
-   "accion": mensajes,
-   "inline": inline,
-   "callback": callback
+        "accion": mensajes,
+        "inline": inline,
+        "callback": callback
 }

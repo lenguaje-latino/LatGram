@@ -1,39 +1,39 @@
 funcion mensajes()
-    s_hash = "extras:"..msg.chat.id
-    h_hash = "extras:"..msg.chat.id..":customs"
-    si matches[1] == "comando"
-        elegir(matches[3])
-        caso "[del]":
-            existe = redis.sborrar(com, s_hash, matches[2])
-            si existe
-                redis.hborrar(com, h_hash, matches[2])
-                enviarMensaje(msg.chat.id, "El comando *"..matches[2].."* fué eliminado con éxito.", md)
-                retornar 0
-            fin
-            enviarMensaje(msg.chat.id, "El comando *"..matches[2].."* no existe.", md)
-            defecto:
-                ok = enviarMensaje(msg.chat.id, "*Nuevo comando*: "..matches[2].."\n\n*Respuesta*:\n"..matches[3], md)
-                si ok
-                    redis.hasignar(com, h_hash, matches[2], matches[3])
-                    redis.sagregar(com, s_hash, matches[2])
-                sino
-                    enviarMensaje(msg.chat.id, "*Error de markdown*", md)
+        s_hash = "extras:"..msg.chat.id
+        h_hash = "extras:"..msg.chat.id..":customs"
+        si matches[1] == "comando"
+                elegir(matches[3])
+                caso "[del]":
+                        existe = redis.sborrar(com, s_hash, matches[2])
+                        si existe
+                                redis.hborrar(com, h_hash, matches[2])
+                                enviarMensaje(msg.chat.id, "El comando *"..matches[2].."* fué eliminado con éxito.", md)
+                                retornar 0
+                        fin
+                        enviarMensaje(msg.chat.id, "El comando *"..matches[2].."* no existe.", md)
+                defecto:
+                        ok = enviarMensaje(msg.chat.id, "*Nuevo comando*: "..matches[2].."\n\n*Respuesta*:\n"..matches[3], md)
+                        si ok
+                                redis.hasignar(com, h_hash, matches[2], matches[3])
+                                redis.sagregar(com, s_hash, matches[2])
+                        sino
+                                enviarMensaje(msg.chat.id, "*Error de markdown*", md)
+                        fin
                 fin
         fin
-    fin
-    si matches[1] == "comandos"
-        comandos = redis.smiembros(com, s_hash)
-        si comandos
-            global lista_final=""
-            desde (v=0; v<comandos; v++)
-                respuesta = redis.hobtener(com, h_hash, comandos[v])
-                lista_final = lista_final.."\n_"..comandos[v].."_: "..respuesta.."."
-            fin
-            enviarMensaje(msg.chat.id, "*Lista de comandos añadidos*"..lista_final, md)
-            retornar 0
+        si matches[1] == "comandos"
+                comandos = redis.smiembros(com, s_hash)
+                si comandos
+                        global lista_final=""
+                        desde (v=0; v<comandos; v++)
+                                respuesta = redis.hobtener(com, h_hash, comandos[v])
+                                lista_final = lista_final.."\n_"..comandos[v].."_: "..respuesta.."."
+                        fin
+                        enviarMensaje(msg.chat.id, "*Lista de comandos añadidos*"..lista_final, md)
+                        retornar 0
+                fin
+                enviarMensaje(msg.chat.id, "*No hay comandos añadidos aún*.", md)
         fin
-        enviarMensaje(msg.chat.id, "*No hay comandos añadidos aún*.", md)
-    fin
 fin
 
 retornar {

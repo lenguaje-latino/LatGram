@@ -1,44 +1,44 @@
 funcion mensajes()
-   si matches[1] == "exportar"
-      si matches[2] == "gbans"
-         si !archivo.leer(config.datos[0].gbans)
-            enviarMensaje(msg.chat.id, "*No hay gbans*.", md)
-            retornar 0
-         fin
-         enviariArchivo(msg.chat.id, config.datos[0].gbans)
-      osi matches[2] ==  "usuarios"
-         ids = crear_archivo_ids_usuarios()
-         si ids
-            enviariArchivo(msg.chat.id, ids)
-            archivo.eliminar(ids)
-            retornar 0
-         fin
-         enviarMensaje(msg.chat.id, "*No hay usuarios registrados en la base de datos*.")
-      osi matches[2] ==  "gmods"
-         si !archivo.leer(config.datos[0].gbans)
-            enviarMensaje(msg.chat.id, "*No hay gmods*.", md)
-            retornar 0
-         fin
-         enviariArchivo(msg.chat.id, config.datos[0].gmods)
-      osi matches[2] ==  "gadmins"
-         si !archivo.leer(config.datos[0].gbans)
-            enviarMensaje(msg.chat.id, "*No hay gadmins*.", md)
-            retornar 0
-         fin
-         enviariArchivo(msg.chat.id, config.datos[0].gadmins)
-      osi matches[2] ==  "creadores"
-         si !archivo.leer(config.datos[0].creadores)
-            enviarMensaje(msg.chat.id, "*No hay creadores*.", md)
-            retornar 0
-         fin
-         enviariArchivo(msg.chat.id, config.datos[0].creadores)
-      fin
-   fin
+        si matches[1] == "exportar"
+                si matches[2] == "gbans"
+                        si !archivo.leer(config.datos[0].gbans)
+                                enviarMensaje(msg.chat.id, "*No hay gbans*.", md)
+                                retornar 0
+                        fin
+                        enviariArchivo(msg.chat.id, config.datos[0].gbans)
+                osi matches[2] ==  "usuarios"
+                        ids = crear_archivo_ids_usuarios()
+                        si ids
+                                enviariArchivo(msg.chat.id, ids)
+                                archivo.eliminar(ids)
+                                retornar 0
+                        fin
+                        enviarMensaje(msg.chat.id, "*No hay usuarios registrados en la base de datos*.")
+                osi matches[2] ==  "gmods"
+                        si !archivo.leer(config.datos[0].gbans)
+                                enviarMensaje(msg.chat.id, "*No hay gmods*.", md)
+                                retornar 0
+                        fin
+                        enviariArchivo(msg.chat.id, config.datos[0].gmods)
+                osi matches[2] ==  "gadmins"
+                        si !archivo.leer(config.datos[0].gbans)
+                                enviarMensaje(msg.chat.id, "*No hay gadmins*.", md)
+                                retornar 0
+                        fin
+                        enviariArchivo(msg.chat.id, config.datos[0].gadmins)
+                osi matches[2] ==  "creadores"
+                        si !archivo.leer(config.datos[0].creadores)
+                                enviarMensaje(msg.chat.id, "*No hay creadores*.", md)
+                                retornar 0
+                        fin
+                        enviariArchivo(msg.chat.id, config.datos[0].creadores)
+                fin
+        fin
 fin
 
 retornar {
-   "comandos":[
-      "^/(exportar) (.*)$"
-   ],
-   "accion": mensajes
+        "comandos":[
+                "^/(exportar) (.*)$"
+        ],
+        "accion": mensajes
 }
