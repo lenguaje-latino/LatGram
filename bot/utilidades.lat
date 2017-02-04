@@ -1,31 +1,4 @@
-funcion colores()
-        colores = {
-                "amarillo": sis.pipe('echo "\033[1;33m"'),
-                "blanco": sis.pipe('echo "\033[1;37m"'),
-                "gris": sis.pipe('echo "\033[0;37m"'),
-                "marcado": sis.pipe('echo "\033[7m"'),
-                "r_gris": sis.pipe('echo "\033[1;30m"'),
-                "cafe": sis.pipe('echo "\033[0;33m"'),
-                "purpura": sis.pipe('echo "\033[0;35m"'),
-                "bold": sis.pipe('echo "\033[1m"'),
-                "subrayado": sis.pipe('echo "\033[4m"'),
-                "italicas": sis.pipe('echo "\033[3m"'),
-                "r_purpura": sis.pipe('echo "\033[1;35m"'),
-                "rojo": sis.pipe('echo "\033[0;31m"'),
-                "r_rojo": sis.pipe('echo "\033[1;31m"'),
-                "cyan": sis.pipe('echo "\033[0;36m"'),
-                "r_cyan": sis.pipe('echo "\033[1;36m"'),
-                "verde": sis.pipe('echo "\033[0;32m"'),
-                "r_verde": sis.pipe('echo "\033[1;32m"'),
-                "azul": sis.pipe('echo "\033[0;34m"'),
-                "r_azul": sis.pipe('echo "\033[1;34m"'),
-                "reset": sis.pipe('echo "\033[0m"'),
-                "negro": sis.pipe('echo "\033[0;30m"')
-        }
-        retornar colores
-fin
-
-color = incluir("bot/.libs/colores")
+color = incluir("bot/colores.lat/src/colores")
 
 funcion unescape(a)
         b = cadena.reemplazar(a, '"', '\"')
@@ -75,29 +48,42 @@ funcion ires()
         retornar falso
 fin
 
+funcion logo()
+imprimirf(color.simp("pbi.rosa")..'\t\t          __
+\t\t|   _ |_ / _  _ _  _
+\t\t|__(_||_ \__)| (_||||
+\n'..color.reset
+)
+fin
+
 funcion cargar_plugins()
+        logo()
         global plugins_montados = []
         plugins = []
         desde (plugin_cargado=0; plugin_cargado<config.plugins; plugin_cargado++)
                 existe = archivo.leer(config.dir..config.plugins[plugin_cargado]..".lat")
                 si ! existe
-                        imprimir(color.r_rojo.."\tError al leer plugin "..color.blanco.."'"..config.plugins[plugin_cargado]..".lat'."..color.reset,1)
+                        imprimirf(color.r_rojo.."\tError al leer plugin "..color.blanco.."'"..config.plugins[plugin_cargado]..".lat'."..color.reset.."\n")
                 sino
                         plugin = incluir(config.dir..config.plugins[plugin_cargado])
                         lista.agregar(plugins_montados, config.plugins[plugin_cargado]..".lat")
                         lista.agregar(plugins, plugin)
-                        imprimir(color.verde.."\tPlugin:\t"..color.cyan..config.plugins[plugin_cargado].."\t"..color.amarillo.."["..(plugin_cargado+1).."/"..(config.plugins+0).."] "..color.r_cyan.."...iniciado."..color.reset,1)
+                        imprimirf(color.verde.."\tPlugin:\t"..color.cyan..config.plugins[plugin_cargado].."\t"..color.amarillo.."["..(plugin_cargado+1).."/"..(config.plugins+0).."] "..color.r_cyan.."...iniciado."..color.reset.."\n")
                 fin
         fin
         si plugins_montados < config.plugins
-                imprimir(color.purpura.."\taviso: "..color.rojo
-                .."verifica config.lat, se montaron "..lista.longitud(plugins_montados).." plugins de "..lista.longitud(config.plugins)..color.reset, 1)
+                imprimirf(color.purpura.."\taviso: "..color.rojo
+                .."verifica config.lat, se montaron "..lista.longitud(plugins_montados).." plugins de "..lista.longitud(config.plugins)..color.reset.."\n")
         fin
-        imprimirf(color.bold..color.blanco.."\n\tSubproceso "..color.marcado..color.r_azul.."  "..color.reset
-        ..color.bold..color.blanco.."  Mensaje "..color.marcado..color.r_verde.."  "..color.reset
-        ..color.bold..color.blanco.."  Inline "..color.marcado..color.r_purpura.."  "..color.reset
-        ..color.bold..color.blanco.."  Callback "..color.marcado..color.blanco.."  "
-        ..color.reset..color.bold.."\n\tVersion: "..VERSION.."\n"..color.reset)
+        imprimirf(color.simp("b.blanco")
+        .."\n\tSubproceso "..color.simp("bm.azul").."  "..color.reset
+        ..color.simp("b.blanco")
+        .."  Mensaje "..color.simp("bm.verde").."  "..color.reset
+        ..color.simp("b.blanco")
+        .."  Inline "..color.simp("bm.purpura").."  "..color.reset
+        ..color.simp("b.blanco")
+        .."  Callback "..color.simp("m.blanco").."  "
+        ..color.reset..color.bold.."\n\tVersion: "..VERSION.."\n"..color.reset.."\n")
         retornar plugins
 fin
 
@@ -169,8 +155,8 @@ fin
 
 funcion es_bot(userid)
         si userid == bot.id retornar falso fin
-        estado = json.decodificar(curl.peticion(URL .. "sendMessage?chat_id=" .. userid .. "&text=test"))
-        si !estado.ok && estado.description ~= "Bot can't send messages to bots"
+        estado = json.decodificar(curl.peticion(URL .. "sendMessage?chat_id=" .. userid .. "&text="..curl.escape("Bienvenido al grupo :)")))
+        si !estado.ok && estado.description ~= "bots"
                 retornar verdadero
         fin
         retornar falso

@@ -26,7 +26,7 @@ Compilar <b>[Latino](https://github.com/primitivorm/latino)</b> para poder corre
 
 Clonar el reposotorio:
 ```bash
-git clone https://github.com/lenguaje-latino/LatGram
+git clone --recursive https://github.com/lenguaje-latino/LatGram
 cd LatGram # entramos a la carpeta del bot
 ```
 
