@@ -10,7 +10,7 @@ funcion mensajes()
         fin
 fin
 
-retornar {d
+retornar {
         "comandos":[
                 "/(recargar)",
                 "/(salir)"
