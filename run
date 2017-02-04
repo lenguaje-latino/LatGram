@@ -1,5 +1,21 @@
 #!/bin/bash
 sesion=LatGram
+no_salir_NO_salir() {
+        while true; do
+                if [[ `date +%H` > 12 ]]; then
+                        hora_actual="$((`date +%H`-12))pm"
+                elif [[ `date +%H` == 12 ]]; then
+                        hora_actual="`date +%H`pm"
+                elif [[ `date +%H` == 0 ]]; then
+                        hora_actual="12am"
+                else
+                        hora_actual="`date +%H`am"
+                fi
+                echo -e "\nDía `date +%F` a las $hora_actual, `date +%M` minutos con `date +%S` segundos" >> log
+                latino bot/bot.lat 2>> log
+        done
+}
+
 case $1 in
    tmux)
    if [[ ! -f "/usr/bin/tmux" ]]; then echo "Estas funciones requieren paquete tmux instalado"; fi
@@ -13,6 +29,13 @@ case $1 in
    matar)
    if [[ ! -f "/usr/bin/tmux" ]]; then echo "Estas funciones requieren paquete tmux instalado"; fi
    tmux kill-session -t "${sesion}"
+   exit;;
+   en_while)
+   no_salir_NO_salir ${2}
+   exit;;
+   seguro)
+   if [[ ! -f "/usr/bin/tmux" ]]; then echo "Estas funciones requieren paquete tmux instalado"; fi
+   tmux new-session -s ${session} -d "bash run en_while ${2}"
    exit;;
 esac
 
