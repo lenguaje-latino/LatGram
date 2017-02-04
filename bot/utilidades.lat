@@ -25,7 +25,7 @@ funcion colores()
         retornar colores
 fin
 
-color = colores()
+color = incluir("bot/.libs/colores")
 
 funcion unescape(a)
         b = cadena.reemplazar(a, '"', '\"')
@@ -181,7 +181,8 @@ funcion limpiar_updates()
         si update
                 update = update.result
                 si lista.longitud(update) > config.updates[0].max
-                        curl.peticion(URL.."getUpdates?offset="..update[lista.longitud(update)-1].update_id)
+                        offset = ((update[update-1].update_id) + 1)
+                        c = curl.peticion(URL.."getUpdates?offset="..anumero(offset))
                         retornar anumero(update)
                 fin
         fin

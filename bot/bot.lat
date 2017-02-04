@@ -495,7 +495,7 @@ funcion menu(argc, argv)
                 si sis.avisar(2) || sis.avisar(20)
                         imprimir("\nBot detenido (@"..bot.usuario..")",1)
                         redis.desconectar(com)
-                        sis.salir()
+                        salir()
                 fin
         fin
 fin

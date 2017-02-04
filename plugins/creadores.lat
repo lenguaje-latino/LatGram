@@ -4,11 +4,16 @@ funcion mensajes()
                 _BOT("recargar")
                 enviarMensaje(msg.chat.id, "Bot *recargado*.", md)
         fin
+        si matches[1] == "salir"
+                enviarMensaje(msg.chat.id, "Bot *detenido*.", md)
+                salir()
+        fin
 fin
 
 retornar {
         "comandos":[
-                "/(recargar)"
+                "/(recargar)",
+                "/(salir)"
         ],
         "accion": mensajes
 }
