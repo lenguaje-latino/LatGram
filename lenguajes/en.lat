@@ -1,12 +1,10 @@
 retornar {
-        "usuarios":[
-        {
+        "usuarios":{
                 "start": "¡Hey! %s, I'm @%s.\n"
                 .."\nYou're testing a bot written in *Latino* with matches, inline queries and more. 😄👍",
 
                 "id": "*Chat ID*: %i\n*User ID*: %i"
-        }
-        ],
+        },
         "error":[
         "*User not registred in the database*."
         ]

@@ -27,7 +27,7 @@ fin
 funcion mensajes()
         si matches[1] == "id"
                 si !matches[2]
-                        enviarMensaje(msg.chat.id, cadena.formato(leng.usuarios[0].id, msg.chat.id, msg.de.id), md)
+                        enviarMensaje(msg.chat.id, cadena.formato(leng.usuarios.id, msg.chat.id, msg.de.id), md)
                         retornar 0
                 fin
                 id_obtenida = obtener_id_usuario(matches[2])
@@ -42,7 +42,7 @@ funcion mensajes()
                         {"text":"Programación Latino","callback_data":"!!!latino"},
                         {"text":"Repositorio del Bot","url":"https://github.com/lenguaje-latino/BotGram"}
                 ]]
-                enviarTeclado(msg.chat.id, cadena.formato(leng.usuarios[0].start, no_markdown(msg.de.nombre), no_markdown(bot.usuario)), ayuda, md)
+                enviarTeclado(msg.chat.id, cadena.formato(leng.usuarios.start, no_markdown(msg.de.nombre), no_markdown(bot.usuario)), ayuda, md)
         fin
         si matches[1] == "res"
                 si respuesta.id
