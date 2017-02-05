@@ -303,7 +303,7 @@ funcion obtenerArchivo(Id, descargar)
         si status.ok
                 si descargar
                         n_ = cadena.match(status.result.file_path, "/([[:alnum:]_.]+)")
-                        curl.descargar(AURL..status.result.file_path, config.descargas[0].obtenerArchivo..n_[0][1])
+                        curl.descargar(AURL..status.result.file_path, config.descargas.obtenerArchivo..n_[0][1])
                         retornar n_[0][1]
                 fin
                 retornar status

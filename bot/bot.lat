@@ -400,11 +400,12 @@ fin
 global funcion _BOT(argumento)
         si !argumento retornar 0 fin
         si argumento == "iniciar"
+                logo()
                 global leng = incluir("lenguajes/"..config.lenguaje)
-                global _creadores_ = archivo.leer(config.datos[0].creadores)
-                global _gadmins_ = archivo.leer(config.datos[0].gadmins)
-                global _gmods_ = archivo.leer(config.datos[0].gmods)
-                global _gbans_ = archivo.leer(config.datos[0].gbans)
+                global _creadores_ = archivo.leer(config.datos.creadores)
+                global _gadmins_ = archivo.leer(config.datos.gadmins)
+                global _gmods_ = archivo.leer(config.datos.gmods)
+                global _gbans_ = archivo.leer(config.datos.gbans)
                 limpiar()
                 verificacion = verificar_apikey()
                 si ! verificacion.ok
@@ -414,7 +415,7 @@ global funcion _BOT(argumento)
                         retorno 0
                 fin
 
-                creadores_ = json.decodificar(archivo.leer(config.datos[0].creadores))
+                creadores_ = json.decodificar(archivo.leer(config.datos.creadores))
                 creadores_ = creadores_.creadores
                 inicio = enviarMensaje(acadena(creadores_[0].id), "<b>Bot iniciado</b>", html)
                 imprimir(color.azul)
@@ -425,7 +426,7 @@ global funcion _BOT(argumento)
                 fin
                 imprimir(color.reset.."\n", 1)
 
-                si config.updates[0].limpiar_al_iniciar
+                si config.updates.limpiar_al_iniciar
                         updates = limpiar_updates()
                         si updates
                                 imprimirf(color.cafe.."Actualizaciones limpias con un total de "..updates..color.reset.."\n\n")
@@ -436,21 +437,21 @@ global funcion _BOT(argumento)
                 imprimirf(color.azul.."\n\tBot recargado.\n\n")
                 config = incluir("bot/config")
                 global leng = incluir("lenguajes/"..config.lenguaje)
-                global _creadores_ = archivo.leer(config.datos[0].creadores)
-                global _gadmins_ = archivo.leer(config.datos[0].gadmins)
-                global _gmods_ = archivo.leer(config.datos[0].gmods)
-                global _gbans_ = archivo.leer(config.datos[0].gbans)
+                global _creadores_ = archivo.leer(config.datos.creadores)
+                global _gadmins_ = archivo.leer(config.datos.gadmins)
+                global _gmods_ = archivo.leer(config.datos.gmods)
+                global _gbans_ = archivo.leer(config.datos.gbans)
         osi argumento == "recargar_creadores"
-                global _creadores_ = archivo.leer(config.datos[0].creadores)
+                global _creadores_ = archivo.leer(config.datos.creadores)
                 retornar 0
         osi argumento == "recargar_gadmins"
-                global _gadmins_ = archivo.leer(config.datos[0].gadmins)
+                global _gadmins_ = archivo.leer(config.datos.gadmins)
                 retornar 0
         osi argumento == "recargar_gmods"
-                global _gmods_ = archivo.leer(config.datos[0].gmods)
+                global _gmods_ = archivo.leer(config.datos.gmods)
                 retornar 0
         osi argumento == "recargar_gbans"
-                global _gbans_ = archivo.leer(config.datos[0].gbans)
+                global _gbans_ = archivo.leer(config.datos.gbans)
                 retornar 0
         fin
 
@@ -472,7 +473,7 @@ funcion menu(argc, argv)
                 fin
                 retornar 0
         fin
-        com = redis.conectar(config.redis[0].ip, config.redis[0].puerto)
+        com = redis.conectar(config.redis.ip, config.redis.puerto)
 
         bot = ObtenerBot()
         bot = bot.result

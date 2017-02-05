@@ -17,81 +17,79 @@ retornar {
                 "creadores"
         ],
 
-        "grupos":[ // ajustes para todos los grupos en caso de que no haya un registro
-                {
-                        "permitidos":[ // estos ajustes los activará/permitirá cuando metan al bot a un grupo
-                                "spam",
-                                "extras",
-                                "bots",
-                                "bienvenida",
-                                "reglas",
-                                "stickers",
-                                "voz",
-                                "fotos",
-                                "arabes",
-                                "links" // puedes añadir "flood" abajo, pero no lo recomiendo.
-                        ],
-
-                        "bienvenida_por_defecto": "Bienvenido $nombre ($id) a *$titulo*.", // variables: $nombre, $id, $titulo y $usuario
-
-                        "max_mensajes_flood": 10, // si un grupo no configura el máximo de mensajes de flood y está 'off' este será el máximo.
-                        "max_tiempo_flood": 15, // en mismo caso de arriba, pero con el tiempo máximo por mensaje.
-
-                        "min_ajuste_mflood": 5, // minimo del ajuste de mensajes por flood del plugin 'ajustes.lat'.
-                        "max_ajuste_mflood": 30, // máximo del ajuste de mensajes por flood del plugin 'ajustes.lat'.
-
-                        "min_ajuste_tflood": 10, // minimo del ajuste de tiempo por mensaje por flood del plugin 'ajustes.lat'.
-                        "max_ajuste_tflood": 60 // máximo del ajuste de tiempo por mensaje por flood del plugin 'ajustes.lat'.
-                }
+        "grupos":{ // ajustes para todos los grupos en caso de que no haya un registro
+                "permitidos":[ // estos ajustes los activará/permitirá cuando metan al bot a un grupo
+                        "spam",
+                        "extras",
+                        "bots",
+                        "bienvenida",
+                        "reglas",
+                        "stickers",
+                        "voz",
+                        "fotos",
+                        "arabes",
+                        "links" // puedes añadir "flood" abajo, pero no lo recomiendo.
                 ],
 
-                "ignorar_rm":[{
-                        "creadores": [], // array de ids para que no puedan ser removidas de creador
-                        "gadmins": [], // array de ids para que no puedan ser removidas de administradores globales
-                        "gmods": [], // array de ids para que no puedan ser removidas de moderadores globales
-                        "mods": [] // array de ids para que no puedan ser removidas de moderadores del grupo
-                }],
+                "bienvenida_por_defecto": "Bienvenido $nombre ($id) a *$titulo*.", // variables: $nombre, $id, $titulo y $usuario
 
-                "datos":[{
-                        "creadores": "datos/creadores.json",
-                        "gadmins": "datos/gadmins.json",
-                        "gmods": "datos/gmods.json",
-                        "gbans": "datos/gbans.json",
-                        "lista_blanca": "datos/lista_blanca.json"
-                }],
+                "max_mensajes_flood": 10, // si un grupo no configura el máximo de mensajes de flood y está 'off' este será el máximo.
+                "max_tiempo_flood": 15, // en mismo caso de arriba, pero con el tiempo máximo por mensaje.
 
-                "regex":[{
-                        "links":[
-                                "https?://[a-Z_-%.%?%.:/%+=&]+\.[[:alnum:]]{2,4}"
-                        ],
-                        "matches_spam_usuario":[
-                                "@([[:alnum:]_]+)",
-                                "[Tt].[Mm][Ee]/([[:alnum:]_]+)$",
-                                "[Tt][Ee][Ll][Ee][Gg][Rr][Aa][Mm].[Mm][Ee]/([[:alnum:]_]+)",
-                                "[Tt][Ee][Ll][Ee][Gg][Rr][Aa][Mm].[Dd][Oo][Gg]/([[:alnum:]_]+)"
-                        ],
-                        "matches_spam_links":[
-                                "[Tt].[Mm][Ee]/[Jj][Oo][Ii][Nn][Cc][Hh][Aa][Tt]/",
-                                "[Tt][Ee][Ll][Ee][Gg][Rr][Aa][Mm].[Mm][Ee]/[Jj][Oo][Ii][Nn][Cc][Hh][Aa][Tt]/",
-                                "[Tt][Ee][Ll][Ee][Gg][Rr][Aa][Mm].[Dd][Oo][Gg]/[Jj][Oo][Ii][Nn][Cc][Hh][Aa][Tt]/"
-                        ]
-                }],
+                "min_ajuste_mflood": 5, // minimo del ajuste de mensajes por flood del plugin 'ajustes.lat'.
+                "max_ajuste_mflood": 30, // máximo del ajuste de mensajes por flood del plugin 'ajustes.lat'.
 
-                "descargas":[{
-                        "obtenerArchivo": "descargas/"
-                }],
+                "min_ajuste_tflood": 10, // minimo del ajuste de tiempo por mensaje por flood del plugin 'ajustes.lat'.
+                "max_ajuste_tflood": 60 // máximo del ajuste de tiempo por mensaje por flood del plugin 'ajustes.lat'.
+        },
 
-                "tmp":[{ // lista de archivos que envia el bot para exportar, puedes usarlo para cambiar el nombre del archivo a enviar
+        "ignorar_rm":{
+                "creadores": [], // array de ids para que no puedan ser removidas de creador
+                "gadmins": [], // array de ids para que no puedan ser removidas de administradores globales
+                "gmods": [], // array de ids para que no puedan ser removidas de moderadores globales
+                "mods": [] // array de ids para que no puedan ser removidas de moderadores del grupo
+        },
+
+        "datos":{
+                "creadores": "datos/creadores.json",
+                "gadmins": "datos/gadmins.json",
+                "gmods": "datos/gmods.json",
+                "gbans": "datos/gbans.json",
+                "lista_blanca": "datos/lista_blanca.json"
+        },
+
+        "regex":{
+                "links":[
+                        "https?://[a-Z_-%.%?%.:/%+=&]+\.[[:alnum:]]{2,4}"
+                ],
+                "matches_spam_usuario":[
+                        "@([[:alnum:]_]+)",
+                        "[Tt].[Mm][Ee]/([[:alnum:]_]+)$",
+                        "[Tt][Ee][Ll][Ee][Gg][Rr][Aa][Mm].[Mm][Ee]/([[:alnum:]_]+)",
+                        "[Tt][Ee][Ll][Ee][Gg][Rr][Aa][Mm].[Dd][Oo][Gg]/([[:alnum:]_]+)"
+                ],
+                "matches_spam_links":[
+                        "[Tt].[Mm][Ee]/[Jj][Oo][Ii][Nn][Cc][Hh][Aa][Tt]/",
+                        "[Tt][Ee][Ll][Ee][Gg][Rr][Aa][Mm].[Mm][Ee]/[Jj][Oo][Ii][Nn][Cc][Hh][Aa][Tt]/",
+                        "[Tt][Ee][Ll][Ee][Gg][Rr][Aa][Mm].[Dd][Oo][Gg]/[Jj][Oo][Ii][Nn][Cc][Hh][Aa][Tt]/"
+                ]
+        },
+
+        "descargas":{
+                "obtenerArchivo": "descargas/"
+        },
+
+        "tmp":{  // lista de archivos que envia el bot para exportar, puedes usarlo para cambiar el nombre del archivo a enviar
                 "usuarios": "usuarios.json"
-        }],
+        },
 
-        "updates":[{
+        "updates":{
                 "limpiar_al_iniciar": verdadero,
                 "max": 3
-        }],
+        },
 
-        "redis":[{
+        "redis":{
                 "ip": "127.0.0.1",
                 "puerto": 6379
-        }]
+        }
 }
