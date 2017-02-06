@@ -34,9 +34,9 @@ fin
 funcion incluir_variables()
         res = res.result[0]
         msj = res.message
-        global msg = nulo
-        global cinline = nulo
-        global cb = nulo
+        global msg = falso
+        global cinline = falso
+        global cb = falso
         si res.callback_query
                 global cb = res.callback_query
         fin
@@ -396,17 +396,17 @@ funcion iniciar_bot()
         fin
 fin
 
-
-global funcion _BOT(argumento)
+global funcion _BOT(argumento, climp)
+        si climp
+                limpiar()
+        fin
         si !argumento retornar 0 fin
         si argumento == "iniciar"
                 logo()
-                global leng = incluir("lenguajes/"..config.lenguaje)
                 global _creadores_ = archivo.leer(config.datos.creadores)
                 global _gadmins_ = archivo.leer(config.datos.gadmins)
                 global _gmods_ = archivo.leer(config.datos.gmods)
                 global _gbans_ = archivo.leer(config.datos.gbans)
-                limpiar()
                 verificacion = verificar_apikey()
                 si ! verificacion.ok
                         imprimir("\aERROR ("..verificacion.error_code.." - "..verificacion.description..")"
@@ -432,15 +432,15 @@ global funcion _BOT(argumento)
                                 imprimirf(color.cafe.."Actualizaciones limpias con un total de "..updates..color.reset.."\n\n")
                         fin
                 fin
+                global _ln = cargar_lenguajes()
         osi argumento == "recargar"
-                limpiar()
                 imprimirf(color.azul.."\n\tBot recargado.\n\n")
                 config = incluir("bot/config")
-                global leng = incluir("lenguajes/"..config.lenguaje)
                 global _creadores_ = archivo.leer(config.datos.creadores)
                 global _gadmins_ = archivo.leer(config.datos.gadmins)
                 global _gmods_ = archivo.leer(config.datos.gmods)
                 global _gbans_ = archivo.leer(config.datos.gbans)
+                global _ln = cargar_lenguajes()
         osi argumento == "recargar_creadores"
                 global _creadores_ = archivo.leer(config.datos.creadores)
                 retornar 0
@@ -453,8 +453,10 @@ global funcion _BOT(argumento)
         osi argumento == "recargar_gbans"
                 global _gbans_ = archivo.leer(config.datos.gbans)
                 retornar 0
+        osi argumento == "recargar_lenguajes"
+                global _ln = cargar_lenguajes()
+                retornar 0
         fin
-
         global plugins = cargar_plugins()
 fin
 
@@ -473,7 +475,7 @@ funcion menu(argc, argv)
                 fin
                 retornar 0
         fin
-        com = redis.conectar(config.redis.ip, config.redis.puerto)
+        global lng = cadena.formato
 
         bot = ObtenerBot()
         bot = bot.result
@@ -483,9 +485,10 @@ funcion menu(argc, argv)
                 "usuario": bot.username
         }
 
-        _BOT("iniciar")
+        _BOT("iniciar", verdadero)
         global BOT_SHASH = "bot:"..bot.id..":schats"
         global BOT_HHASH = "latgram:usuarios"
+        com = redis.conectar(config.redis.ip, config.redis.puerto)
 
         mientras verdadero
                 res = actualizaciones()

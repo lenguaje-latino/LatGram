@@ -1,6 +1,7 @@
 funcion mensajes()
-        si msg.chat.tipo == "private"
-                enviarMensaje(msg.chat.id, "Este comando *solo funciona en grupos*.", md)
+        ln = leng(msg.chat.id)
+        si msg.chat.tipo == "private" && matches[1] != "ln"
+                enviarMensaje(msg.chat.id, ln.error[1], md)
                 retornar 0
         osi !es_admin(msg.chat.id, msg.de.id) && !es_creador(msg.de.id) && !es_gadmin(msg.de.id)
                 enviarMensaje(msg.chat.id, "*Debes ser administrador* para usar este comando.", md)
@@ -12,17 +13,17 @@ funcion mensajes()
                 si matches[2] == "on"
                         lo_agrega = redis.sagregar(com, hash, "spam")
                         si lo_agrega
-                                enviarMensaje(msg.chat.id, "Spam *permitido* en este chat.", md)
+                                enviarMensaje(msg.chat.id, ln.ajustes.spam_on, md)
                                 retornar 0
                         fin
-                        enviarMensaje(msg.chat.id, "El spam *ya está permitido*.", md)
+                        enviarMensaje(msg.chat.id, ln.ajustes.Xspam_on, md)
                 osi matches[2] == "off"
                         lo_borra = redis.sborrar(com, hash, "spam")
                         si lo_borra
-                                enviarMensaje(msg.chat.id, "Spam *no permitido* en este chat.", md)
+                                enviarMensaje(msg.chat.id, ln.ajustes.spam_off, md)
                                 retornar 0
                         fin
-                        enviarMensaje(msg.chat.id, "El spam *ya no está permitido*.", md)
+                        enviarMensaje(msg.chat.id, ln.ajustes.Xspam_off, md)
                 fin
         fin
 
@@ -299,6 +300,16 @@ funcion mensajes()
                         enviarMensaje(msg.chat.id, "Los links *ya no están permitidos*.", md)
                 fin
         fin
+
+        si matches[1] == "ln"
+                si lenguaje_disponible(matches[2])
+                        redis.hasignar(com, chash, "ln", matches[2])
+                        enviarMensaje(msg.chat.id, lng(ln.ajustes.ln, matches[2]), md)
+                sino
+                        enviarMensaje(msg.chat.id, lng(ln.error[2], matches[2]), md)
+                fin
+        fin
+
 fin
 
 retornar {
@@ -315,7 +326,8 @@ retornar {
                 "^/(voz) (on|off)$",
                 "^/(fotos) (on|off)$",
                 "^/(arabes) (on|off)$",
-                "^/(links) (on|off)$"
+                "^/(links) (on|off)$",
+                "^/(ln) ([a-Z][a-Z])"
         ],
         "accion": mensajes
 }

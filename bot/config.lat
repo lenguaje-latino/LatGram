@@ -5,6 +5,12 @@ retornar {
 
         "lenguaje": "es",
 
+        "dir_lenguajes": "lenguajes/",
+        "lenguajes":[
+                "es",
+                "en"
+        ],
+
         "dir": "plugins/",
         "plugins":[
                 "servicios",
@@ -60,7 +66,8 @@ retornar {
 
         "regex":{
                 "links":[
-                        "https?://[a-Z_-%.%?%.:/%+=&]+\.[[:alnum:]]{2,4}"
+                        "https?://[a-Z_-%.%?%.:/%+=&]+\.[[:alnum:]]{2,4}",
+                        "www\.[a-Z_-%.%?%.:/%+=&]+\.[[:alnum:]]{2,4}"
                 ],
                 "matches_spam_usuario":[
                         "@([[:alnum:]_]+)",

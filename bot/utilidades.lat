@@ -67,7 +67,7 @@ funcion cargar_plugins()
                         plugin = incluir(config.dir..config.plugins[plugin_cargado])
                         lista.agregar(plugins_montados, config.plugins[plugin_cargado]..".lat")
                         lista.agregar(plugins, plugin)
-                        imprimirf(color.verde.."\tPlugin:\t"..color.cyan..config.plugins[plugin_cargado].."\t"..color.amarillo.."["..(plugin_cargado+1).."/"..(config.plugins+0).."] "..color.r_cyan.."...iniciado."..color.reset.."\n")
+                        imprimirf(color.verde.."\tPlugin:\t"..color.cyan..config.plugins[plugin_cargado].."\t"..color.amarillo.."["..(plugin_cargado+1).."/"..(config.plugins+0).."] "..color.r_cyan.." [ iniciado ]"..color.reset.."\n")
                 fin
         fin
         si plugins_montados < config.plugins
@@ -84,6 +84,50 @@ funcion cargar_plugins()
         .."  Callback "..color.simp("m.blanco").."  "
         ..color.reset..color.bold.."\n\tVersion: "..VERSION.."\n"..color.reset.."\n")
         retornar plugins
+fin
+
+global funcion cargar_lenguajes()
+        si !lista.contiene(config.lenguajes, config.lenguaje)
+                imprimirf(color.rojo.."ERROR:"..color.reset.." el lenguaje '"..config.lenguaje.."' no está activado en config.lenguajes.\n")
+                salir()
+        fin
+        global lenguajes_montados = []
+        lenguajes = {}
+        desde (i=0; i<config.lenguajes; i++)
+                _a_ = config.dir_lenguajes..config.lenguajes[i]
+                si archivo.leer(_a_..".lat")
+                        act = incluir(_a_)
+                        si act[config.lenguajes[i]]
+                                lenguajes[config.lenguajes[i]] = act[config.lenguajes[i]]
+                                lista.agregar(lenguajes_montados, config.lenguajes[i])
+                                imprimirf(color.naranja.."\tLenguaje: "..color.reset..color.cyan..config.lenguajes[i]..color.r_cyan.." [ montado ]\n")
+                                imprimirf(color.reset)
+                        sino
+                                imprimirf(color.amarillo.."\tVariable '"..config.lenguajes[i].."' perdida en el archivo ".._a_..".lat\n")
+                        fin
+                sino
+                        imprimirf(color.rojo.."\tError al cargar lenguaje '"..config.lenguajes[i].."'\n")
+                fin
+        fin
+        imprimirf(color.reset)
+        retornar lenguajes
+fin
+
+funcion leng(chatid)
+        si !chatid retornar falso fin
+        chash = "ajustes:"..chatid..":customs"
+        lenguaje = redis.hobtener(com, chash, "ln")
+        si lenguaje
+                retornar _ln[lenguaje]
+        fin
+        retornar _ln[config.lenguaje]
+fin
+
+funcion lenguaje_disponible(lenguaje)
+        si lista.contiene(lenguajes_montados, lenguaje)
+                retornar verdadero
+        fin
+        retornar falso
 fin
 
 funcion obtenerLeer(id, condicion, proceso_id)

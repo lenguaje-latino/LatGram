@@ -1,11 +1,28 @@
 retornar {
-        "usuarios":{
-                "start": "¡Hey! %s, soy @%s.\n"
-                .."\nEstás probando el nuevo bot escrito completamente en la *programación Latino* con matches, consultas inline y más. 😄👍",
+        "es":{
+                "usuarios":{
+                        "start": "¡Hey! %s, soy @%s.\n"
+                        .."\nEstás probando el nuevo bot escrito completamente en la *programación Latino* con matches, consultas inline y más. 😄👍",
 
-                "id": "*Chat ID*: %i\n*Usuario ID*: %i"
-        },
-        "error":[
-        "*El usuario no está registrado en la base de datos*."
-        ]
+                        "id": "*Chat ID*: %i\n*Usuario ID*: %i",
+                        "nombre": "*Nombre*: %s\n",
+                        "chat_id": "*Chat ID*: %d\n",
+                        "usuario_id": "*Usuario ID*: %d\n",
+                        "alias": "*Alias*: %s\n",
+                        "dev": "*Desarrollador*: %s\n",
+                        "soporte": "*Soporte*: %s\n"
+                },
+                "ajustes":{
+                        "ln": "*Nuevo lenguaje configurado*: '%s'.",
+                        "spam_on": "Spam *permitido* en este chat.",
+                        "Xspam_on": "El spam *ya está permitido*.",
+                        "spam_off": "Spam *no permitido* en este chat.",
+                        "Xspam_off": "El spam *ya no está permitido*."
+                },
+                "error":[
+                        "*El usuario no está registrado en la base de datos*.", #0
+                        "Este comando *sólo funciona en grupos*.", #1
+                        "Lenguaje '%s' *no disponible*." #2
+                ]
+        }
 }

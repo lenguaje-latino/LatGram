@@ -1,11 +1,29 @@
 retornar {
-        "usuarios":{
-                "start": "¡Hey! %s, I'm @%s.\n"
-                .."\nYou're testing a bot written in *Latino* with matches, inline queries and more. 😄👍",
+        "en":{
+                "usuarios":{
+                        "start": "¡Hey! %s, I'm @%s.\n"
+                        .."\nYou're testing a bot written in *Latino* with matches, inline queries and more. 😄👍",
 
-                "id": "*Chat ID*: %i\n*User ID*: %i"
-        },
-        "error":[
-        "*User not registred in the database*."
-        ]
+                        "id": "*Chat ID*: %i\n*User ID*: %i",
+                        "nombre": "*First name*: %s\n",
+                        "chat_id": "*Chat ID*: %d\n",
+                        "usuario_id": "*User ID*: %d\n",
+                        "alias": "*Alias*: %s\n",
+                        "dev": "*Developer*: %s\n",
+                        "soporte": "*Support*: %s\n"
+                },
+                "ajustes":{
+                        "ln": "*New language configured*: '%s'.",
+                        "spam_on": "Spam *allowed* in this chat.",
+                        "Xspam_on": "The spam *is already allowed*.",
+                        "spam_off": "Spam *unallowed* in this chat.",
+                        "Xspam_off": "The spam *is already unallowed*."
+                },
+                "error":[
+                        "User *not registred in the database*.", #0
+                        "This command *only works in groups*.", #1
+                        "Language '%s' *unavailable*." #2
+
+                ]
+        }
 }
