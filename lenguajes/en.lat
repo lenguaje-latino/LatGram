@@ -12,17 +12,37 @@ retornar {
                         "dev": "*Developer*: %s\n",
                         "soporte": "*Support*: %s\n"
                 },
+
                 "ajustes":{
-                        "ln": "*New language configured*: '%s'.",
                         "spam_on": "Spam *allowed* in this chat.",
                         "Xspam_on": "The spam *is already allowed*.",
                         "spam_off": "Spam *unallowed* in this chat.",
-                        "Xspam_off": "The spam *is already unallowed*."
+                        "Xspam_off": "The spam *is already unallowed*.",
+
+                        "extras_on": "Extras *enabled* in this chat.",
+                        "Xextras_on": "The extras *are enabled activated*.",
+                        "extras_off": "Extras *disabled* in this chat.",
+                        "Xextras_off": "The extras *are already disabled*.",
+
+                        "bienvenida_on": "Welcome *enabled* in this chat.",
+                        "Xbienvenida_on": "The welcome *is already enabled*.",
+                        "bienvenida_off": "Welcome *disabled* in this chat.",
+                        "Xbienvenida_off": "The welcome *is already disabled*."
                 },
+
+                "cajustes":{
+                        "ln": "*New language configured*: '%s'.",
+
+                        "bienvenidaN": "*New welcome setted*:\n%s",
+                        "bienvenida_rm": "Welcome *deleted* in the chat.",
+                        "Xbienvenida_rm": "The welcome *is already deleted*, you can disable the welcome with `/bienvenida off`."
+                },
+
                 "error":[
                         "User *not registred in the database*.", #0
                         "This command *only works in groups*.", #1
-                        "Language '%s' *unavailable*." #2
+                        "Language '%s' *unavailable*.", #2
+                        "Markdown *broken*." #3
 
                 ]
         }

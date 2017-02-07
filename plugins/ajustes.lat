@@ -31,18 +31,18 @@ funcion mensajes()
                 si matches[2] == "on"
                         lo_agrega = redis.sagregar(com, hash, "extras")
                         si lo_agrega
-                                enviarMensaje(msg.chat.id, "Extras *activados* en este chat.", md)
+                                enviarMensaje(msg.chat.id, ln.ajustes.extras_on, md)
                                 retornar 0
                         fin
-                        enviarMensaje(msg.chat.id, "Los extras *ya están activados*.", md)
+                        enviarMensaje(msg.chat.id, ln.ajustes.Xextras_on, md)
 
                 osi matches[2] == "off"
                         lo_borra = redis.sborrar(com, hash, "extras")
                         si lo_borra
-                                enviarMensaje(msg.chat.id, "Extras *desactivados* en este chat.", md)
+                                enviarMensaje(msg.chat.id, ln.ajustes.extras_off, md)
                                 retornar 0
                         fin
-                        enviarMensaje(msg.chat.id, "Los extras *ya están desactivados*.", md)
+                        enviarMensaje(msg.chat.id, ln.ajustes.Xextras_off, md)
                 fin
         fin
 
@@ -50,30 +50,30 @@ funcion mensajes()
                 si matches[2] == "on"
                         lo_agrega = redis.sagregar(com, hash, "bienvenida")
                         si lo_agrega
-                                enviarMensaje(msg.chat.id, "Bienvenida *activada* en este chat.", md)
+                                enviarMensaje(msg.chat.id, ln.ajustes.bienvenida_on, md)
                                 retornar 0
                         fin
-                        enviarMensaje(msg.chat.id, "La bienvenida *ya está activada*.", md)
+                        enviarMensaje(msg.chat.id, ln.ajustes.Xbienvenida_on, md)
 
                 osi matches[2] == "off"
                         lo_borra = redis.sborrar(com, hash, "bienvenida")
                         si lo_borra
-                                enviarMensaje(msg.chat.id, "Bienvenida *desactivada* en este chat.", md)
+                                enviarMensaje(msg.chat.id, ln.ajustes.bienvenida_off, md)
                                 retornar 0
                         fin
-                        enviarMensaje(msg.chat.id, "La bienvenida *ya está desactivada*.", md)
+                        enviarMensaje(msg.chat.id, ln.ajustes.Xbienvenida_off, md)
 
                 osi matches[2] == "rm"
                         bienvenida = redis.hobtener(com, chash, "bienvenida")
                         si bienvenida
                                 redis.hborrar(com, chash, "bienvenida")
-                                enviarMensaje(msg.chat.id, "Bienvenida *eliminada* del chat.", md)
+                                enviarMensaje(msg.chat.id, ln.cajustes.bienvenida_rm, md)
                                 retornar 0
                         fin
-                        enviarMensaje(msg.chat.id, "La bienvenida *ya está eliminada*, la puedes desactivar con `/bienvenida off`.", md)
+                        enviarMensaje(msg.chat.id, ln.cajustes.Xbienvenida_rm, md)
 
                 sino
-                        ok = enviarMensaje(msg.chat.id, "*Nueva bienvenida asignada*:\n"..matches[2], md)
+                        ok = enviarMensaje(msg.chat.id, lng(ln.cajustes.bienvenidaN, matches[2]), md)
                         si ! ok
                                 enviarMensaje(msg.chat.id, "*Verifica el markdown*.", md)
                         sino
@@ -304,7 +304,7 @@ funcion mensajes()
         si matches[1] == "ln"
                 si lenguaje_disponible(matches[2])
                         redis.hasignar(com, chash, "ln", matches[2])
-                        enviarMensaje(msg.chat.id, lng(ln.ajustes.ln, matches[2]), md)
+                        enviarMensaje(msg.chat.id, lng(ln.cajustes.ln, matches[2]), md)
                 sino
                         enviarMensaje(msg.chat.id, lng(ln.error[2], matches[2]), md)
                 fin
@@ -327,7 +327,7 @@ retornar {
                 "^/(fotos) (on|off)$",
                 "^/(arabes) (on|off)$",
                 "^/(links) (on|off)$",
-                "^/(ln) ([a-Z][a-Z])"
+                "^/(ln) ([a-Z][a-Z])$"
         ],
         "accion": mensajes
 }

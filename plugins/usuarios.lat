@@ -1,5 +1,5 @@
 funcion inline()
-        ln = leng()
+        ln = leng(cinline.de.id)
         cinline_datos = "\nID: "..cinline.de.id.."\nNombre: "..cinline.de.nombre
         si cinline.de.apellido
                 cinline_datos ..= "\nApellido: "..cinline.de.apellido
@@ -15,7 +15,7 @@ funcion inline()
 fin
 
 funcion callback()
-        ln = leng(msg.chat.id)
+        ln = leng(cb.msg.chat.id)
         si cmatches[1] == "latino"
                 link_teclado = [[
                 {"text":"🌐 Github","url":"https://github.com/primitivorm/latino"}
@@ -42,8 +42,7 @@ funcion mensajes()
         fin
         si matches[1] == "start"
                 ayuda = [[
-                        {"text":"Programación Latino","callback_data":"!!!latino"},
-                        {"text":"Repositorio del Bot","url":"https://github.com/lenguaje-latino/BotGram"}
+                        {"text":"Programación Latino","callback_data":"!!!latino"}
                 ]]
                 enviarTeclado(msg.chat.id, lng(ln.usuarios.start, no_markdown(msg.de.nombre), no_markdown(bot.usuario)), ayuda, md)
         fin
@@ -89,9 +88,12 @@ funcion mensajes()
         fin
 
         si matches[1] == "version"
-                enviarMensaje(msg.chat.id, "`LatGram v"..VERSION.."`\n"
+                git = [[
+                        {"text":"GitHub","url":"https://github.com/lenguaje-latino/LatGram"}
+                ]]
+                enviarTeclado(msg.chat.id, "`LatGram v"..VERSION.."`\n"
                 ..lng(ln.usuarios.dev, DESARROLLADOR)
-                ..lng(ln.usuarios.soporte, APOYO), md)
+                ..lng(ln.usuarios.soporte, APOYO), git, md)
         fin
 fin
 

@@ -251,12 +251,6 @@ funcion incluir_variables()
                                 "nombre": cinline.from.first_name,
                                 "apellido": cinline.from.last_name,
                                 "usuario": cinline.from.username
-                        },
-                        "chat": {
-                                "id": cinline.chat.id,
-                                "nombre": cinline.chat.first_name,
-                                "apellido": cinline.chat.last_name,
-                                "usuario": cinline.chat.username
                         }
                 }
         fin

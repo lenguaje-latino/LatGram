@@ -12,17 +12,37 @@ retornar {
                         "dev": "*Desarrollador*: %s\n",
                         "soporte": "*Soporte*: %s\n"
                 },
+
                 "ajustes":{
-                        "ln": "*Nuevo lenguaje configurado*: '%s'.",
                         "spam_on": "Spam *permitido* en este chat.",
                         "Xspam_on": "El spam *ya está permitido*.",
                         "spam_off": "Spam *no permitido* en este chat.",
-                        "Xspam_off": "El spam *ya no está permitido*."
+                        "Xspam_off": "El spam *ya no está permitido*.",
+
+                        "extras_on": "Extras *activados* en este chat.",
+                        "Xextras_on": "Los extras *ya están activados*.",
+                        "extras_off": "Extras *desactivados* en este chat.",
+                        "Xextras_off": "Los extras *ya están desactivados*.",
+
+                        "bienvenida_on": "Bienvenida *activada* en este chat.",
+                        "Xbienvenida_on": "La bienvenida *ya está activada*.",
+                        "bienvenida_off": "Bienvenida *desactivada* en este chat.",
+                        "Xbienvenida_off": "La bienvenida *ya está desactivada*."
                 },
+
+                "cajustes":{
+                        "ln": "*Nuevo lenguaje configurado*: '%s'.",
+
+                        "bienvenidaN": "*Nueva bienvenida asignada*:\n%s",
+                        "bienvenida_rm": "Bienvenida *eliminada* del chat.",
+                        "Xbienvenida_rm": "La bienvenida *ya está eliminada*, la puedes desactivar con `/bienvenida off`."
+                },
+
                 "error":[
                         "*El usuario no está registrado en la base de datos*.", #0
                         "Este comando *sólo funciona en grupos*.", #1
-                        "Lenguaje '%s' *no disponible*." #2
+                        "Lenguaje '%s' *no disponible*.", #2
+                        "Markdown *roto*." #3
                 ]
         }
 }
