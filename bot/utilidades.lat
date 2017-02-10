@@ -3,8 +3,7 @@ color = incluir("bot/colores.lat/src/colores")
 funcion unescape(a)
         b = cadena.reemplazar(a, '"', '\"')
         b = cadena.reemplazar(b, "'", "\'")
-        b = cadena.reemplazar(b, "
-        ", "\n")
+        b = cadena.reemplazar(b, cadena.char(10), "\n")
         retornar b
 fin
 

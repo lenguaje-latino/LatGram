@@ -75,7 +75,7 @@ funcion mensajes()
                 sino
                         ok = enviarMensaje(msg.chat.id, lng(ln.cajustes.bienvenidaN, matches[2]), md)
                         si ! ok
-                                enviarMensaje(msg.chat.id, "*Verifica el markdown*.", md)
+                                enviarMensaje(msg.chat.id, ln.error[3], html)
                         sino
                                 redis.hasignar(com, chash, "bienvenida", matches[2])
                         fin

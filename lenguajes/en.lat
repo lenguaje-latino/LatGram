@@ -42,8 +42,8 @@ retornar {
                         "User *not registred in the database*.", #0
                         "This command *only works in groups*.", #1
                         "Language '%s' *unavailable*.", #2
-                        "Markdown *broken*." #3
-
+                        "Markdown <b>broken</b>, please avoid use or keep open symbols:\n<code>* [ ` _</code>\n"
+                        .."Also you can escape the symbols with one slash before (\):\n<code>\* \[ \` \_</code>" #3
                 ]
         }
 }

@@ -81,7 +81,8 @@ fin
 global funcion subproceso_reglas()
         array = obtenerLeer(msg.de.id, msg.texto, 1)
         si array
-                si msg.texto != "Detener."
+                stp = msg.texto ~= "^[Dd][Ee][Tt][Ee][Nn][Ee][Rr]$" || msg.texto ~= "^[Ss][Tt][Oo[Pp]"
+                si !stp
                         chash = "ajustes:"..msg.chat.id..":customs"
                         ok = enviarMensaje(msg.chat.id, "*Nuevas reglas asignadas*:\n"..msg.texto, md)
                         detenerLeer(msg.de.id, 1)

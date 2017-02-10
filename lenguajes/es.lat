@@ -42,7 +42,8 @@ retornar {
                         "*El usuario no está registrado en la base de datos*.", #0
                         "Este comando *sólo funciona en grupos*.", #1
                         "Lenguaje '%s' *no disponible*.", #2
-                        "Markdown *roto*." #3
+                        "Markdown <b>roto</b>, por favor evite usar o mantener símbolos abiertos:\n<code>* [ ` _</code>\n"
+                        .."También puede escapar los símbolos con un slash antes (\):\n<code>\* \[ \` \_</code>" #3
                 ]
         }
 }

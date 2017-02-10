@@ -12,7 +12,8 @@ md = "markdown"
 
 //&reply_markup={"keyboard":[["Yes","No"],["Maybe"],["1","2","3"]],"one_time_keyboard":true}
 funcion cod(texto)
-        x = cadena.reemplazar(texto, "\n", cadena.formato("%c", 10))
+        x = cadena.reemplazar(texto, "\n", cadena.char(10))
+        x = cadena.reemplazar(x, "\t", cadena.char(9))
         retornar curl.escape(x)
 fin
 
