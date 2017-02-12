@@ -100,12 +100,12 @@ fin
 retornar {
         "comandos": [
                 "^/(id)$",
-                "^/(id) @([[:alnum:]]{5,})$",
+                "^/(id) @([[:alnum:]_]{5,})$",
                 "^/(id)@"..bot.usuario.."$",
                 "^/(start)$",
                 "^/(start)@"..bot.usuario.."$",
                 "^/(res)$",
-                "^/(res) @([[:alnum:]]{5,})$",
+                "^/(res) @([[:alnum:]_]{5,})$",
                 "^/(res) (.*)$",
                 "^/(version)$"
         ],
