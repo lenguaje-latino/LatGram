@@ -1,0 +1,105 @@
+retornar {
+        "es":{
+                "usuarios":{
+                        "start": "¡Hey! %s, soy @%s.\n"
+                        .."\nEstás probando el nuevo bot escrito completamente en la *programación Latino* con matches, consultas inline y más. 😄👍",
+                        "id": "*Chat ID*: %i\n*Usuario ID*: %i",
+                        "nombre": "*Nombre*: %s\n",
+                        "chat_id": "*Chat ID*: %d\n",
+                        "usuario_id": "*Usuario ID*: %d\n",
+                        "alias": "*Alias*: %s\n",
+                        "dev": "*Desarrollador*: %s\n",
+                        "soporte": "*Soporte*: %s\n"
+                },
+
+                "ajustes":{
+                        "spam_on": "Spam *permitido* en este chat.",
+                        "Xspam_on": "El spam *ya está permitido*.",
+                        "spam_off": "Spam *no permitido* en este chat.",
+                        "Xspam_off": "El spam *ya no está permitido*.",
+
+                        "extras_on": "Extras *activados* en este chat.",
+                        "Xextras_on": "Los extras *ya están activados*.",
+                        "extras_off": "Extras *desactivados* en este chat.",
+                        "Xextras_off": "Los extras *ya están desactivados*.",
+
+                        "bienvenida_on": "Bienvenida *activada* en este chat.",
+                        "Xbienvenida_on": "La bienvenida *ya está activada*.",
+                        "bienvenida_off": "Bienvenida *desactivada* en este chat.",
+                        "Xbienvenida_off": "La bienvenida *ya está desactivada*.",
+
+                        "reglas_on": "Reglas *activadas* en este chat.",
+                        "Xreglas_on": "Las reglas *ya están activadas*.",
+                        "reglas_off": "Reglas *desactivadas* en este chat.",
+                        "Xreglas_off": "Las reglas *ya están desactivadas*.",
+
+                        "flood_on": "Flood *permitido* en este chat.",
+                        "Xflood_on": "El flood *ya está permitido*.",
+                        "flood_off": "Flood *no permitido* en este chat.",
+                        "Xflood_off": "El flood *ya no está permitido*.",
+
+                        "stickers_on": "Stickers *permitidos* en este chat.",
+                        "Xstickers_on": "Los stickers *ya están permitidos*.",
+                        "stickers_off": "Stickers *no permitidos* en este chat.",
+                        "Xstickers_off": "Los stickers *ya no están permitidos*.",
+
+                        "bots_on": "Bots *permitidos* en este chat.",
+                        "Xbots_on": "Los bots *ya están permitidos*.",
+                        "bots_off": "Bots *no permitidos* en este chat.",
+                        "Xbots_off": "Los bots *ya no están permitidos*.",
+
+                        "voz_on": "Mensajes de voz *permitidos* en este chat.",
+                        "Xvoz_on": "Los mensajes de voz *ya están permitidos*.",
+                        "voz_off": "Mensajes de voz *no permitidos* en este chat.",
+                        "Xvoz_off": "Los mensajes de voz *ya no están permitidos*.",
+
+                        "fotos_on": "Fotos *permitidas* en este chat.",
+                        "Xfotos_on": "Las fotos *ya están permitidas*.",
+                        "fotos_off": "Fotos *no permitidas* en este chat.",
+                        "Xfotos_off": "Las fotos *ya no están permitidas*.",
+
+                        "arabes_on": "Arabes *permitidos* en este chat.",
+                        "Xarabes_on": "Los arabes *ya están permitidos*.",
+                        "arabes_off": "Arabes *no permitidos* en este chat.",
+                        "Xarabes_off": "Los arabes *ya no están permitidos*.",
+
+                        "links_on": "Links *permitidos* en este chat.",
+                        "Xlinks_on": "Los links *ya están permitidos*.",
+                        "links_off": "Links *no permitidos* en este chat.",
+                        "Xlinks_off": "Los links *ya no están permitidos*."
+                },
+
+                "cajustes":{
+                        "ln": "*Nuevo lenguaje configurado*: '%s'.",
+
+                        "bienvenida_n": "*Nueva bienvenida asignada*:\n%s",
+                        "bienvenida_rm": "Bienvenida *eliminada* del chat.",
+                        "Xbienvenida_rm": "La bienvenida *ya está eliminada*, la puedes desactivar con `/bienvenida off`.",
+
+                        "reglas_leer": "*OK*. Ahora escribe las reglas, puedes usar markdown, puedes escribir *detener* para tener el proceso."
+                        .."\n*NOTA*: si tu cliente de Telegram que usas cuenta con markdown, *desactivalo*.",
+                        "reglas_no": "*No hay reglas asignadas en este grupo*.",
+                        "reglas_rm": "Reglas *eliminadas* del chat.",
+                        "Xreglas_rm": "Las reglas *ya están eliminadas*, la puedes desactivar con `/reglas off`.",
+                        "reglas_n": "*Nuevas reglas asignadas*:\n%s",
+
+                        "flood_reset": "Ajustes de *flood* restaurados en este chat.",
+                        "Xflood_reset": "El flood *ya tiene los ajustes predeterminados*, lo puedes permitir con `/flood on`.",
+                        "mflood_es_menor": "El número mínimo de mensajes por flood *debe ser mayor a %i*.",
+                        "mflood_es_mayor": "El número máximo de mensajes por flood *debe ser menor a %i*.",
+                        "mflood_n": "*Nuevo número máximo de mensajes por flood establecido*:\n%s",
+                        "tflood_es_menor": "El número mínimo de tiempo por flood *debe ser mayor a %i*.",
+                        "tflood_es_mayor": "El número máximo de tiempo por flood *debe ser menor a %i*.",
+                        "tflood_n": "*Nuevo número máximo de tiempo por flood establecido*:\n%s"
+                },
+
+                "error":{
+                        "no_admin": "*Debes ser administrador* para usar este comando.",
+                        "bd": "*El usuario no está registrado en la base de datos*.",
+                        "no_grupo": "Este comando *sólo funciona en grupos*.",
+                        "ln_falta": "Lenguaje '%s' *no disponible*.",
+                        "markdown": "Markdown <b>roto</b>, por favor evite usar o mantener símbolos abiertos:\n<code>* [ ` _</code>\n"
+                        .."También puede escapar los símbolos con un slash antes (\):\n<code>\* \[ \` \_</code>"
+                }
+        }
+}

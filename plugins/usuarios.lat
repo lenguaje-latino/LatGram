@@ -37,7 +37,7 @@ funcion mensajes()
                 si id_obtenida
                         enviarMensaje(msg.chat.id, "`"..id_obtenida.."`", md)
                 sino
-                        enviarMensaje(msg.chat.id, leng.error[0], md)
+                        enviarMensaje(msg.chat.id, ln.error.bd, md)
                 fin
         fin
         si matches[1] == "start"
@@ -100,12 +100,12 @@ fin
 retornar {
         "comandos": [
                 "^/(id)$",
-                "^/(id) @([[:alnum:]_]+)$",
+                "^/(id) @([[:alnum:]]{5,})$",
                 "^/(id)@"..bot.usuario.."$",
                 "^/(start)$",
                 "^/(start)@"..bot.usuario.."$",
                 "^/(res)$",
-                "^/(res) @([[:alnum:]_]+)$",
+                "^/(res) @([[:alnum:]]{5,})$",
                 "^/(res) (.*)$",
                 "^/(version)$"
         ],

@@ -1,10 +1,10 @@
 funcion mensajes()
         ln = leng(msg.chat.id)
         si msg.chat.tipo == "private" && matches[1] != "ln"
-                enviarMensaje(msg.chat.id, ln.error[1], md)
+                enviarMensaje(msg.chat.id, ln.error.no_grupo, md)
                 retornar 0
         osi !es_admin(msg.chat.id, msg.de.id) && !es_creador(msg.de.id) && !es_gadmin(msg.de.id)
-                enviarMensaje(msg.chat.id, "*Debes ser administrador* para usar este comando.", md)
+                enviarMensaje(msg.chat.id, ln.error.no_admin, md)
                 retornar 0
         fin
         hash = "ajustes:"..msg.chat.id
@@ -73,9 +73,9 @@ funcion mensajes()
                         enviarMensaje(msg.chat.id, ln.cajustes.Xbienvenida_rm, md)
 
                 sino
-                        ok = enviarMensaje(msg.chat.id, lng(ln.cajustes.bienvenidaN, matches[2]), md)
+                        ok = enviarMensaje(msg.chat.id, lng(ln.cajustes.bienvenida_n, matches[2]), md)
                         si ! ok
-                                enviarMensaje(msg.chat.id, ln.error[3], html)
+                                enviarMensaje(msg.chat.id, ln.error.markdown, html)
                         sino
                                 redis.hasignar(com, chash, "bienvenida", matches[2])
                         fin
@@ -83,12 +83,6 @@ funcion mensajes()
         fin
 
         si matches[1] == "reglas"
-                si matches[2] == "leer"
-                        enviarMensaje(msg.chat.id, "*OK*. Ahora escribe las reglas, puedes usar markdown, puedes escribir *Detener.* para tener el proceso."
-                        .."\n*NOTA*: si tu cliente de Telegram que usas cuenta con markdown, *desactivalo*.", md)
-                                iniciarLeer(msg.de.id, msg.texto, 1)
-                                retornar 0
-                fin
                 si !matches[2]
                         reglas_activadas = redis.sesmiembro(com, hash, "reglas")
                         si reglas_activadas
@@ -96,40 +90,43 @@ funcion mensajes()
                                 si reglas_asignadas
                                         enviarMensaje(msg.chat.id, reglas_asignadas, md)
                                 sino
-                                        enviarMensaje(msg.chat.id, "*No hay reglas asignadas en este grupo*.", md)
+                                        enviarMensaje(msg.chat.id, ln.cajustes.reglas_no, md)
                                 fin
                         fin
-                        retornar 0
-                fin
-                si matches[2] == "on"
+
+                osi matches[2] == "leer"
+                        enviarMensaje(msg.chat.id, ln.cajustes.reglas_leer, md)
+                        iniciarLeer(msg.de.id, msg.texto, 1)
+
+                osi matches[2] == "on"
                         lo_agrega = redis.sagregar(com, hash, "reglas")
                         si lo_agrega
-                                enviarMensaje(msg.chat.id, "Reglas *activadas* en este chat.", md)
+                                enviarMensaje(msg.chat.id, ln.ajustes.reglas_on, md)
                                 retornar 0
                         fin
-                        enviarMensaje(msg.chat.id, "Las reglas *ya están activadas*.", md)
+                        enviarMensaje(msg.chat.id, ln.ajustes.Xreglas_on, md)
 
                 osi matches[2] == "off"
                         lo_borra = redis.sborrar(com, hash, "reglas")
                         si lo_borra
-                                enviarMensaje(msg.chat.id, "Reglas *desactivadas* en este chat.", md)
+                                enviarMensaje(msg.chat.id, ln.ajustes.reglas_off, md)
                                 retornar 0
                         fin
-                        enviarMensaje(msg.chat.id, "Las reglas *ya están desactivadas*.", md)
+                        enviarMensaje(msg.chat.id, ln.ajustes.Xreglas_off, md)
 
                 osi matches[2] == "rm"
                         bienvenida = redis.hobtener(com, chash, "reglas")
                         si bienvenida
                                 redis.hborrar(com, chash, "reglas")
-                                enviarMensaje(msg.chat.id, "Reglas *eliminadas* del chat.", md)
+                                enviarMensaje(msg.chat.id, ln.cajustes.reglas_rm, md)
                                 retornar 0
                         fin
-                        enviarMensaje(msg.chat.id, "Las reglas *ya están eliminadas*, la puedes desactivar con `/reglas off`.", md)
+                        enviarMensaje(msg.chat.id, ln.cajustes.Xreglas_rm, md)
 
                 sino
-                        ok = enviarMensaje(msg.chat.id, "*Nuevas reglas asignadas*:\n"..matches[2], md)
+                        ok = enviarMensaje(msg.chat.id, lng(ln.cajustes.reglas_n, matches[2]), md)
                         si ! ok
-                                enviarMensaje(msg.chat.id, "*Verifica el markdown*.", md)
+                                enviarMensaje(msg.chat.id, ln.error.markdown, html)
                         sino
                                 redis.hasignar(com, chash, "reglas", matches[2])
                         fin
@@ -140,50 +137,50 @@ funcion mensajes()
                 si matches[2] == "on"
                         lo_agrega = redis.sagregar(com, hash, "flood")
                         si lo_agrega
-                                enviarMensaje(msg.chat.id, "Flood *permitido* en este chat.", md)
+                                enviarMensaje(msg.chat.id, ln.ajustes.flood_on, md)
                                 retornar 0
                         fin
-                        enviarMensaje(msg.chat.id, "El flood *ya está permitido*.", md)
+                        enviarMensaje(msg.chat.id, ln.ajustes.Xflood_on, md)
 
                 osi matches[2] == "off"
                         lo_borra = redis.sborrar(com, hash, "flood")
                         si lo_borra
-                                enviarMensaje(msg.chat.id, "Flood *no permitido* en este chat.", md)
+                                enviarMensaje(msg.chat.id, ln.ajustes.flood_off, md)
                                 retornar 0
                         fin
-                        enviarMensaje(msg.chat.id, "El flood *ya no está permitido*.", md)
+                        enviarMensaje(msg.chat.id, ln.ajustes.Xflood_off, md)
 
                 osi matches[2] == "reset"
                         flood = redis.hobtener(com, chash, "flood")
                         si flood
                                 redis.hborrar(com, chash, "flood")
-                                enviarMensaje(msg.chat.id, "Ajustes de *flood* restaurados en este chat.", md)
+                                enviarMensaje(msg.chat.id, ln.cajustes.flood_reset, md)
                                 retornar 0
                         fin
-                        enviarMensaje(msg.chat.id, "El flood *ya tiene los ajustes predeterminados*, lo puedes permitir con `/flood on`.", md)
+                        enviarMensaje(msg.chat.id, ln.cajustes.Xflood_reset, md)
 
                 sino
                         si anumero(matches[2]) < config.grupos.min_ajuste_mflood
-                                enviarMensaje(msg.chat.id, "El número máximo de mensajes por flood *debe ser mayor a "..(config.grupos.min_ajuste_mflood-1).."*.", md)
+                                enviarMensaje(msg.chat.id, lng(ln.cajustes.mflood_es_menor, (config.grupos.min_ajuste_mflood-1)), md)
                                 retornar 0
                         osi anumero(matches[2]) > config.grupos.max_ajuste_mflood
-                                enviarMensaje(msg.chat.id, "El número máximo de mensajes por flood *debe ser menor a "..(config.grupos.max_ajuste_mflood+1).."*.", md)
+                                enviarMensaje(msg.chat.id, lng(ln.cajustes.mflood_es_mayor, (config.grupos.max_ajuste_mflood+1)), md)
                                 retornar 0
                         fin
-                        enviarMensaje(msg.chat.id, "*Nuevo número máximo de mensajes por flood establecido*:\n"..matches[2], md)
+                        enviarMensaje(msg.chat.id, lng(ln.cajustes.mflood_n, matches[2]), md)
                         redis.hasignar(com, chash, "maxfloodm", matches[2])
                 fin
         fin
 
         si matches[1] == "tflood"
                 si anumero(matches[2]) < config.grupos.min_ajuste_tflood
-                        enviarMensaje(msg.chat.id, "El número máximo de tiempo por flood *debe ser mayor a "..(config.grupos.min_ajuste_tflood-1).."*.", md)
+                        enviarMensaje(msg.chat.id, lng(ln.cajustes.tflood_es_menor, (config.grupos.min_ajuste_tflood-1)), md)
                         retornar 0
                 osi anumero(matches[2]) > config.grupos.max_ajuste_tflood
-                        enviarMensaje(msg.chat.id, "El número máximo de tiempo por flood *debe ser menor a "..(config.grupos.max_ajuste_tflood+1).."*.", md)
+                        enviarMensaje(msg.chat.id, lng(ln.cajustes.tflood_es_mayor, (config.grupos.max_ajuste_tflood+1)), md)
                         retornar 0
                 fin
-                enviarMensaje(msg.chat.id, "*Nuevo número máximo de tiempo por flood establecido*:\n"..matches[2], md)
+                enviarMensaje(msg.chat.id, lng(ln.cajustes.tflood_n, matches[2]), md)
                 redis.hasignar(com, chash, "maxfloodt", matches[2])
         fin
 
@@ -191,18 +188,18 @@ funcion mensajes()
                 si matches[2] == "on"
                         lo_agrega = redis.sagregar(com, hash, "stickers")
                         si lo_agrega
-                                enviarMensaje(msg.chat.id, "Stickers *permitidos* en este chat.", md)
+                                enviarMensaje(msg.chat.id, ln.ajustes.stickers_on, md)
                                 retornar 0
                         fin
-                        enviarMensaje(msg.chat.id, "Los stickers *ya están permitidos*.", md)
+                        enviarMensaje(msg.chat.id, ln.ajustes.Xstickers_on, md)
 
                 osi matches[2] == "off"
                         lo_borra = redis.sborrar(com, hash, "stickers")
                         si lo_borra
-                                enviarMensaje(msg.chat.id, "Stickers *no permitidos* en este chat.", md)
+                                enviarMensaje(msg.chat.id, ln.ajustes.stickers_off, md)
                                 retornar 0
                         fin
-                        enviarMensaje(msg.chat.id, "Los stickers *ya no están permitidos*.", md)
+                        enviarMensaje(msg.chat.id, ln.ajustes.Xstickers_off, md)
                 fin
         fin
 
@@ -210,18 +207,18 @@ funcion mensajes()
                 si matches[2] == "on"
                         lo_agrega = redis.sagregar(com, hash, "bots")
                         si lo_agrega
-                                enviarMensaje(msg.chat.id, "Bots *permitidos* en este chat.", md)
+                                enviarMensaje(msg.chat.id, ln.ajustes.bots_on, md)
                                 retornar 0
                         fin
-                        enviarMensaje(msg.chat.id, "Los bots *ya están permitidos*.", md)
+                        enviarMensaje(msg.chat.id, ln.ajustes.Xbots_on, md)
 
                 osi matches[2] == "off"
                         lo_borra = redis.sborrar(com, hash, "bots")
                         si lo_borra
-                                enviarMensaje(msg.chat.id, "Bots *no permitidos* en este chat.", md)
+                                enviarMensaje(msg.chat.id, ln.ajustes.bots_off, md)
                                 retornar 0
                         fin
-                        enviarMensaje(msg.chat.id, "Los bots *ya no están permitidos*.", md)
+                        enviarMensaje(msg.chat.id, ln.ajustes.Xbots_off, md)
                 fin
         fin
 
@@ -229,18 +226,18 @@ funcion mensajes()
                 si matches[2] == "on"
                         lo_agrega = redis.sagregar(com, hash, "voz")
                         si lo_agrega
-                                enviarMensaje(msg.chat.id, "Mensajes de voz *permitidos* en este chat.", md)
+                                enviarMensaje(msg.chat.id, ln.ajustes.voz_on, md)
                                 retornar 0
                         fin
-                        enviarMensaje(msg.chat.id, "Los mensajes de voz *ya están permitidos*.", md)
+                        enviarMensaje(msg.chat.id, ln.ajustes.Xvoz_on, md)
 
                 osi matches[2] == "off"
                         lo_borra = redis.sborrar(com, hash, "voz")
                         si lo_borra
-                                enviarMensaje(msg.chat.id, "Mensajes de voz *no permitidos* en este chat.", md)
+                                enviarMensaje(msg.chat.id, ln.ajustes.voz_off, md)
                                 retornar 0
                         fin
-                        enviarMensaje(msg.chat.id, "Los mensajes de voz *ya no están permitidos*.", md)
+                        enviarMensaje(msg.chat.id, ln.ajustes.Xvoz_off, md)
                 fin
         fin
 
@@ -248,18 +245,18 @@ funcion mensajes()
                 si matches[2] == "on"
                         lo_agrega = redis.sagregar(com, hash, "fotos")
                         si lo_agrega
-                                enviarMensaje(msg.chat.id, "Fotos *permitidas* en este chat.", md)
+                                enviarMensaje(msg.chat.id, ln.ajustes.fotos_on, md)
                                 retornar 0
                         fin
-                        enviarMensaje(msg.chat.id, "Las fotos *ya están permitidas*.", md)
+                        enviarMensaje(msg.chat.id, ln.ajustes.Xfotos_on, md)
 
                 osi matches[2] == "off"
                         lo_borra = redis.sborrar(com, hash, "fotos")
                         si lo_borra
-                                enviarMensaje(msg.chat.id, "Fotos *no permitidas* en este chat.", md)
+                                enviarMensaje(msg.chat.id, ln.ajustes.fotos_off, md)
                                 retornar 0
                         fin
-                        enviarMensaje(msg.chat.id, "Las fotos *ya no están permitidas*.", md)
+                        enviarMensaje(msg.chat.id, ln.ajustes.Xfotos_off, md)
                 fin
         fin
 
@@ -267,18 +264,18 @@ funcion mensajes()
                 si matches[2] == "on"
                         lo_agrega = redis.sagregar(com, hash, "arabes")
                         si lo_agrega
-                                enviarMensaje(msg.chat.id, "Arabes *permitidos* en este chat.", md)
+                                enviarMensaje(msg.chat.id, ln.ajustes.arabes_on, md)
                                 retornar 0
                         fin
-                        enviarMensaje(msg.chat.id, "Los arabes *ya están permitidos*.", md)
+                        enviarMensaje(msg.chat.id, ln.ajustes.Xarabes_on, md)
 
                 osi matches[2] == "off"
                         lo_borra = redis.sborrar(com, hash, "arabes")
                         si lo_borra
-                                enviarMensaje(msg.chat.id, "Arabes *no permitidos* en este chat.", md)
+                                enviarMensaje(msg.chat.id, ln.ajustes.arabes_off, md)
                                 retornar 0
                         fin
-                        enviarMensaje(msg.chat.id, "Los arabes *ya no están permitidos*.", md)
+                        enviarMensaje(msg.chat.id, ln.ajustes.Xarabes_off, md)
                 fin
         fin
 
@@ -286,18 +283,18 @@ funcion mensajes()
                 si matches[2] == "on"
                         lo_agrega = redis.sagregar(com, hash, "links")
                         si lo_agrega
-                                enviarMensaje(msg.chat.id, "Links *permitidos* en este chat.", md)
+                                enviarMensaje(msg.chat.id, ln.ajustes.links_on, md)
                                 retornar 0
                         fin
-                        enviarMensaje(msg.chat.id, "Los links *ya están permitidos*.", md)
+                        enviarMensaje(msg.chat.id, ln.ajustes.Xlinks_on, md)
 
                 osi matches[2] == "off"
                         lo_borra = redis.sborrar(com, hash, "links")
                         si lo_borra
-                                enviarMensaje(msg.chat.id, "Links *no permitidos* en este chat.", md)
+                                enviarMensaje(msg.chat.id, ln.ajustes.links_off, md)
                                 retornar 0
                         fin
-                        enviarMensaje(msg.chat.id, "Los links *ya no están permitidos*.", md)
+                        enviarMensaje(msg.chat.id, ln.ajustes.Xlinks_off, md)
                 fin
         fin
 
@@ -306,7 +303,7 @@ funcion mensajes()
                         redis.hasignar(com, chash, "ln", matches[2])
                         enviarMensaje(msg.chat.id, lng(ln.cajustes.ln, matches[2]), md)
                 sino
-                        enviarMensaje(msg.chat.id, lng(ln.error[2], matches[2]), md)
+                        enviarMensaje(msg.chat.id, lng(ln.error.ln_falta, matches[2]), md)
                 fin
         fin
 

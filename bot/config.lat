@@ -5,7 +5,7 @@ retornar {
 
         "lenguaje": "es",
 
-        "dir_lenguajes": "lenguajes/",
+        "dir_lenguajes": "ln/",
         "lenguajes":[
                 "es",
                 "en"
