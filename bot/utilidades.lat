@@ -40,10 +40,10 @@ fin
 
 funcion ires()
         si res
-                imprimir(color.italicas..json.formato(res)..color.reset)
+                poner(color.italicas..json.formato(res)..color.reset)
                 retornar res
         fin
-        imprimir("Variable res no encontrada", 1)
+        poner("Variable res no encontrada", 1)
         retornar falso
 fin
 
@@ -135,7 +135,7 @@ funcion obtenerLeer(id, condicion, proceso_id)
                         si anumero(proceso_id)
                                 variable = redis.obtener(com, "lat:"..acadena(id)..":leer:"..anumero(proceso_id))
                         sino
-                                imprimir("El proceso debe ser un númerico.")
+                                poner("El proceso debe ser un númerico.")
                                 retornar falso
                         fin
                 sino
@@ -156,7 +156,7 @@ funcion detenerLeer(id, proceso_id)
                                 retornar verdadero
                         fin
                 fin
-                imprimir("El proceso debe ser un númerico.")
+                poner("El proceso debe ser un númerico.")
                 retornar falso
         sino
                 ok = redis.borrar(com, "lat:"..acadena(id)..":leer")
@@ -174,7 +174,7 @@ funcion iniciarLeer(id, texto, proceso_id, expiracion)
                         hash = hash..':'..anumero(proceso_id)
                         llave = '{"id": "'..acadena(id)..'", "texto": "'..unescape(acadena(texto))..'"}'
                 sino
-                        imprimir("El proceso debe ser un númerico.")
+                        poner("El proceso debe ser un númerico.")
                         retornar falso
                 fin
         sino
@@ -185,7 +185,7 @@ funcion iniciarLeer(id, texto, proceso_id, expiracion)
         si ok
                 si expiracion
                         si !anumero(expiracion)
-                                imprimir("La expiración debe ser un númerico.")
+                                poner("La expiración debe ser un númerico.")
                                 retornar falso
                         fin
                         redis.expirar(com, hash, expiracion)
@@ -206,12 +206,15 @@ fin
 
 funcion limpiar_updates()
         update = actualizaciones()
-        si update
+        si update.ok
                 update = update.result
                 si lista.longitud(update) > config.updates.max
-                        offset = ((update[update-1].update_id) + 1)
+                    poner("Limpiando actualizaciones")
+                    desde (i=0; i<update; i++)
+                        offset = ((update[i].update_id) + 1)
                         c = curl.peticion(URL.."getUpdates?offset="..anumero(offset))
-                        retornar anumero(update)
+                    fin
+                    retornar anumero(update)
                 fin
         fin
         retornar falso

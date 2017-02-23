@@ -66,21 +66,23 @@ funcion mensajes()
                 si id_obtenida
                         si msg.entrada[1].usuario.id
                                 res = {
-                                        "result":{
-                                                "id": msg.entrada[1].usuario.id,
-                                                "username": msg.entrada[1].usuario.usuario,
-                                                "first_name": msg.entrada[1].usuario.nombre
-                                        }
+                                        "id": msg.entrada[1].usuario.id,
+                                        "username": no_markdown(msg.entrada[1].usuario.usuario),
+                                        "first_name": msg.entrada[1].usuario.nombre
                                 }
                         sino
+                                regex = id_obtenida ~= "^[0-9]+$"
+                                si !regex
+                                        id_obtenida = "@"..id_obtenida
+                                fin
                                 res = obtenerChat(id_obtenida)
                         fin
                         si res
-                                datos = lng(ln.usuarios.nombre, no_markdown(res.result.first_name))
+                                datos = lng(ln.usuarios.nombre, no_markdown(res.first_name))
                                 ..lng(ln.usuarios.chat_id, msg.chat.id)
-                                ..lng(ln.usuarios.usuario_id, res.result.id)
-                                si res.result.username
-                                        datos ..= lng(ln.usuarios.alias, "@"..res.result.username)
+                                ..lng(ln.usuarios.usuario_id, res.id)
+                                si res.username
+                                        datos ..= lng(ln.usuarios.alias, no_markdown("@"..res.username))
                                 fin
                                 enviarMensaje(msg.chat.id, datos,md)
                         fin
@@ -95,6 +97,10 @@ funcion mensajes()
                 ..lng(ln.usuarios.dev, DESARROLLADOR)
                 ..lng(ln.usuarios.soporte, APOYO), git, md)
         fin
+fin
+
+funcion canal()
+        enviarMensaje(canal.chat.id, "@"..canal.chat.usuario.." id: "..canal.chat.id)
 fin
 
 retornar {
@@ -114,11 +120,16 @@ retornar {
                 "^id$"
         ],
 
+        "canal_comandos":[
+                "/id"
+        ],
+
         "callbacks": [
                 "^!!!(latino)$"
         ],
 
         "accion": mensajes,
         "inline": inline,
-        "callback": callback
+        "callback": callback,
+        "canal_fun": canal
 }

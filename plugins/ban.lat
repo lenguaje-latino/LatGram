@@ -34,7 +34,7 @@ funcion mensajes()
         si matches[1] == "ban"
                 si respuesta.de.id
                         miembro_baneado = banearUsuario(msg.chat.id, respuesta.de.id)
-                        si respuesta.de.id == bot.id imprimir("Subproceso: bot eliminado de") fin
+                        si respuesta.de.id == bot.id poner("Subproceso: bot eliminado de") fin
                         si miembro_baneado
                                 enviarMensaje(msg.chat.id, "El usuario "..no_markdown(respuesta.de.nombre).." *ha sido baneado*.", md)
                                 retornar 0

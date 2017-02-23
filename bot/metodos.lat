@@ -48,7 +48,7 @@ funcion enviarMensaje(chatId, texto, formato, responder, url_vista, notificar)
         si estado.ok
                 retornar estado
         fin
-        imprimir(estado.description)
+        poner(estado.description)
         retornar falso
 fin
 
@@ -79,7 +79,7 @@ funcion enviarAlerta(cbid, texto, alerta, tiempo_cache, url)
 
         si tiempo_cache
                 si !anumero(tiempo_cache)
-                        imprimir("Debe ser númerico el tiempo_cache")
+                        poner("Debe ser númerico el tiempo_cache")
                         retornar falso
                 fin
                 enlace = enlace .. "&cache_time="..tiempo_cache
@@ -93,7 +93,7 @@ funcion enviarAlerta(cbid, texto, alerta, tiempo_cache, url)
         si estado.ok
                 retornar estado
         fin
-        imprimir(estado.description)
+        poner(estado.description)
         retornar falso
 fin
 
@@ -112,7 +112,7 @@ funcion enviarAccion(chatId, tipo)
         fin
 fin
 si !accion
-        imprimir("error: la acción '"..tipo.."' no existe.\nAcciones disponibles:\n\tescribiendo\n\tsubir_foto\n\tsubir_video\n\tsubir_audio\n\tsubir_archivo\n\tgrabar_video\n\tgrabar_audio\n\tbuscar_lugar", 1)
+        poner("error: la acción '"..tipo.."' no existe.\nAcciones disponibles:\n\tescribiendo\n\tsubir_foto\n\tsubir_video\n\tsubir_audio\n\tsubir_archivo\n\tgrabar_video\n\tgrabar_audio\n\tbuscar_lugar", 1)
         retornar falso
 fin
 raw = curl.peticion(URL .. "sendChatAction?chat_id=" .. chatId .. "&action=" .. accion)
@@ -191,7 +191,7 @@ funcion banearUsuario(chatId, userId)
         si estado.ok
                 retornar verdadero
         fin
-        imprimir(estado.description)
+        poner(estado.description)
         retornar falso
 fin
 
@@ -619,7 +619,7 @@ funcion obtenerChat(chatId)
         raw = curl.peticion(URL .. "getChat?chat_id="..chatId)
         status = json.decodificar(raw)
         si status.ok
-                retornar status
+                retornar status.result
         fin
         retornar falso
 fin
@@ -655,7 +655,7 @@ fin
 
 funcion enviarConsultaInline(IdConsulta, resultado, limite)
         si tipo(resultado) != "lista"
-                imprimir("Error: enviarConsultaInline parametro 2 debe ser una lista")
+                poner("Error: enviarConsultaInline parametro 2 debe ser una lista")
                 retornar 0
         fin
         enlace = URL .. "answerInlineQuery?inline_query_id="..IdConsulta.."&results="..resultado
@@ -667,7 +667,7 @@ funcion enviarConsultaInline(IdConsulta, resultado, limite)
         si status.ok
                 retornar status
         fin
-        imprimir(status.description)
+        poner(status.description)
         retornar falso
 fin
 
