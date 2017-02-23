@@ -3,8 +3,7 @@ color = incluir("bot/colores.lat/src/colores")
 funcion unescape(a)
         b = cadena.reemplazar(a, '"', '\"')
         b = cadena.reemplazar(b, "'", "\'")
-        b = cadena.reemplazar(b, "
-        ", "\n")
+        b = cadena.reemplazar(b, cadena.char(10), "\n")
         retornar b
 fin
 
@@ -24,8 +23,8 @@ fin
 funcion bot_agregado(botid, addid)
         si !botid retornar falso fin
         si !addid retornar falso fin
-        si botid == addid retornar falso fin
-        retornar verdadero
+        si botid == addid retornar verdadero fin
+        retornar falso
 fin
 
 funcion bot_eliminado()
@@ -41,10 +40,10 @@ fin
 
 funcion ires()
         si res
-                imprimir(color.italicas..json.formato(res)..color.reset)
+                poner(color.italicas..json.formato(res)..color.reset)
                 retornar res
         fin
-        imprimir("Variable res no encontrada", 1)
+        poner("Variable res no encontrada", 1)
         retornar falso
 fin
 
@@ -57,7 +56,6 @@ imprimirf(color.simp("pbi.rosa")..'\t\t          __
 fin
 
 funcion cargar_plugins()
-        logo()
         global plugins_montados = []
         plugins = []
         desde (plugin_cargado=0; plugin_cargado<config.plugins; plugin_cargado++)
@@ -68,7 +66,7 @@ funcion cargar_plugins()
                         plugin = incluir(config.dir..config.plugins[plugin_cargado])
                         lista.agregar(plugins_montados, config.plugins[plugin_cargado]..".lat")
                         lista.agregar(plugins, plugin)
-                        imprimirf(color.verde.."\tPlugin:\t"..color.cyan..config.plugins[plugin_cargado].."\t"..color.amarillo.."["..(plugin_cargado+1).."/"..(config.plugins+0).."] "..color.r_cyan.."...iniciado."..color.reset.."\n")
+                        imprimirf(color.verde.."\tPlugin:\t"..color.cyan..config.plugins[plugin_cargado].."\t"..color.amarillo.."["..(plugin_cargado+1).."/"..(config.plugins+0).."] "..color.r_cyan.." [ iniciado ]"..color.reset.."\n")
                 fin
         fin
         si plugins_montados < config.plugins
@@ -87,13 +85,57 @@ funcion cargar_plugins()
         retornar plugins
 fin
 
+global funcion cargar_lenguajes()
+        si !lista.contiene(config.lenguajes, config.lenguaje)
+                imprimirf(color.rojo.."ERROR:"..color.reset.." el lenguaje '"..config.lenguaje.."' no está activado en config.lenguajes.\n")
+                salir()
+        fin
+        global lenguajes_montados = []
+        lenguajes = {}
+        desde (i=0; i<config.lenguajes; i++)
+                _a_ = config.dir_lenguajes..config.lenguajes[i]
+                si archivo.leer(_a_..".lat")
+                        act = incluir(_a_)
+                        si act[config.lenguajes[i]]
+                                lenguajes[config.lenguajes[i]] = act[config.lenguajes[i]]
+                                lista.agregar(lenguajes_montados, config.lenguajes[i])
+                                imprimirf(color.naranja.."\tLenguaje: "..color.reset..color.cyan..config.lenguajes[i]..color.r_cyan.." [ montado ]\n")
+                                imprimirf(color.reset)
+                        sino
+                                imprimirf(color.amarillo.."\tVariable '"..config.lenguajes[i].."' perdida en el archivo ".._a_..".lat\n")
+                        fin
+                sino
+                        imprimirf(color.rojo.."\tError al cargar lenguaje '"..config.lenguajes[i].."'\n")
+                fin
+        fin
+        imprimirf(color.reset)
+        retornar lenguajes
+fin
+
+funcion leng(chatid)
+        si !chatid retornar falso fin
+        chash = "ajustes:"..chatid..":customs"
+        lenguaje = redis.hobtener(com, chash, "ln")
+        si lenguaje
+                retornar _ln[lenguaje]
+        fin
+        retornar _ln[config.lenguaje]
+fin
+
+funcion lenguaje_disponible(lenguaje)
+        si lista.contiene(lenguajes_montados, lenguaje)
+                retornar verdadero
+        fin
+        retornar falso
+fin
+
 funcion obtenerLeer(id, condicion, proceso_id)
         si condicion && condicion != nulo
                 si proceso_id
                         si anumero(proceso_id)
                                 variable = redis.obtener(com, "lat:"..acadena(id)..":leer:"..anumero(proceso_id))
                         sino
-                                imprimir("El proceso debe ser un númerico.")
+                                poner("El proceso debe ser un númerico.")
                                 retornar falso
                         fin
                 sino
@@ -114,7 +156,7 @@ funcion detenerLeer(id, proceso_id)
                                 retornar verdadero
                         fin
                 fin
-                imprimir("El proceso debe ser un númerico.")
+                poner("El proceso debe ser un númerico.")
                 retornar falso
         sino
                 ok = redis.borrar(com, "lat:"..acadena(id)..":leer")
@@ -132,7 +174,7 @@ funcion iniciarLeer(id, texto, proceso_id, expiracion)
                         hash = hash..':'..anumero(proceso_id)
                         llave = '{"id": "'..acadena(id)..'", "texto": "'..unescape(acadena(texto))..'"}'
                 sino
-                        imprimir("El proceso debe ser un númerico.")
+                        poner("El proceso debe ser un númerico.")
                         retornar falso
                 fin
         sino
@@ -143,7 +185,7 @@ funcion iniciarLeer(id, texto, proceso_id, expiracion)
         si ok
                 si expiracion
                         si !anumero(expiracion)
-                                imprimir("La expiración debe ser un númerico.")
+                                poner("La expiración debe ser un númerico.")
                                 retornar falso
                         fin
                         redis.expirar(com, hash, expiracion)
@@ -164,12 +206,15 @@ fin
 
 funcion limpiar_updates()
         update = actualizaciones()
-        si update
+        si update.ok
                 update = update.result
-                si lista.longitud(update) > config.updates[0].max
-                        offset = ((update[update-1].update_id) + 1)
+                si lista.longitud(update) > config.updates.max
+                    poner("Limpiando actualizaciones")
+                    desde (i=0; i<update; i++)
+                        offset = ((update[i].update_id) + 1)
                         c = curl.peticion(URL.."getUpdates?offset="..anumero(offset))
-                        retornar anumero(update)
+                    fin
+                    retornar anumero(update)
                 fin
         fin
         retornar falso
@@ -195,7 +240,7 @@ funcion nuevo_creador(nombre, id)
                 "nombre": nombre,
                 "id": anumero(id)
         })
-        archivo.escribir(config.datos[0].creadores, acadena(json.formato(lista_)))
+        archivo.escribir(config.datos.creadores, acadena(json.formato(lista_)))
         _BOT("recargar_creadores")
         retornar verdadero
 fin
@@ -203,7 +248,7 @@ fin
 funcion nuevo_gadmin(nombre, id)
         si !id retornar falso fin
         si !_gadmins_
-                archivo.crear(config.datos[0].gadmins)
+                archivo.crear(config.datos.gadmins)
                 lista_ = {"gadmins":[]}
         sino
                 lista_ = json.decodificar(_gadmins_)
@@ -223,14 +268,14 @@ funcion nuevo_gadmin(nombre, id)
                 "nombre": nombre,
                 "id": anumero(id)
         })
-        archivo.escribir(config.datos[0].gadmins, acadena(json.formato(lista_)))
+        archivo.escribir(config.datos.gadmins, acadena(json.formato(lista_)))
         _BOT("recargar_gadmins")
         retornar verdadero
 fin
 
 funcion nuevo_gmod(nombre, id)
         si !_gmods_
-                archivo.crear(config.datos[0].gmods)
+                archivo.crear(config.datos.gmods)
                 lista_ = {"gmods":[]}
         sino
                 lista_ = json.decodificar(_gmods_)
@@ -250,7 +295,7 @@ funcion nuevo_gmod(nombre, id)
                 "nombre": nombre,
                 "id": anumero(id)
         })
-        archivo.escribir(config.datos[0].gmods, acadena(json.formato(lista_)))
+        archivo.escribir(config.datos.gmods, acadena(json.formato(lista_)))
         _BOT("recargar_gmods")
         retornar verdadero
 fin
@@ -265,14 +310,14 @@ fin
 /* comprobar si está en la lista para no eliminar */
 funcion rm_creador_ignorado(id)
         si !id retornar falso fin
-        si lista.longitud(config.ignorar_rm[0].creadores) == 0 retornar falso fin
-        si lista.longitud(config.ignorar_rm[0].creadores) == 1
-                si anumero(id) == config.ignorar_rm[0].creadores[0]
+        si lista.longitud(config.ignorar_rm.creadores) == 0 retornar falso fin
+        si lista.longitud(config.ignorar_rm.creadores) == 1
+                si anumero(id) == config.ignorar_rm.creadores[0]
                         retornar verdadero
                 fin
         sino
-                desde (i=0;i<config.ignorar_rm[0].creadores;i++)
-                        si anumero(id) == config.ignorar_rm[0].creadores[i]
+                desde (i=0;i<config.ignorar_rm.creadores;i++)
+                        si anumero(id) == config.ignorar_rm.creadores[i]
                                 retornar verdadero
                         fin
                 fin
@@ -282,14 +327,14 @@ fin
 
 funcion rm_gadmin_ignorado(id)
         si !id retornar falso fin
-        si lista.longitud(config.ignorar_rm[0].gadmins) == 0 retornar falso fin
-        si lista.longitud(config.ignorar_rm[0].gadmins) == 1
-                si anumero(id) == config.ignorar_rm[0].gadmins[0]
+        si lista.longitud(config.ignorar_rm.gadmins) == 0 retornar falso fin
+        si lista.longitud(config.ignorar_rm.gadmins) == 1
+                si anumero(id) == config.ignorar_rm.gadmins[0]
                         retornar verdadero
                 fin
         sino
-                desde (i=0;i<config.ignorar_rm[0].gadmins;i++)
-                        si anumero(id) == config.ignorar_rm[0].gadmins[i]
+                desde (i=0;i<config.ignorar_rm.gadmins;i++)
+                        si anumero(id) == config.ignorar_rm.gadmins[i]
                                 retornar verdadero
                         fin
                 fin
@@ -299,14 +344,14 @@ fin
 
 funcion rm_gmod_ignorado(id)
         si !id retornar falso fin
-        si lista.longitud(config.ignorar_rm[0].gmods) == 0 retornar falso fin
-        si lista.longitud(config.ignorar_rm[0].gmods) == 1
-                si anumero(id) == config.ignorar_rm[0].gmods[0]
+        si lista.longitud(config.ignorar_rm.gmods) == 0 retornar falso fin
+        si lista.longitud(config.ignorar_rm.gmods) == 1
+                si anumero(id) == config.ignorar_rm.gmods[0]
                         retornar verdadero
                 fin
         sino
-                desde (i=0;i<config.ignorar_rm[0].gmods;i++)
-                        si anumero(id) == config.ignorar_rm[0].gmods[i]
+                desde (i=0;i<config.ignorar_rm.gmods;i++)
+                        si anumero(id) == config.ignorar_rm.gmods[i]
                                 retornar verdadero
                         fin
                 fin
@@ -322,7 +367,7 @@ funcion rm_creador(id)
         si lista.longitud(lista_.creadores) == 1
                 si anumero(id) == lista_.creadores[0].id
                         lista.eliminar_indice(lista_.creadores, 0)
-                        archivo.escribir(config.datos[0].creadores, acadena(json.formato(lista_)))
+                        archivo.escribir(config.datos.creadores, acadena(json.formato(lista_)))
                         _BOT("recargar_creadores")
                         retornar verdadero
                 fin
@@ -330,7 +375,7 @@ funcion rm_creador(id)
                 desde (i=0;i<lista_.creadores;i++)
                         si anumero(id) == lista_.creadores[i].id
                                 lista.eliminar_indice(lista_.creadores, i)
-                                archivo.escribir(config.datos[0].creadores, acadena(json.formato(lista_)))
+                                archivo.escribir(config.datos.creadores, acadena(json.formato(lista_)))
                                 _BOT("recargar_creadores")
                                 retornar verdadero
                         fin
@@ -347,7 +392,7 @@ funcion rm_gadmin(id)
         si lista.longitud(lista_.gadmins) == 1
                 si anumero(id) == lista_.gadmins[0].id
                         lista.eliminar_indice(lista_.gadmins, 0)
-                        archivo.escribir(config.datos[0].gadmins, acadena(json.formato(lista_)))
+                        archivo.escribir(config.datos.gadmins, acadena(json.formato(lista_)))
                         _BOT("recargar_gadmins")
                         retornar verdadero
                 fin
@@ -355,7 +400,7 @@ funcion rm_gadmin(id)
                 desde (i=0;i<lista_.gadmins;i++)
                         si anumero(id) == lista_.gadmins[i].id
                                 lista.eliminar_indice(lista_.gadmins, i)
-                                archivo.escribir(config.datos[0].gadmins, acadena(json.formato(lista_)))
+                                archivo.escribir(config.datos.gadmins, acadena(json.formato(lista_)))
                                 _BOT("recargar_gadmins")
                                 retornar verdadero
                         fin
@@ -372,7 +417,7 @@ funcion rm_gmod(id)
         si lista.longitud(lista_.gmods) == 1
                 si anumero(id) == lista_.gmods[0].id
                         lista.eliminar_indice(lista_.gmods, 0)
-                        archivo.escribir(config.datos[0].gmods, acadena(json.formato(lista_)))
+                        archivo.escribir(config.datos.gmods, acadena(json.formato(lista_)))
                         _BOT("recargar_gmods")
                         retornar verdadero
                 fin
@@ -380,7 +425,7 @@ funcion rm_gmod(id)
                 desde (i=0;i<lista_.gmods;i++)
                         si anumero(id) == lista_.gmods[i].id
                                 lista.eliminar_indice(lista_.gmods, i)
-                                archivo.escribir(config.datos[0].gmods, acadena(json.formato(lista_)))
+                                archivo.escribir(config.datos.gmods, acadena(json.formato(lista_)))
                                 _BOT("recargar_gmods")
                                 retornar verdadero
                         fin
@@ -474,7 +519,7 @@ fin
 /* gbans */
 funcion gban(nombre, id, motivo)
         si !_gbans_
-                archivo.crear(config.datos[0].gbans)
+                archivo.crear(config.datos.gbans)
                 lista_ = {"gbans":[]}
         sino
                 lista_ = json.decodificar(_gbans_)
@@ -496,7 +541,7 @@ funcion gban(nombre, id, motivo)
                         "id": anumero(id)
                 })
         fin
-        archivo.escribir(config.datos[0].gbans, acadena(json.formato(lista_)))
+        archivo.escribir(config.datos.gbans, acadena(json.formato(lista_)))
         _BOT("recargar_gbans")
         retornar verdadero
 fin
@@ -508,7 +553,7 @@ funcion desgban(id)
                 desde (i=0;i<lista_.gbans;i++)
                         si anumero(id) == lista_.gbans[i].id
                                 lista.eliminar_indice(lista_.gbans, i)
-                                archivo.escribir(config.datos[0].gbans, acadena(json.formato(lista_)))
+                                archivo.escribir(config.datos.gbans, acadena(json.formato(lista_)))
                                 _BOT("recargar_gbans")
                                 retornar verdadero
                         fin
@@ -558,15 +603,15 @@ fin
 funcion crear_archivo_ids_usuarios()
         llave = redis.hllaves(com, BOT_HHASH)
         si llave
-                archivo.crear(config.tmp[0].usuarios)
+                archivo.crear(config.tmp.usuarios)
                 json_ = {"usuarios": []}
                 desde(i=0; i<llave; i++)
                         lista.agregar(json_.usuarios, {
                                 llave[i]: anumero(redis.hobtener(com, BOT_HHASH, llave[i]))
                         })
                 fin
-                archivo.escribir(config.tmp[0].usuarios, acadena(json.formato(json_)))
-                retornar config.tmp[0].usuarios
+                archivo.escribir(config.tmp.usuarios, acadena(json.formato(json_)))
+                retornar config.tmp.usuarios
         fin
         retornar falso
 fin

@@ -38,5 +38,4 @@ case $1 in
    tmux new-session -s ${session} -d "bash run en_while ${2}"
    exit;;
 esac
-
 latino bot/bot.lat $1

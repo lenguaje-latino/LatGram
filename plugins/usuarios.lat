@@ -1,4 +1,5 @@
 funcion inline()
+        ln = leng(cinline.de.id)
         cinline_datos = "\nID: "..cinline.de.id.."\nNombre: "..cinline.de.nombre
         si cinline.de.apellido
                 cinline_datos ..= "\nApellido: "..cinline.de.apellido
@@ -14,9 +15,10 @@ funcion inline()
 fin
 
 funcion callback()
+        ln = leng(cb.msg.chat.id)
         si cmatches[1] == "latino"
                 link_teclado = [[
-                {"text":"Github","url":"https://github.com/lenguaje-latino/BotGram"}
+                {"text":"🌐 Github","url":"https://github.com/primitivorm/latino"}
                 ]]
                 editarMensaje(cb.msg.chat.id, cb.msg.id, "*Latino* es un lenguaje de programación en español interpretado hecho en C"
                 .."\n¿Puedo ayudar? Si así es, *Latino busca desarrolladores* para Latino."
@@ -25,32 +27,32 @@ funcion callback()
 fin
 
 funcion mensajes()
+        ln = leng(msg.chat.id)
         si matches[1] == "id"
                 si !matches[2]
-                        enviarMensaje(msg.chat.id, cadena.formato(leng.usuarios[0].id, msg.chat.id, msg.de.id), md)
+                        enviarMensaje(msg.chat.id, lng(ln.usuarios.id, msg.chat.id, msg.de.id), md)
                         retornar 0
                 fin
                 id_obtenida = obtener_id_usuario(matches[2])
                 si id_obtenida
                         enviarMensaje(msg.chat.id, "`"..id_obtenida.."`", md)
                 sino
-                        enviarMensaje(msg.chat.id, leng.error[0], md)
+                        enviarMensaje(msg.chat.id, ln.error.bd, md)
                 fin
         fin
         si matches[1] == "start"
                 ayuda = [[
-                        {"text":"Programación Latino","callback_data":"!!!latino"},
-                        {"text":"Repositorio del Bot","url":"https://github.com/lenguaje-latino/BotGram"}
+                        {"text":"Programación Latino","callback_data":"!!!latino"}
                 ]]
-                enviarTeclado(msg.chat.id, cadena.formato(leng.usuarios[0].start, no_markdown(msg.de.nombre), no_markdown(bot.usuario)), ayuda, md)
+                enviarTeclado(msg.chat.id, lng(ln.usuarios.start, no_markdown(msg.de.nombre), no_markdown(bot.usuario)), ayuda, md)
         fin
         si matches[1] == "res"
                 si respuesta.id
-                        datos = "*Nombre*: "..no_markdown(respuesta.de.nombre)
-                        .."\n*Chat ID*: "..respuesta.chat.id
-                        .."\n*ID*: "..respuesta.de.id
+                        datos = lng(ln.usuarios.nombre, no_markdown(respuesta.de.nombre))
+                        ..lng(ln.usuarios.chat_id, respuesta.chat.id)
+                        ..lng(ln.usuarios.usuario_id, respuesta.de.id)
                         si respuesta.de.usuario
-                                datos ..= "\n*Alias*: @"..no_markdown(respuesta.de.usuario)
+                                datos ..= lng(ln.usuarios.alias, "@"..respuesta.de.usuario)
                         fin
                         enviarMensaje(msg.chat.id,datos,md)
                         retornar 0
@@ -64,21 +66,23 @@ funcion mensajes()
                 si id_obtenida
                         si msg.entrada[1].usuario.id
                                 res = {
-                                        "result":{
-                                                "id": msg.entrada[1].usuario.id,
-                                                "username": msg.entrada[1].usuario.usuario,
-                                                "first_name": msg.entrada[1].usuario.nombre
-                                        }
+                                        "id": msg.entrada[1].usuario.id,
+                                        "username": no_markdown(msg.entrada[1].usuario.usuario),
+                                        "first_name": msg.entrada[1].usuario.nombre
                                 }
                         sino
+                                regex = id_obtenida ~= "^[0-9]+$"
+                                si !regex
+                                        id_obtenida = "@"..id_obtenida
+                                fin
                                 res = obtenerChat(id_obtenida)
                         fin
                         si res
-                                datos = "*Nombre*: "..no_markdown(res.result.first_name)
-                                .."\n*ID*: "..res.result.id
-                                .."\n*Chat ID*: "..msg.chat.id
-                                si res.result.username
-                                        datos ..= "\n*Alias*: @"..no_markdown(res.result.username)
+                                datos = lng(ln.usuarios.nombre, no_markdown(res.first_name))
+                                ..lng(ln.usuarios.chat_id, msg.chat.id)
+                                ..lng(ln.usuarios.usuario_id, res.id)
+                                si res.username
+                                        datos ..= lng(ln.usuarios.alias, no_markdown("@"..res.username))
                                 fin
                                 enviarMensaje(msg.chat.id, datos,md)
                         fin
@@ -86,21 +90,28 @@ funcion mensajes()
         fin
 
         si matches[1] == "version"
-                enviarMensaje(msg.chat.id, "`LatGram v"..VERSION.."`"
-                .."\n*Desarrollador*: "..DESARROLLADOR
-                .."\n*Apoyo*: "..APOYO, md)
+                git = [[
+                        {"text":"GitHub","url":"https://github.com/lenguaje-latino/LatGram"}
+                ]]
+                enviarTeclado(msg.chat.id, "`LatGram v"..VERSION.."`\n"
+                ..lng(ln.usuarios.dev, DESARROLLADOR)
+                ..lng(ln.usuarios.soporte, APOYO), git, md)
         fin
+fin
+
+funcion canal()
+        enviarMensaje(canal.chat.id, "@"..canal.chat.usuario.." id: "..canal.chat.id)
 fin
 
 retornar {
         "comandos": [
                 "^/(id)$",
-                "^/(id) @([[:alnum:]_]+)$",
+                "^/(id) @([[:alnum:]_]{5,})$",
                 "^/(id)@"..bot.usuario.."$",
                 "^/(start)$",
                 "^/(start)@"..bot.usuario.."$",
                 "^/(res)$",
-                "^/(res) @([[:alnum:]_]+)$",
+                "^/(res) @([[:alnum:]_]{5,})$",
                 "^/(res) (.*)$",
                 "^/(version)$"
         ],
@@ -109,11 +120,16 @@ retornar {
                 "^id$"
         ],
 
+        "canal_comandos":[
+                "/id"
+        ],
+
         "callbacks": [
                 "^!!!(latino)$"
         ],
 
         "accion": mensajes,
         "inline": inline,
-        "callback": callback
+        "callback": callback,
+        "canal_fun": canal
 }

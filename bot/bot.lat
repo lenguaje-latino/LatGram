@@ -12,7 +12,8 @@ md = "markdown"
 
 //&reply_markup={"keyboard":[["Yes","No"],["Maybe"],["1","2","3"]],"one_time_keyboard":true}
 funcion cod(texto)
-        x = cadena.reemplazar(texto, "\n", cadena.formato("%c", 10))
+        x = cadena.reemplazar(texto, "\n", cadena.char(10))
+        x = cadena.reemplazar(x, "\t", cadena.char(9))
         retornar curl.escape(x)
 fin
 
@@ -28,21 +29,46 @@ funcion parsear(teclado_inline, normal)
                         retornar { "inline_keyboard": inline }
                 fin
         fin
-        imprimir("Elemento inesperado, el elemento debe ser lista, no "..tipo(teclado_inline)..".")
+        poner("Elemento inesperado, el elemento debe ser lista, no "..tipo(teclado_inline)..".")
 fin
 
 funcion incluir_variables()
         res = res.result[0]
         msj = res.message
-        global msg = nulo
-        global cinline = nulo
-        global cb = nulo
+        global msg = falso
+        global cinline = falso
+        global cb = falso
+        global canal = falso
         si res.callback_query
                 global cb = res.callback_query
         fin
         si res.inline_query
                 global cinline = res.inline_query
         fin
+        si res.channel_post
+                global canal = res.channel_post
+        fin
+        si canal
+                global canal = {
+                        "mensaje_id": canal.message_id,
+                        "texto": canal.text,
+                        "fecha": canal.date,
+                        "chat": {
+                                "tipo": canal.chat.type,
+                                "titulo": canal.chat.title,
+                                "id": canal.chat.id,
+                                "usuario": canal.chat.username
+                        },
+                        "de": {
+                                "id": canal.from.id,
+                                "usuario": canal.from.username,
+                                "nombre": canal.from.first_name,
+                                "apellido": canal.from.last_name
+                        }
+
+                }
+        fin
+
         si msj
                 global msg = {
                         "id": msj.message_id,
@@ -251,12 +277,6 @@ funcion incluir_variables()
                                 "nombre": cinline.from.first_name,
                                 "apellido": cinline.from.last_name,
                                 "usuario": cinline.from.username
-                        },
-                        "chat": {
-                                "id": cinline.chat.id,
-                                "nombre": cinline.chat.first_name,
-                                "apellido": cinline.chat.last_name,
-                                "usuario": cinline.chat.username
                         }
                 }
         fin
@@ -322,10 +342,10 @@ fin
 funcion iniciar_bot()
         incluir_variables()
         desde (num_plugin=0; num_plugin<plugins; num_plugin++)
-                si acadena(plugins[num_plugin].subproceso) == "funcion" // convertimos a cadena y obligamos al usuario a usar una función
+                si tipo(plugins[num_plugin].subproceso) == "funcion" // convertimos a cadena y obligamos al usuario a usar una función
                         retorna = plugins[num_plugin].subproceso()
                         si (retorna && tipo(retorna) != "logico" && !json_res)
-                                imprimir(color.r_azul..color.marcado.."\n "..retorna.." "..color.reset
+                                poner(color.r_azul..color.marcado.."\n "..retorna.." "..color.reset
                                 ..color.r_rojo.."\nPlugin: "..color.blanco..color.subrayado..plugins_montados[num_plugin]
                                 ..color.reset, 1)
                                 retornar 0
@@ -338,9 +358,9 @@ funcion iniciar_bot()
                                         si matches
                                                 matches = matches[0]
                                                 blocks = matches
-                                                si convertir.cadena(plugins[num_plugin].accion) == "funcion" && !json_res
+                                                si tipo(plugins[num_plugin].accion) == "funcion" && !json_res
                                                         plugins[num_plugin].accion()
-                                                        imprimir(color.marcado..color.r_verde.."\n "..matches[0].." "..color.reset
+                                                        poner(color.marcado..color.r_verde.."\n "..matches[0].." "..color.reset
                                                         ..color.r_verde.."\nUsuario: "..color.reset..msg.de.nombre
                                                         ..color.r_verde.."\nID: "..color.amarillo..msg.de.id
                                                         ..color.r_rojo.."\nPlugin: "..color.blanco..color.subrayado..plugins_montados[num_plugin]
@@ -358,9 +378,9 @@ funcion iniciar_bot()
                                         si cmatches
                                                 cmatches = cmatches[0]
                                                 cblocks = cmatches
-                                                si convertir.cadena(plugins[num_plugin].callback) == "funcion" && !json_res
+                                                si tipo(plugins[num_plugin].callback) == "funcion" && !json_res
                                                         plugins[num_plugin].callback()
-                                                        imprimir(color.marcado..color.blanco.."\n "..cmatches[0].." "..color.reset
+                                                        poner(color.marcado..color.blanco.."\n "..cmatches[0].." "..color.reset
                                                         ..color.r_verde.."\nUsuario: "..color.reset..cb.de.nombre
                                                         ..color.r_verde.."\nID: "..color.amarillo..cb.de.id
                                                         ..color.r_rojo.."\nPlugin: "..color.blanco..color.subrayado..plugins_montados[num_plugin]
@@ -379,11 +399,31 @@ funcion iniciar_bot()
                                                 si imatches
                                                         imatches = imatches[0]
                                                         iblocks = imatches
-                                                        si convertir.cadena(plugins[num_plugin].inline) == "funcion" && !json_res
+                                                        si tipo(plugins[num_plugin].inline) == "funcion" && !json_res
                                                                 plugins[num_plugin].inline()
-                                                                imprimir(color.marcado..color.r_purpura.."\n "..imatches[0].." "..color.reset
+                                                                poner(color.marcado..color.r_purpura.."\n "..imatches[0].." "..color.reset
                                                                 ..color.r_verde.."\nUsuario: "..color.reset..cinline.de.nombre
                                                                 ..color.r_verde.."\nID: "..color.amarillo..cinline.de.id
+                                                                ..color.r_rojo.."\nPlugin: "..color.blanco..color.subrayado..plugins_montados[num_plugin]
+                                                                ..color.reset, 1)
+                                                                retornar 0
+                                                        fin
+                                                fin
+                                        fin
+                                fin
+                        fin
+                        si plugins[num_plugin].canal_comandos
+                                desde (num_cncom=0; num_cncom<(plugins[num_plugin].canal_comandos); num_cncom++)
+                                        si canal && canal.texto
+                                                clmatches = cadena.match(canal.texto, plugins[num_plugin].canal_comandos[num_cncom])
+                                                si clmatches
+                                                        clmatches = clmatches[0]
+                                                        clblocks = clmatches
+                                                        si tipo(plugins[num_plugin].canal_fun) == "funcion" && !json_res
+                                                                plugins[num_plugin].canal_fun()
+                                                                poner(color.marcado..color.r_purpura.."\n "..clmatches[0].." "..color.reset
+                                                                ..color.r_verde.."\nUsuario: "..color.reset..canal.de.usuario
+                                                                ..color.r_verde.."\nID: "..color.amarillo..canal.de.id
                                                                 ..color.r_rojo.."\nPlugin: "..color.blanco..color.subrayado..plugins_montados[num_plugin]
                                                                 ..color.reset, 1)
                                                                 retornar 0
@@ -396,64 +436,67 @@ funcion iniciar_bot()
         fin
 fin
 
-
-global funcion _BOT(argumento)
+global funcion _BOT(argumento, climp)
+        si climp
+                limpiar()
+        fin
         si !argumento retornar 0 fin
         si argumento == "iniciar"
-                global leng = incluir("lenguajes/"..config.lenguaje)
-                global _creadores_ = archivo.leer(config.datos[0].creadores)
-                global _gadmins_ = archivo.leer(config.datos[0].gadmins)
-                global _gmods_ = archivo.leer(config.datos[0].gmods)
-                global _gbans_ = archivo.leer(config.datos[0].gbans)
-                limpiar()
+                logo()
+                global _creadores_ = archivo.leer(config.datos.creadores)
+                global _gadmins_ = archivo.leer(config.datos.gadmins)
+                global _gmods_ = archivo.leer(config.datos.gmods)
+                global _gbans_ = archivo.leer(config.datos.gbans)
                 verificacion = verificar_apikey()
                 si ! verificacion.ok
-                        imprimir("\aERROR ("..verificacion.error_code.." - "..verificacion.description..")"
+                        poner("\aERROR ("..verificacion.error_code.." - "..verificacion.description..")"
                         .."\nVerifica la apikey en ajustes.lat", 1)
                         redis.desconectar(com)
                         retorno 0
                 fin
 
-                creadores_ = json.decodificar(archivo.leer(config.datos[0].creadores))
+                creadores_ = json.decodificar(archivo.leer(config.datos.creadores))
                 creadores_ = creadores_.creadores
                 inicio = enviarMensaje(acadena(creadores_[0].id), "<b>Bot iniciado</b>", html)
-                imprimir(color.azul)
+                poner(color.azul)
                 si inicio
-                        imprimir("\tConfirmación enviada a " .. creadores_[0].id .. ".\n\tBot @"..bot.usuario..", ID: "..bot.id, 1)
+                        poner("\tConfirmación enviada a " .. creadores_[0].id .. ".\n\tBot @"..bot.usuario..", ID: "..bot.id, 1)
                 sino
-                        imprimir("\tError en confirmación.\n\tBot @"..bot.usuario..", ID: "..bot.id, 1)
+                        poner("\tError en confirmación.\n\tBot @"..bot.usuario..", ID: "..bot.id, 1)
                 fin
-                imprimir(color.reset.."\n", 1)
+                poner(color.reset.."\n", 1)
 
-                si config.updates[0].limpiar_al_iniciar
+                si config.updates.limpiar_al_iniciar
                         updates = limpiar_updates()
                         si updates
                                 imprimirf(color.cafe.."Actualizaciones limpias con un total de "..updates..color.reset.."\n\n")
                         fin
                 fin
+                global _ln = cargar_lenguajes()
         osi argumento == "recargar"
-                limpiar()
                 imprimirf(color.azul.."\n\tBot recargado.\n\n")
                 config = incluir("bot/config")
-                global leng = incluir("lenguajes/"..config.lenguaje)
-                global _creadores_ = archivo.leer(config.datos[0].creadores)
-                global _gadmins_ = archivo.leer(config.datos[0].gadmins)
-                global _gmods_ = archivo.leer(config.datos[0].gmods)
-                global _gbans_ = archivo.leer(config.datos[0].gbans)
+                global _creadores_ = archivo.leer(config.datos.creadores)
+                global _gadmins_ = archivo.leer(config.datos.gadmins)
+                global _gmods_ = archivo.leer(config.datos.gmods)
+                global _gbans_ = archivo.leer(config.datos.gbans)
+                global _ln = cargar_lenguajes()
         osi argumento == "recargar_creadores"
-                global _creadores_ = archivo.leer(config.datos[0].creadores)
+                global _creadores_ = archivo.leer(config.datos.creadores)
                 retornar 0
         osi argumento == "recargar_gadmins"
-                global _gadmins_ = archivo.leer(config.datos[0].gadmins)
+                global _gadmins_ = archivo.leer(config.datos.gadmins)
                 retornar 0
         osi argumento == "recargar_gmods"
-                global _gmods_ = archivo.leer(config.datos[0].gmods)
+                global _gmods_ = archivo.leer(config.datos.gmods)
                 retornar 0
         osi argumento == "recargar_gbans"
-                global _gbans_ = archivo.leer(config.datos[0].gbans)
+                global _gbans_ = archivo.leer(config.datos.gbans)
+                retornar 0
+        osi argumento == "recargar_lenguajes"
+                global _ln = cargar_lenguajes()
                 retornar 0
         fin
-
         global plugins = cargar_plugins()
 fin
 
@@ -466,13 +509,13 @@ funcion menu(argc, argv)
         si argv[1] == "--json" || argv[1] == "-j" json_res=verdadero fin
         si argv[1] == "-h"
                 si cadena.contiene(argv[0], "./")
-                        imprimir("Ayuda "..color.cyan..argv[0].." [opción]"..color.reset.."\n\t"..color.bold.."[--json ][-j]"..color.reset..": imprimir en formato json",1)
+                        poner("Ayuda "..color.cyan..argv[0].." [opción]"..color.reset.."\n\t"..color.bold.."[--json ][-j]"..color.reset..": imprimir en formato json",1)
                 sino
-                        imprimir("Ayuda "..color.cyan.."latino "..argv[0].." [opción]"..color.reset.."\n\t"..color.bold.."[--json ][-j]"..color.reset..": imprimir en formato json",1)
+                        poner("Ayuda "..color.cyan.."latino "..argv[0].." [opción]"..color.reset.."\n\t"..color.bold.."[--json ][-j]"..color.reset..": imprimir en formato json",1)
                 fin
                 retornar 0
         fin
-        com = redis.conectar(config.redis[0].ip, config.redis[0].puerto)
+        global lng = cadena.formato
 
         bot = ObtenerBot()
         bot = bot.result
@@ -482,9 +525,10 @@ funcion menu(argc, argv)
                 "usuario": bot.username
         }
 
-        _BOT("iniciar")
+        _BOT("iniciar", verdadero)
         global BOT_SHASH = "bot:"..bot.id..":schats"
         global BOT_HHASH = "latgram:usuarios"
+        com = redis.conectar(config.redis.ip, config.redis.puerto)
 
         mientras verdadero
                 res = actualizaciones()
@@ -493,7 +537,7 @@ funcion menu(argc, argv)
                         iniciar_bot()
                 fin
                 si sis.avisar(2) || sis.avisar(20)
-                        imprimir("\nBot detenido (@"..bot.usuario..")",1)
+                        poner("\nBot detenido (@"..bot.usuario..")",1)
                         redis.desconectar(com)
                         salir()
                 fin
