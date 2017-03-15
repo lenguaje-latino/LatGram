@@ -36,7 +36,7 @@ Si no sabes como crear un crear un Bot, te invito a consultar: [Como crear un bo
 
 Teniendo copiada nuestra api_key (ó también llamada `HTTP API`) la pegaremos en bot/config.lat en la [línea 2](https://github.com/lenguaje-latino/LatGram/blob/master/bot/config.lat#L2) quedando así, de la siguiente manera:
 ```C
-"api_key": "TU_API_KEY_DE_BOTFATHER" // recuerda no eliminas acentos ',' ni nada.
+"api_key": "TU_API_KEY_DE_BOTFATHER" // recuerda no eliminas comas ',' ni nada.
 ```
 
 Para correr el bot, necesitaremos al paquete Tmux, necesitarás instalarlo para aquello:
