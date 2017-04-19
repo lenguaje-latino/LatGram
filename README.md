@@ -3,7 +3,6 @@
 
 # :robot: LatGram :robot:
 
-
 Un bot de Telegram hecho en <b>[Latino](https://github.com/primitivorm/latino)</b>, con multiusos como comandos inline, callbacks, comandos normales, uso de regex y match en grupos, etc.
 
 ><b>NOTA</b>: Este bot solo funcionará en <i>Windows 10 Insider con Bash Ubuntu</i> instalado ó <i>Linux</i>.
